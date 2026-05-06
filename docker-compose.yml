@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build: .
+    container_name: spacea
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_WORDPRESS_URL=${NEXT_PUBLIC_WORDPRESS_URL}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+      - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
+      - REVALIDATE_SECRET=${REVALIDATE_SECRET}
+    restart: unless-stopped
