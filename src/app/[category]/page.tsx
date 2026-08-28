@@ -1,11 +1,15 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { GET_CATEGORY, GET_ALL_CATEGORIES } from '@/lib/graphql/queries/category'
+import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { POSTS_PER_PAGE } from '@/lib/constants'
-import ArticleGrid from '@/components/article/ArticleGrid'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
+import CategoryImage from '@/components/layout/CategoryImage'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
+import CategoryJsonLd from '@/components/seo/CategoryJsonLd'
+import CategoryPageClient from './CategoryPageClient'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 import { WPSeo } from '@/types/seo'
 
@@ -59,15 +63,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { category: slug } = await params
-  const data = await fetchQuery<CategoryData>(GET_CATEGORY, {
-    slug,
-    first: POSTS_PER_PAGE,
-  })
+  const [data, navData] = await Promise.all([
+    fetchQuery<CategoryData>(GET_CATEGORY, { slug, first: POSTS_PER_PAGE * 2 }),
+    fetchQuery<AllCategoriesData>(GET_NAVIGATION),
+  ])
 
   const cat = data?.category
   if (!cat) notFound()
 
   const posts = cat.posts?.nodes ?? []
+  const otherCategories = (navData?.categories?.nodes ?? []).filter((c) => c.slug !== slug).slice(0, 4)
   const breadcrumbs = [
     { label: '首頁', href: '/' },
     { label: cat.name, href: `/${slug}` },
@@ -76,15 +81,55 @@ export default async function CategoryPage({ params }: Props) {
   return (
     <>
       <BreadcrumbJsonLd items={breadcrumbs} />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-        <div className="mb-8 space-y-3">
-          <Breadcrumbs items={breadcrumbs} />
-          <h1 className="text-2xl font-bold text-gray-900">{cat.name}</h1>
-          {cat.description && (
-            <p className="text-gray-500">{cat.description}</p>
+      <CategoryJsonLd name={cat.name} slug={slug} description={cat.description} posts={posts} />
+
+      <div className="bg-paper">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="pt-7">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+
+          <section className="pt-6 pb-7 border-b border-paper-border">
+            <div className="max-w-2xl">
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink">
+                {cat.name}
+              </h1>
+              {cat.description && (
+                <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">
+                  {cat.description}
+                </p>
+              )}
+              <p className="text-xs text-paper-muted mt-2.5">共 {posts.length} 篇</p>
+            </div>
+          </section>
+
+          <CategoryPageClient categoryName={slug} posts={posts} />
+
+          {otherCategories.length > 0 && (
+            <section className="mt-16 bg-white border border-paper-border rounded-2xl p-9">
+              <div className="text-xs tracking-wider text-brand-600 font-bold">其他分類</div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
+                {otherCategories.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/${c.slug}`}
+                    className="flex items-center gap-3.5 p-3.5 border border-paper-border rounded-2xl bg-white hover:border-brand-600 transition-colors"
+                  >
+                    <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-paper-surface">
+                      <CategoryImage slug={c.slug} name={c.name} />
+                    </div>
+                    <div>
+                      <b className="block text-[15px] font-medium text-paper-ink">{c.name}</b>
+                      {c.count != null && <span className="text-xs text-paper-muted">{c.count} 篇</span>}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
           )}
+
+          <div className="h-16 sm:h-20" />
         </div>
-        <ArticleGrid posts={posts} />
       </div>
     </>
   )

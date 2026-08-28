@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-noto-sans-tc)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-noto-serif-tc)', 'serif'],
       },
       colors: {
         brand: {
@@ -18,6 +19,15 @@ const config: Config = {
           500: '#0ea5e9',
           600: '#0284c7',
           700: '#0369a1',
+        },
+        paper: {
+          DEFAULT: '#fbfaf7',
+          ink: '#1d1c1a',
+          body: '#46433f',
+          secondary: '#6f6a63',
+          muted: '#9c968d',
+          border: '#e6e2da',
+          surface: '#f1eee8',
         },
       },
     },

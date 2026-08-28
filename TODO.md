@@ -5,6 +5,29 @@
 
 ## 待辦
 
+### 已知簡化（後續要補）
+- 聯絡表單（`/contact`）目前只有前端互動，送出後沒有真的寄信 — 需要接後端 API（email 服務）才能真正收信
+- 文章頁沒有「本文目錄」（TOC）— 需要解析 `post.content` 內的標題並注入錨點 id 才能做，先跳過
+- 分類頁移除了「熱門」排序切換 — 原設計稿的排序是假資料（reverse），怕誤導使用者以為有真實熱門度，先只保留「最新」
+- 首頁「編輯精選專題」橫幅拿掉了原設計稿的假統計數字（12,000+ 篇評論等），改成不掛數字的說法，避免不實資料
+
+### 內容策略 — 文章類型規劃
+除了核心推薦文，規劃以下內容類型（同一利基內互相導流，避免無關話題稀釋主題權威度）：
+- [ ] 推薦文（核心，轉換用）
+- [ ] 比較文（A vs B）— 需確認是否要獨立 post type / schema（可能需要不同 JSON-LD，如 Product 比較表）
+- [ ] 開箱/實測心得 — 補強 E-E-A-T
+- [ ] 保養/使用教學 — 承接售後搜尋
+- [ ] 季節性禮物指南 — 每年可複用
+- [ ] 熱門單品評測（機動）— 導回品類頁
+- [ ] WordPress 分類/欄位確認：是否需新增分類法（taxonomy）區分文章類型，供前端顯示對應版型與 JSON-LD
+
+### SEO / GEO / AIO 基礎設施
+- [x] sitemap.xml（`src/app/sitemap.ts`，動態抓 WP 分類/文章）
+- [x] TKD（Yoast SEO 透過 WPGraphQL 拉取，各頁 generateMetadata）
+- [x] llms.txt（`src/app/llms.txt/route.ts`，動態抓 WP 分類，每小時 revalidate）
+- [x] FAQ schema（`src/components/seo/FaqJsonLd.tsx`，已套用於 `/about#how`）
+- [ ] 文章頁 FAQ：若 WordPress 文章內容有 FAQ 區塊，考慮解析並套用 FaqJsonLd（目前僅靜態頁面有套用）
+
 ### Phase 5 — ISR Webhook
 - [ ] WordPress WP Webhooks plugin 設定
 - [ ] 測試：WP 發文 → 頁面自動更新

@@ -22,5 +22,11 @@ export const ARTICLE_CARD_FIELDS = gql`
         slug
       }
     }
+    tags {
+      nodes {
+        name
+        slug
+      }
+    }
   }
 `

@@ -1,15 +1,23 @@
 import type { Metadata } from 'next'
-import { Noto_Sans_TC } from 'next/font/google'
+import { Noto_Sans_TC, Noto_Serif_TC } from 'next/font/google'
 import './globals.css'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import WebsiteJsonLd from '@/components/seo/WebsiteJsonLd'
+import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd'
 
 const notoSansTC = Noto_Sans_TC({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
   variable: '--font-noto-sans-tc',
+  display: 'swap',
+})
+
+const notoSerifTC = Noto_Serif_TC({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-noto-serif-tc',
   display: 'swap',
 })
 
@@ -41,9 +49,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-TW" className={notoSansTC.variable}>
+    <html lang="zh-TW" className={`${notoSansTC.variable} ${notoSerifTC.variable}`}>
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
         <WebsiteJsonLd />
+        <OrganizationJsonLd />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

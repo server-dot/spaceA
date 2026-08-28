@@ -36,11 +36,11 @@ export default function SearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onBlur={() => { if (!query.trim()) handleClose() }}
           placeholder="搜尋文章..."
-          className="w-44 sm:w-60 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+          className="w-44 sm:w-60 px-3 py-1.5 text-sm border border-paper-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
         />
         <button
           type="submit"
-          className="p-1.5 text-gray-500 hover:text-sky-500 transition-colors"
+          className="p-1.5 text-paper-secondary hover:text-brand-600 transition-colors"
           aria-label="搜尋"
         >
           <SearchIcon />
@@ -48,7 +48,7 @@ export default function SearchBar() {
         <button
           type="button"
           onClick={handleClose}
-          className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+          className="p-1.5 text-paper-muted hover:text-paper-ink transition-colors"
           aria-label="關閉搜尋"
         >
           <CloseIcon />
@@ -60,7 +60,7 @@ export default function SearchBar() {
   return (
     <button
       onClick={handleOpen}
-      className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+      className="p-2 text-paper-secondary hover:text-paper-ink hover:bg-paper-surface rounded-md transition-colors"
       aria-label="搜尋"
     >
       <SearchIcon />

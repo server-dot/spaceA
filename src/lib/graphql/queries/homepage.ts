@@ -1,12 +1,19 @@
 import { gql } from '@apollo/client'
 import { ARTICLE_CARD_FIELDS } from '../fragments/articleFields'
 
-export const GET_HOMEPAGE_POSTS = gql`
+export const GET_HOMEPAGE_BLOCKS = gql`
   ${ARTICLE_CARD_FIELDS}
-  query GetHomepagePosts($first: Int!) {
-    posts(first: $first, where: { status: PUBLISH }) {
+  query GetHomepageBlocks($first: Int!, $postsPerCategory: Int!) {
+    categories(first: $first, where: { hideEmpty: true }) {
       nodes {
-        ...ArticleCardFields
+        name
+        slug
+        count
+        posts(first: $postsPerCategory, where: { status: PUBLISH }) {
+          nodes {
+            ...ArticleCardFields
+          }
+        }
       }
     }
   }

@@ -63,6 +63,9 @@ export interface WPPostCard {
   categories: {
     nodes: WPCategory[]
   }
+  tags: {
+    nodes: WPTag[]
+  }
 }
 
 export interface WPPageInfo {

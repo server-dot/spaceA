@@ -1,59 +1,116 @@
+'use client'
+
 import Link from 'next/link'
-import { SITE_NAME, SITE_DESCRIPTION, NAV_ITEMS } from '@/lib/constants'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { SITE_NAME, NAV_ITEMS, COMPANY_NAME, COMPANY_REG_NO } from '@/lib/constants'
+
+const DISCLAIMER =
+  'spaceA 主打選物，提供閱讀者更多樣化選擇的資訊。本網站所載部分資訊亦有和合作廠商或相關單位合作，並由其提供產品相關資訊或第三方連結。為維護您的權益，請於使用本網站或閱讀本網站資訊時謹慎評估，資訊僅供參考之用。'
+
+const FOOTER_COLUMNS = [
+  {
+    title: '關於 spaceA',
+    links: [
+      { label: '關於我們', href: '/about' },
+      { label: '推薦怎麼產生', href: '/about#how' },
+      { label: '編輯部分工', href: '/about#team' },
+      { label: '聯絡我們', href: '/contact' },
+    ],
+  },
+  {
+    title: '合作與加入',
+    links: [
+      { label: '合作洽談', href: '/contact#form' },
+      { label: '廣告刊登', href: '/contact#form' },
+      { label: '內容授權', href: '/contact#form' },
+    ],
+  },
+  {
+    title: '條款與政策',
+    links: [
+      { label: '合作與聯盟連結揭露', href: '/about#disclosure' },
+      { label: '內容更正政策', href: '/about#corrections' },
+      { label: '評測守則', href: '/about#limits' },
+      { label: '隱私權政策', href: '/privacy' },
+      { label: '使用條款', href: '/terms' },
+    ],
+  },
+  {
+    title: '逛逛 spaceA',
+    links: [
+      { label: '寵物生活', href: '/pets' },
+      { label: '熱門排行', href: '/popular' },
+    ],
+  },
+]
 
 export default function Footer() {
+  const pathname = usePathname()
+  const isHome = pathname === '/'
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-16">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10">
-          {/* Brand */}
-          <div className="space-y-3">
-            <Link href="/" className="text-xl font-bold text-white hover:text-brand-400 transition-colors">
-              {SITE_NAME}
+    <footer className="bg-paper border-t border-paper-border mt-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-14">
+        <p className="max-w-3xl mx-auto text-center text-xs leading-loose text-paper-secondary">
+          {DISCLAIMER}
+        </p>
+
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-3 text-2xl font-bold tracking-tight text-paper-ink hover:text-brand-600 transition-colors mt-11"
+        >
+          <Image src="/logo-sa-mark.png" alt="" width={38} height={38} />
+          {SITE_NAME}
+        </Link>
+
+        {isHome ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 py-11">
+            {FOOTER_COLUMNS.map((col) => (
+              <div key={col.title}>
+                <div className="text-sm font-bold text-paper-ink mb-4">{col.title}</div>
+                <ul className="grid gap-3">
+                  {col.links.map((l) => (
+                    <li key={l.label}>
+                      <Link
+                        href={l.href}
+                        className="text-xs text-paper-secondary hover:text-brand-600 transition-colors"
+                      >
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <nav
+            aria-label="頁尾連結"
+            className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-paper-secondary my-9"
+          >
+            {NAV_ITEMS.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-paper-ink transition-colors">
+                {item.label}
+              </Link>
+            ))}
+            <Link href="/privacy" className="hover:text-paper-ink transition-colors">
+              隱私權保護政策
             </Link>
-            <p className="text-sm text-gray-400 leading-relaxed">{SITE_DESCRIPTION}</p>
-          </div>
+            <Link href="/terms" className="hover:text-paper-ink transition-colors">
+              使用條款
+            </Link>
+          </nav>
+        )}
 
-          {/* Nav links */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              快速連結
-            </h3>
-            <ul className="space-y-2 text-sm">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="hover:text-white transition-colors">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <div className="border-t border-paper-border pt-7 pb-14 text-center">
+          <div className="text-xs text-paper-muted">
+            © {year} {SITE_NAME}. All rights reserved.
           </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              法律聲明
-            </h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">
-                  隱私權保護政策
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  與我們聯絡
-                </Link>
-              </li>
-            </ul>
+          <div className="text-xs text-paper-muted mt-2">
+            營運公司：{COMPANY_NAME}（統編 {COMPANY_REG_NO}）
           </div>
-        </div>
-
-        <div className="border-t border-gray-800 pt-6 text-sm text-gray-500 text-center">
-          © {year} {SITE_NAME}. All rights reserved.
         </div>
       </div>
     </footer>
