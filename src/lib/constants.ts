@@ -8,8 +8,6 @@ export const NAV_ITEMS = [
   { label: '熱門排行', href: '/popular' },
   { label: '關於我們', href: '/about' },
   { label: '最新消息', href: '/news' },
-  { label: '節慶好禮推薦', href: '/holiday-gifts' },
-  { label: '信用卡攻略', href: '/credit-cards' },
 ]
 
 export const COMPANY_NAME = '積木媒體行銷股份有限公司'

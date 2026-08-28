@@ -14,6 +14,7 @@
 ### 內容策略 — 文章類型規劃
 除了核心推薦文，規劃以下內容類型（同一利基內互相導流，避免無關話題稀釋主題權威度）：
 - [ ] 推薦文（核心，轉換用）
+- [x] **選購指南／準備清單文**（第二類，已有範本）— 如「第一次養貓要準備什麼」，本質是「如何挑選」型教學文，不主推單品。範本結構：先看結論框（GEO 前置結論）→ 決策表格 → 常見問題（FAQPage）→ 資料來源揭露。內文格式都在 WordPress `post.content` 裡，沿用現有文章頁 template 即可，不用另開 page
 - [ ] 比較文（A vs B）— 需確認是否要獨立 post type / schema（可能需要不同 JSON-LD，如 Product 比較表）
 - [ ] 開箱/實測心得 — 補強 E-E-A-T
 - [ ] 保養/使用教學 — 承接售後搜尋
@@ -25,8 +26,8 @@
 - [x] sitemap.xml（`src/app/sitemap.ts`，動態抓 WP 分類/文章）
 - [x] TKD（Yoast SEO 透過 WPGraphQL 拉取，各頁 generateMetadata）
 - [x] llms.txt（`src/app/llms.txt/route.ts`，動態抓 WP 分類，每小時 revalidate）
-- [x] FAQ schema（`src/components/seo/FaqJsonLd.tsx`，已套用於 `/about#how`）
-- [ ] 文章頁 FAQ：若 WordPress 文章內容有 FAQ 區塊，考慮解析並套用 FaqJsonLd（目前僅靜態頁面有套用）
+- [x] FAQ schema 元件（`src/components/seo/FaqJsonLd.tsx`，目前未使用中，等文章頁 FAQ 解析邏輯做好後套用）
+- [ ] 文章頁 FAQ 自動偵測：等開始寫「選購指南」類文章時，跟編輯部約定 WordPress 裡標記 FAQ 區塊的方式（固定 heading 文字或 shortcode），解析 `post.content` 抓出 Q&A 並套用 FaqJsonLd
 
 ### Phase 5 — ISR Webhook
 - [ ] WordPress WP Webhooks plugin 設定
@@ -34,13 +35,13 @@
 
 ### Phase 6 — Analytics（選用）
 - [ ] Google Analytics 4 加入 layout
-- [ ] Google Search Console 驗證
-- [ ] 提交 sitemap
 
 ### Phase 7 — 上線
-- [ ] 部署至 Vercel
-- [ ] 環境變數設定
-- [ ] 自訂網域 + SSL
+- [x] 部署至 Zeabur（Docker，非原計畫的 Vercel — 已用 Dockerfile + docker-compose 部署，見 git log）
+- [x] 自訂網域 + SSL（`https://spacea.dg166.com`，已可連線）
+- [ ] **修正 Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL`** — 目前實際部署值是 `https://spacea.zeabur.app`（且 sitemap.xml 裡 `<loc>` 前面多一個空格），導致 sitemap.xml／robots.txt／canonical 全部指向錯的網域。要改成 `NEXT_PUBLIC_SITE_URL=https://spacea.dg166.com`（等號後不要留空格）並重新部署（build-time 變數，改了要重 build 才生效）
+- [ ] Google Search Console 網域擁有權驗證（建議用 DNS TXT record）
+- [ ] 提交 sitemap.xml 到 Search Console
 - [ ] Lighthouse 審核（Performance > 90, SEO = 100）
 - [ ] Google Rich Results Test 驗證
 
