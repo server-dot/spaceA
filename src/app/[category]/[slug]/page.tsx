@@ -238,12 +238,15 @@ export default async function ArticlePage({ params }: Props) {
               )}
 
               {parsed.toc.length > 0 && (
-                <nav aria-label="本篇目錄" className="mt-7 border border-paper-border rounded-2xl px-6 py-5 bg-white">
-                  <h2 className="text-xs tracking-wider text-paper-muted font-bold">本篇目錄</h2>
-                  <ol className="grid gap-2 mt-3.5">
+                <nav
+                  aria-label="本篇目錄"
+                  className="mt-7 bg-brand-50 border-l-4 border-brand-600 rounded-lg px-6 py-5"
+                >
+                  <p className="font-bold text-brand-600 mb-2.5">本篇目錄</p>
+                  <ol className="list-decimal pl-5 grid gap-1.5 marker:text-brand-600 marker:font-bold">
                     {parsed.toc.map((item) => (
                       <li key={item.id} className="text-sm leading-relaxed">
-                        <a href={`#${item.id}`} className="text-paper-ink hover:text-brand-600 transition-colors">
+                        <a href={`#${item.id}`} className="text-paper-ink no-underline hover:text-brand-600 transition-colors">
                           {item.label}
                         </a>
                       </li>
