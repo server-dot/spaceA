@@ -32,11 +32,21 @@ export interface ParsedArticleContent {
 function stripTags(html: string) {
   return html
     .replace(/<[^>]+>/g, '')
+    .replace(/&hellip;/g, '…')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .trim()
+}
+
+/**
+ * StackTool 生成的文章常常自帶一個手寫的 <nav class="toc"> 目錄區塊。
+ * 前端會用 injectTocAnchors 自動產生「本篇目錄」，兩個疊在一起會重複顯示，
+ * 所以進解析前一律先拿掉舊的手寫目錄。
+ */
+function stripLegacyToc(html: string): string {
+  return html.replace(/<nav[^>]*\bclass="toc"[^>]*>[\s\S]*?<\/nav>\s*/i, '')
 }
 
 function cutSection(html: string, heading: string): { block: string; rest: string } | null {
@@ -139,7 +149,8 @@ export function parseArticleContent(
 ): ParsedArticleContent {
   const { extractHowTo: shouldExtractHowTo = true, extractProvenance: shouldExtractProvenance = true } = options
 
-  const { conclusion, rest: afterConclusion } = extractConclusion(html)
+  const withoutLegacyToc = stripLegacyToc(html)
+  const { conclusion, rest: afterConclusion } = extractConclusion(withoutLegacyToc)
   const { faq, rest: afterFaq } = extractFaq(afterConclusion)
   const { provenance, rest: afterProvenance } = shouldExtractProvenance
     ? extractProvenance(afterFaq)
