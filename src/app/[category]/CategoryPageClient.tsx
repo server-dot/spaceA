@@ -3,7 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { WPPostCard } from '@/types/wordpress'
+import { ARTICLE_TYPE_LABELS } from '@/lib/constants'
+import { resolveArticleType } from '@/lib/article-type'
+import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('zh-TW', {
@@ -24,6 +28,11 @@ interface CategoryPageClientProps {
 
 export default function CategoryPageClient({ categoryName, posts }: CategoryPageClientProps) {
   const [tag, setTag] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const initialType = searchParams.get('type')
+  const [type, setType] = useState<string | null>(
+    initialType && initialType in ARTICLE_TYPE_LABELS ? initialType : null
+  )
 
   const tags = useMemo(() => {
     const seen = new Map<string, string>()
@@ -33,11 +42,65 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
     return Array.from(seen.entries()).map(([slug, name]) => ({ slug, name }))
   }, [posts])
 
-  const filtered = tag ? posts.filter((post) => post.tags.nodes.some((t) => t.slug === tag)) : posts
-  const [feature, ...rest] = filtered
+  const typeCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    posts.forEach((post) => {
+      const slug = resolveArticleType(post.articleTypes).slug
+      counts[slug] = (counts[slug] ?? 0) + 1
+    })
+    return counts
+  }, [posts])
+
+  const byTag = tag ? posts.filter((post) => post.tags.nodes.some((t) => t.slug === tag)) : posts
+  const filtered = type ? byTag.filter((post) => resolveArticleType(post.articleTypes).slug === type) : byTag
+  const [firstPost, ...others] = filtered
+  // 類型不是「全部」時，不顯示「編輯精選」大版位，該篇併入下方文章格一起排
+  const feature = type ? undefined : firstPost
+  const rest = type ? filtered : others
 
   return (
     <>
+      {Object.keys(typeCounts).length > 1 && (
+        <div className="flex items-center gap-3 flex-wrap pt-[26px]">
+          <span className="text-xs text-paper-muted tracking-wider">文章類型</span>
+          {[
+            { slug: null, label: '全部', count: posts.length },
+            ...Object.entries(ARTICLE_TYPE_LABELS).map(([slug, label]) => ({
+              slug,
+              label,
+              count: typeCounts[slug] ?? 0,
+            })),
+          ]
+            .filter((opt) => opt.slug === null || opt.count > 0)
+            .map((opt) => {
+              const active = type === opt.slug
+              return (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onClick={() => setType(active ? null : opt.slug)}
+                  className={`flex items-baseline gap-2 rounded-full px-[18px] py-[9px] text-sm transition-colors ${
+                    active
+                      ? 'bg-brand-600 border border-brand-600 text-white font-bold'
+                      : 'bg-white border border-paper-border text-paper-ink font-medium'
+                  }`}
+                >
+                  {opt.label}
+                  <span className={`text-xs font-normal ${active ? 'text-white/75' : 'text-paper-muted'}`}>
+                    {opt.count} 篇
+                  </span>
+                </button>
+              )
+            })}
+          <span className="text-xs text-paper-muted">
+            這個分類收錄{' '}
+            {Object.entries(ARTICLE_TYPE_LABELS)
+              .map(([slug, label]) => `${typeCounts[slug] ?? 0} 篇${label}`)
+              .join('、')}
+          </span>
+        </div>
+      )}
+
       {tags.length > 0 && (
         <div className="flex items-center gap-2.5 flex-wrap pt-6">
           <span className="text-xs text-paper-muted tracking-wider mr-0.5">主題篩選</span>
@@ -61,10 +124,17 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
         </div>
       )}
 
-      {tag && (
+      {(tag || type) && (
         <div className="flex items-center gap-3.5 pt-5 text-[13px] text-paper-secondary">
           <span>篩選中，共 {filtered.length} 篇文章</span>
-          <button type="button" onClick={() => setTag(null)} className="text-brand-600 font-bold">
+          <button
+            type="button"
+            onClick={() => {
+              setTag(null)
+              setType(null)
+            }}
+            className="text-brand-600 font-bold"
+          >
             清除篩選
           </button>
         </div>
@@ -91,8 +161,9 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
                 )}
               </Link>
               <div>
-                <div className="flex items-center gap-2.5 text-xs">
+                <div className="flex items-center gap-2.5 text-xs flex-wrap">
                   <span className="text-brand-600 font-bold">編輯精選</span>
+                  <ArticleTypeBadge type={resolveArticleType(feature.articleTypes)} size="sm" />
                   <span className="text-paper-muted">{formatDate(feature.date)}</span>
                 </div>
                 <h2 className="font-serif text-2xl font-bold leading-snug tracking-tight mt-3">
@@ -131,8 +202,11 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
                           />
                         )}
                       </div>
-                      <div className="flex items-center gap-2.5 text-xs mt-3.5">
-                        {category && <span className="text-brand-600 font-bold">{category.name}</span>}
+                      <div className="flex items-center gap-2.5 text-xs mt-3.5 flex-wrap">
+                        <ArticleTypeBadge
+                          category={category}
+                          type={resolveArticleType(post.articleTypes)}
+                        />
                         <span className="text-paper-muted">{formatDate(post.date)}</span>
                       </div>
                       <h3 className="text-lg font-medium leading-relaxed mt-2 group-hover:text-brand-600 transition-colors">

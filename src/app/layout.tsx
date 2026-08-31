@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { Noto_Sans_TC, Noto_Serif_TC } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, GA_ID } from '@/lib/constants'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import WebsiteJsonLd from '@/components/seo/WebsiteJsonLd'
@@ -56,6 +57,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
       </body>
     </html>
   )

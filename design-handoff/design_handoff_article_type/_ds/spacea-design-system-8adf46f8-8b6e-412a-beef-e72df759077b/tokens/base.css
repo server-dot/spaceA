@@ -1,0 +1,6 @@
+/* Global base — mirrors src/app/globals.css @layer base. */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { background: var(--surface-page); color: var(--text-primary); font-family: var(--font-sans); }
+a { color: var(--text-link); text-decoration: none; }
+a:hover { color: var(--text-link-hover); }
+.text-balance { text-wrap: balance; }

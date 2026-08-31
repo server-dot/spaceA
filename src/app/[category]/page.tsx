@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { GET_CATEGORY, GET_ALL_CATEGORIES } from '@/lib/graphql/queries/category'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
-import { POSTS_PER_PAGE } from '@/lib/constants'
+import { POSTS_PER_PAGE, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import CategoryImage from '@/components/layout/CategoryImage'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
@@ -12,6 +13,7 @@ import CategoryJsonLd from '@/components/seo/CategoryJsonLd'
 import CategoryPageClient from './CategoryPageClient'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 import { WPSeo } from '@/types/seo'
+import { decodeRouteParam } from '@/lib/route-params'
 
 export const revalidate = 3600
 
@@ -38,11 +40,16 @@ interface AllCategoriesData {
 
 export async function generateStaticParams() {
   const data = await fetchQuery<AllCategoriesData>(GET_ALL_CATEGORIES)
-  return (data?.categories?.nodes ?? []).map((cat) => ({ category: cat.slug }))
+  return (data?.categories?.nodes ?? [])
+    .filter((cat) => !EXCLUDED_CATEGORY_SLUGS.includes(cat.slug))
+    .map((cat) => ({ category: cat.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category: slug } = await params
+  const { category: rawSlug } = await params
+  const slug = decodeRouteParam(rawSlug)
+  if (EXCLUDED_CATEGORY_SLUGS.includes(slug)) return {}
+
   const data = await fetchQuery<CategoryData>(GET_CATEGORY, { slug, first: 1 })
   const cat = data?.category
   if (!cat) return {}
@@ -62,7 +69,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const { category: slug } = await params
+  const { category: rawSlug } = await params
+  const slug = decodeRouteParam(rawSlug)
+  if (EXCLUDED_CATEGORY_SLUGS.includes(slug)) notFound()
+
   const [data, navData] = await Promise.all([
     fetchQuery<CategoryData>(GET_CATEGORY, { slug, first: POSTS_PER_PAGE * 2 }),
     fetchQuery<AllCategoriesData>(GET_NAVIGATION),
@@ -72,7 +82,9 @@ export default async function CategoryPage({ params }: Props) {
   if (!cat) notFound()
 
   const posts = cat.posts?.nodes ?? []
-  const otherCategories = (navData?.categories?.nodes ?? []).filter((c) => c.slug !== slug).slice(0, 4)
+  const otherCategories = (navData?.categories?.nodes ?? [])
+    .filter((c) => c.slug !== slug && !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
+    .slice(0, 4)
   const breadcrumbs = [
     { label: '首頁', href: '/' },
     { label: cat.name, href: `/${slug}` },
@@ -103,7 +115,9 @@ export default async function CategoryPage({ params }: Props) {
             </div>
           </section>
 
-          <CategoryPageClient categoryName={slug} posts={posts} />
+          <Suspense fallback={null}>
+            <CategoryPageClient categoryName={slug} posts={posts} />
+          </Suspense>
 
           {otherCategories.length > 0 && (
             <section className="mt-16 bg-white border border-paper-border rounded-2xl p-9">

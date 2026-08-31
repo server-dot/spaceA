@@ -19,6 +19,11 @@ export interface WPTag {
   slug: string
 }
 
+export interface WPArticleType {
+  name: string
+  slug: string
+}
+
 export interface WPAuthor {
   name: string
   avatar?: {
@@ -46,6 +51,9 @@ export interface WPPost {
   tags: {
     nodes: WPTag[]
   }
+  articleTypes?: {
+    nodes: WPArticleType[]
+  }
   author: {
     node: WPAuthor
   }
@@ -65,6 +73,9 @@ export interface WPPostCard {
   }
   tags: {
     nodes: WPTag[]
+  }
+  articleTypes?: {
+    nodes: WPArticleType[]
   }
 }
 

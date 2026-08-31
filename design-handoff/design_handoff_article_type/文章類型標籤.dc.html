@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_ds/spacea-design-system-8adf46f8-8b6e-412a-beef-e72df759077b/styles.css">
+<script src="_ds/spacea-design-system-8adf46f8-8b6e-412a-beef-e72df759077b/_ds_bundle.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f1eee8; color: #1d1c1a; font-family: "Noto Sans TC", sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #0284c7; text-decoration: none; }
+  a:hover { color: #0369a1; }
+</style>
+</helmet>
+
+<div style="padding: 48px clamp(20px, 4vw, 56px) 96px; display: flex; flex-direction: column; gap: 56px;">
+
+  <section>
+    <header style="max-width: 720px; margin-bottom: 32px;">
+      <h1 style="font-family: 'Noto Serif TC', serif; font-size: 30px; font-weight: 700; letter-spacing: -0.02em;">文章類型標籤：四種視覺方向</h1>
+      <p style="font-size: 15px; line-height: 2; color: #6f6a63; margin-top: 14px; text-wrap: pretty;">「分類（主題）」與「文章類型」是兩個獨立維度，同一張卡片上要能一眼分開。每個方向都套在三個實際出現的位置上：列表卡片、文章頁標題區、麵包屑。類型收斂為 推薦文／知識分享 兩種：選購方法、照護知識、流程說明都歸在知識分享，細分交給 tag。</p>
+    </header>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+      <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+        <article id="{{ o.id }}" style="flex: 1 1 520px; min-width: 460px; max-width: 620px; background: #fbfaf7; border: 1px solid #e6e2da; border-radius: 20px; overflow: hidden;">
+
+          <div style="display: flex; align-items: baseline; gap: 14px; padding: 22px 28px; border-bottom: 1px solid #e6e2da;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: #fff; background: #1d1c1a; border-radius: 999px; padding: 4px 11px;">{{ o.id }}</span>
+            <div>
+              <h2 style="font-family: 'Noto Serif TC', serif; font-size: 19px; font-weight: 700;">{{ o.name }}</h2>
+              <p style="font-size: 13px; line-height: 1.85; color: #6f6a63; margin-top: 5px; text-wrap: pretty;">{{ o.note }}</p>
+            </div>
+          </div>
+
+          <div style="padding: 26px 28px 30px; display: flex; flex-direction: column; gap: 30px;">
+
+            <div>
+              <div style="font-size: 11px; letter-spacing: 0.14em; color: #9c968d; font-weight: 700; margin-bottom: 14px;">列表卡片</div>
+              <div style="display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: start; background: #fff; border: 1px solid #e6e2da; border-radius: 14px; padding: 16px;">
+                <span style="{{ o.thumbStyle }}"></span>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="{{ o.catStyle }}">寵物生活</span>
+                    <sc-if value="{{ o.showDivider }}" hint-placeholder-val="{{ false }}">
+                      <span style="color: #e6e2da; font-size: 12px;">|</span>
+                    </sc-if>
+                    <span style="{{ o.typeStyle }}">知識分享</span>
+                  </div>
+                  <h3 style="font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; line-height: 1.6; margin-top: 10px;">第一次養貓要準備什麼？新手用品清單一次看</h3>
+                  <p style="font-size: 12px; color: #9c968d; margin-top: 9px;">2025年1月19日 · 閱讀約 8 分鐘</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size: 11px; letter-spacing: 0.14em; color: #9c968d; font-weight: 700; margin-bottom: 14px;">文章頁標題區</div>
+              <div style="background: #fff; border: 1px solid #e6e2da; border-radius: 14px; padding: 22px 24px 24px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <span style="{{ o.catStyle }}">3C 數位</span>
+                  <sc-if value="{{ o.showDivider }}" hint-placeholder-val="{{ false }}">
+                    <span style="color: #e6e2da; font-size: 12px;">|</span>
+                  </sc-if>
+                  <span style="{{ o.typeStyle }}">開箱評測</span>
+                </div>
+                <h3 style="font-family: 'Noto Serif TC', serif; font-size: 24px; font-weight: 700; line-height: 1.5; letter-spacing: -0.02em; margin-top: 14px; text-wrap: pretty;">掃地機器人怎麼挑？吸力、集塵與拖地功能取捨</h3>
+                <p style="font-size: 13px; color: #9c968d; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1eee8;">編輯部 · 2024年12月4日發布 · 2025年1月8日更新</p>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size: 11px; letter-spacing: 0.14em; color: #9c968d; font-weight: 700; margin-bottom: 14px;">麵包屑</div>
+              <div style="background: #fff; border: 1px solid #e6e2da; border-radius: 14px; padding: 16px 20px;">
+                <div style="display: flex; align-items: center; gap: 9px; font-size: 13px; color: #9c968d; flex-wrap: wrap;">
+                  <a href="首頁.dc.html">首頁</a>
+                  <span>/</span>
+                  <a href="分類頁-寵物生活.dc.html">寵物生活</a>
+                  <span>/</span>
+                  <span style="{{ o.crumbStyle }}">知識分享</span>
+                  <span>/</span>
+                  <span style="color: #1d1c1a;">第一次養貓要準備什麼</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size: 11px; letter-spacing: 0.14em; color: #9c968d; font-weight: 700; margin-bottom: 14px;">兩種類型並排</div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; background: #fff; border: 1px solid #e6e2da; border-radius: 14px; padding: 18px 20px;">
+                <sc-for list="{{ o.allTypes }}" as="t" hint-placeholder-count="4">
+                  <span style="{{ t.style }}">{{ t.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="background: #f1eee8; border-radius: 12px; padding: 16px 18px;">
+              <p style="font-size: 13px; line-height: 1.95; color: #6f6a63; text-wrap: pretty;">{{ o.tradeoff }}</p>
+            </div>
+
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width: 900px; background: #fbfaf7; border: 1px solid #e6e2da; border-radius: 20px; padding: 32px 36px 36px;">
+    <h2 style="font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700;">兩種類型與對應的 JSON-LD</h2>
+    <p style="font-size: 14px; line-height: 2; color: #6f6a63; margin-top: 12px; text-wrap: pretty;">taxonomy 上線後，前端可依 term slug 決定套哪組 schema。Product 與 Review 只在文章確實有實測依據與一致評分標準時才輸出，純比較整理用 ItemList，避免被判定為結構化資料濫用。</p>
+    <div style="margin-top: 22px; border: 1px solid #e6e2da; border-radius: 14px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 120px 130px 1fr; gap: 0; background: #f1eee8; font-size: 12px; font-weight: 700; color: #6f6a63; letter-spacing: 0.06em;">
+        <div style="padding: 12px 16px;">類型</div>
+        <div style="padding: 12px 16px;">slug</div>
+        <div style="padding: 12px 16px;">JSON-LD</div>
+      </div>
+      <sc-for list="{{ schemaRows }}" as="row" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: 120px 130px 1fr; gap: 0; border-top: 1px solid #e6e2da; background: #fff; font-size: 13px; line-height: 1.9;">
+          <div style="padding: 14px 16px; font-weight: 500;">{{ row.type }}</div>
+          <div style="padding: 14px 16px; color: #6f6a63;">{{ row.slug }}</div>
+          <div style="padding: 14px 16px; color: #6f6a63;">{{ row.schema }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:1200},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#0284c7&quot;,&quot;options&quot;:[&quot;#0284c7&quot;,&quot;#1d1c1a&quot;,&quot;#8a6d2f&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;accentSoft&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#e0f2fe&quot;,&quot;options&quot;:[&quot;#e0f2fe&quot;,&quot;#f1eee8&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+const TYPES = ['推薦文', '知識分享'];
+
+const BASE = { display: 'inline-block', lineHeight: 1.5, whiteSpace: 'nowrap' };
+
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#0284c7';
+    const accentSoft = this.props.accentSoft ?? '#e0f2fe';
+
+    const catPlain = { ...BASE, fontSize: '12px', fontWeight: 700, color: accent };
+    const catGrey = { ...BASE, fontSize: '12px', fontWeight: 700, color: '#6f6a63' };
+
+    const defs = [
+      {
+        id: '1a', name: '淺底膠囊',
+        note: '分類維持亮藍文字，類型用米色膠囊。層級最清楚，改動最小。',
+        cat: catPlain,
+        type: { ...BASE, fontSize: '12px', color: '#6f6a63', background: '#f1eee8', borderRadius: '999px', padding: '3px 11px' },
+        crumb: { color: '#6f6a63', background: '#f1eee8', borderRadius: '999px', padding: '2px 10px' },
+        divider: false,
+        tradeoff: '類型是次要資訊，視覺重量低於分類。四種類型長得一樣，只靠文字分辨，掃視時不易分群，但也不會讓卡片變花。',
+      },
+      {
+        id: '1b', name: '細框膠囊 + 類型色',
+        note: '兩種類型各有框線色，白底細框，維持米白調性。',
+        cat: catPlain,
+        type: { ...BASE, fontSize: '12px', color: '#6f6a63', background: '#fff', border: '1px solid #d8d2c7', borderRadius: '999px', padding: '3px 11px' },
+        crumb: { color: '#6f6a63', background: '#fff', border: '1px solid #d8d2c7', borderRadius: '999px', padding: '2px 10px' },
+        divider: false,
+        perType: true,
+        tradeoff: '推薦文與知識文可以一眼分群，適合列表頁兩種混排時。代價是引進一個新顏色，超出設計系統原本的單一亮藍。',
+      },
+      {
+        id: '1c', name: '類型為主',
+        note: '類型改成亮藍實心小標籤，分類退成灰字。適合類型比主題更影響點擊時。',
+        cat: catGrey,
+        type: { ...BASE, fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', color: '#fff', background: accent, borderRadius: '4px', padding: '3px 9px' },
+        crumb: { color: '#0284c7', fontWeight: 500 },
+        divider: false,
+        tradeoff: '類型的視覺權重最高，讀者先看到「這是選購指南」。但分類退位後，主題導覽的存在感變弱，分類頁的流量入口會受影響。',
+      },
+      {
+        id: '1d', name: '無容器前綴',
+        note: '不加任何底色或框，用直線分隔兩個維度。最安靜。',
+        cat: catPlain,
+        type: { ...BASE, fontSize: '12px', color: '#6f6a63' },
+        crumb: { color: '#6f6a63' },
+        divider: true,
+        tradeoff: '版面最乾淨，符合設計系統「設計服務內容」的方向。但兩個維度只靠顏色深淺區分，在小螢幕上容易被誤讀成同一組標籤。',
+      },
+    ];
+
+    const perTypeColors = [
+      { border: '#b7975a', color: '#8a6d2f', bg: '#f7f0e0' },
+      { border: '#a89a92', color: '#6f6a63', bg: '#f1eee8' },
+    ];
+
+    const thumb = {
+      display: 'block', width: '100%', aspectRatio: '16/10', borderRadius: '10px',
+      backgroundImage: 'url("assets/categories/pets.jpg")', backgroundSize: 'cover', backgroundPosition: 'center',
+    };
+
+    return {
+      options: defs.map(d => ({
+        id: d.id, name: d.name, note: d.note, tradeoff: d.tradeoff,
+        catStyle: d.cat, typeStyle: d.type, crumbStyle: d.crumb,
+        showDivider: !!d.divider, thumbStyle: thumb,
+        allTypes: TYPES.map((label, i) => ({
+          label,
+          style: d.perType
+            ? { ...d.type, color: perTypeColors[i].color, borderColor: perTypeColors[i].border, background: perTypeColors[i].bg }
+            : d.type,
+        })),
+      })),
+      schemaRows: [
+        { type: '推薦文', slug: 'recommendation', schema: 'Article + ItemList；有實測評分才加 Product + Review。需揭露合作關係' },
+        { type: '知識分享', slug: 'knowledge', schema: 'Article；有步驟加 HowTo，有問答區塊加 FAQPage。含個人視角時 author 用具名 Person' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

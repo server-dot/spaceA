@@ -1,0 +1,4 @@
+/* Noto Sans TC — loaded in the product via next/font/google (weights 400, 500, 700, display: swap).
+   Here it is served from the Google Fonts CDN so cards and kits render identically.
+   No self-hosted binaries exist in the source repo. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');

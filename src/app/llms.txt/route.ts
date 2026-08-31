@@ -1,6 +1,6 @@
 import { fetchQuery } from '@/lib/graphql/client'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 
 export const revalidate = 3600
 
@@ -12,7 +12,9 @@ interface NavigationData {
 
 export async function GET() {
   const data = await fetchQuery<NavigationData>(GET_NAVIGATION)
-  const categories = data?.categories?.nodes ?? []
+  const categories = (data?.categories?.nodes ?? []).filter(
+    (cat) => !EXCLUDED_CATEGORY_SLUGS.includes(cat.slug)
+  )
 
   const categoryLines = categories.length
     ? categories.map((cat) => `- [${cat.name}](${SITE_URL}/${cat.slug})`).join('\n')

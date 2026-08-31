@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { GET_HOMEPAGE_BLOCKS } from '@/lib/graphql/queries/homepage'
 import { fetchQuery } from '@/lib/graphql/client'
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
 import HomeClient, { type HomeCategoryBlock } from './HomeClient'
 import { RANKED_ARTICLES } from './popular/data'
@@ -26,14 +26,15 @@ interface HomepageBlocksData {
 }
 
 export default async function HomePage() {
+  // 抓比較大的上限（涵蓋所有分類），避免 Uncategorized 佔掉名額後，排在後面的真實分類被截斷抓不到
   const data = await fetchQuery<HomepageBlocksData>(GET_HOMEPAGE_BLOCKS, {
-    first: 5,
+    first: 20,
     postsPerCategory: 5,
   })
 
   const categories = data?.categories?.nodes ?? []
   const blocks: HomeCategoryBlock[] = categories
-    .filter((c) => c.posts.nodes.length > 0)
+    .filter((c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && c.posts.nodes.length > 0)
     .map((c) => ({ slug: c.slug, name: c.name, count: c.count, posts: c.posts.nodes }))
 
   const categoryListSchema = {

@@ -3,6 +3,8 @@ import Link from 'next/link'
 interface BreadcrumbItem {
   label: string
   href: string
+  /** 文章類型（推薦文／知識分享）用膠囊樣式呈現，跟一般文字麵包屑分開 */
+  pill?: boolean
 }
 
 interface BreadcrumbsProps {
@@ -20,7 +22,14 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
               {index > 0 && (
                 <span aria-hidden="true" className="text-gray-300">/</span>
               )}
-              {isLast ? (
+              {item.pill ? (
+                <Link
+                  href={item.href}
+                  className="text-paper-secondary bg-paper-surface rounded-full px-2.5 py-0.5 text-[13px] hover:text-paper-ink transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ) : isLast ? (
                 <span className="text-gray-900 font-medium" aria-current="page">
                   {item.label}
                 </span>

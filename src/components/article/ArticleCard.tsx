@@ -2,6 +2,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { WPPostCard } from '@/types/wordpress'
 import Badge from '@/components/ui/Badge'
+import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import { resolveArticleType } from '@/lib/article-type'
 
 interface ArticleCardProps {
   post: WPPostCard
@@ -40,9 +42,10 @@ export default function ArticleCard({ post }: ArticleCardProps) {
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-5 gap-2">
-        {category && (
-          <Badge label={category.name} href={`/${category.slug}`} />
-        )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {category && <Badge label={category.name} href={`/${category.slug}`} />}
+          <ArticleTypeBadge type={resolveArticleType(post.articleTypes)} size="sm" />
+        </div>
 
         <Link href={href} className="flex-1">
           <h2 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-brand-600 transition-colors mt-1">

@@ -8,7 +8,8 @@ export async function fetchQuery<T = Record<string, unknown>>(
   try {
     const { data } = await getClient().query({ query, variables, errorPolicy: 'all' })
     return (data as T) ?? null
-  } catch {
+  } catch (err) {
+    console.error('[fetchQuery] threw', JSON.stringify(variables), err)
     return null
   }
 }

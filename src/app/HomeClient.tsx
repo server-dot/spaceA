@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { WPPostCard } from '@/types/wordpress'
 import CategoryImage from '@/components/layout/CategoryImage'
+import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import { resolveArticleType } from '@/lib/article-type'
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('zh-TW', {
@@ -125,8 +127,11 @@ export default function HomeClient({ blocks }: HomeClientProps) {
                       />
                     )}
                   </div>
-                  <div className="flex items-center gap-2.5 text-xs mt-4">
-                    <b className="text-brand-600 font-bold">{block.name}</b>
+                  <div className="flex items-center gap-2.5 text-xs mt-4 flex-wrap">
+                    <ArticleTypeBadge
+                      category={{ name: block.name, slug: block.slug }}
+                      type={resolveArticleType(feature.articleTypes)}
+                    />
                     <span className="text-paper-muted">{formatDate(feature.date)}</span>
                   </div>
                   <h3 className="text-2xl font-bold leading-relaxed tracking-tight mt-2.5 text-paper-ink">
@@ -157,9 +162,13 @@ export default function HomeClient({ blocks }: HomeClientProps) {
                           )}
                         </Link>
                         <div>
-                          <div className="text-[11px] font-bold text-brand-600 tracking-wider">
-                            {block.name}
-                            <em className="not-italic text-paper-muted font-normal ml-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <ArticleTypeBadge
+                              category={{ name: block.name, slug: block.slug }}
+                              type={resolveArticleType(post.articleTypes)}
+                              size="sm"
+                            />
+                            <em className="not-italic text-[11px] text-paper-muted font-normal">
                               {formatDate(post.date)}
                             </em>
                           </div>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_ds/spacea-design-system-8adf46f8-8b6e-412a-beef-e72df759077b/styles.css">
+<script src="_ds/spacea-design-system-8adf46f8-8b6e-412a-beef-e72df759077b/_ds_bundle.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://spacea.tw/" },
+        { "@type": "ListItem", "position": 2, "name": "寵物生活", "item": "https://spacea.tw/pets" }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://spacea.tw/pets",
+      "name": "寵物生活推薦文章",
+      "description": "從新手準備到日常照護，spaceA 彙整飼主社群與電商評論中被反覆提到的經驗，整理成可以照著做的清單。",
+      "inLanguage": "zh-TW",
+      "isPartOf": { "@type": "WebSite", "name": "spaceA", "url": "https://spacea.tw/" },
+      "publisher": { "@type": "Organization", "name": "spaceA", "url": "https://spacea.tw/" }
+    },
+    {
+      "@type": "ItemList",
+      "name": "寵物生活文章列表",
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "numberOfItems": 10,
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "url": "https://spacea.tw/pets/first-cat", "name": "第一次養貓要準備什麼？新手用品清單一次看" },
+        { "@type": "ListItem", "position": 2, "url": "https://spacea.tw/pets/cat-litter", "name": "貓砂六種材質比較：除臭、粉塵與清理難度" },
+        { "@type": "ListItem", "position": 3, "url": "https://spacea.tw/pets/pet-insurance", "name": "寵物保險值不值得保？三家方案條款比較" },
+        { "@type": "ListItem", "position": 4, "url": "https://spacea.tw/pets/auto-feeder", "name": "自動餵食器實測：斷電、卡料與清洗難度" },
+        { "@type": "ListItem", "position": 5, "url": "https://spacea.tw/pets/cat-food-label", "name": "貓飼料怎麼看成分表？三個容易忽略的欄位" },
+        { "@type": "ListItem", "position": 6, "url": "https://spacea.tw/pets/cat-checkup", "name": "貓咪定期健檢做哪些項目？依年齡分階段建議" },
+        { "@type": "ListItem", "position": 7, "url": "https://spacea.tw/pets/scratcher", "name": "貓抓板選購指南：材質、角度與擺放位置" },
+        { "@type": "ListItem", "position": 8, "url": "https://spacea.tw/pets/adoption", "name": "中途送養流程說明：從申請到回報的每一步" },
+        { "@type": "ListItem", "position": 9, "url": "https://spacea.tw/pets/dental-care", "name": "貓咪牙齒保健：刷牙、潔牙零食與洗牙的取捨" },
+        { "@type": "ListItem", "position": 10, "url": "https://spacea.tw/pets/wet-food", "name": "濕食比例怎麼調？從飲水量反推的實用做法" }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fbfaf7; color: #1d1c1a; font-family: "Noto Sans TC", sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #0284c7; }
+  [data-nav-btn] { display: none; }
+  [data-nav-panel] { display: none; }
+  @media (max-width: 700px) {
+    nav[aria-label="主選單"] { display: none; }
+    [data-nav-btn] { display: grid; }
+    #navToggle:checked + [data-nav-panel] { display: block; }
+  }
+</style>
+</helmet>
+
+<div style="background: #fbfaf7; color: #1d1c1a; font-family: 'Noto Sans TC', sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 30; background: rgba(251,250,247,0.96); border-bottom: 1px solid #e6e2da;">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px); height: 64px; display: flex; align-items: center; justify-content: space-between;">
+      <a href="首頁.dc.html" style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 21px; letter-spacing: -0.02em; color: #1d1c1a;">
+        <img src="assets/logo-sa-mark.png" alt="" style="width: 30px; height: 30px; display: block;">
+        spaceA
+      </a>
+      <div style="display: flex; align-items: center; gap: 20px; height: 100%;">
+        <nav aria-label="主選單" style="display: flex; gap: 22px; font-size: 14px; height: 100%; align-items: center;">
+          <a href="熱門排行.dc.html" style="color: #6f6a63; height: 100%; display: flex; align-items: center; border-bottom: 2px solid transparent;" style-hover="color: #1d1c1a; border-bottom-color: #e6e2da;">熱門排行</a>
+          <a href="關於我們-編輯方針.dc.html" style="color: #6f6a63; height: 100%; display: flex; align-items: center; border-bottom: 2px solid transparent;" style-hover="color: #1d1c1a; border-bottom-color: #e6e2da;">關於我們</a>
+          <a href="聯絡我們.dc.html" style="color: #6f6a63; height: 100%; display: flex; align-items: center; border-bottom: 2px solid transparent;" style-hover="color: #1d1c1a; border-bottom-color: #e6e2da;">聯絡我們</a>
+        </nav>
+        <a href="搜尋結果頁.dc.html" aria-label="搜尋" style="display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #e6e2da; border-radius: 10px; background: #fff;" style-hover="background: #f1eee8;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6f6a63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+        </a>
+        <label for="navToggle" data-nav-btn aria-label="選單" style="place-items: center; width: 36px; height: 36px; border: 1px solid #e6e2da; border-radius: 10px; background: #fff; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6f6a63" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </label>
+      </div>
+    </div>
+    <input type="checkbox" id="navToggle" style="display: none;">
+    <nav data-nav-panel aria-label="行動選單" style="border-top: 1px solid #e6e2da; background: #fbfaf7; padding: 8px clamp(16px, 4vw, 24px) 16px;">
+      <div style="max-width: 1180px; margin: 0 auto;">
+        <div style="font-size: 12px; letter-spacing: 0.12em; color: #9c968d; font-weight: 700; padding: 12px 2px 6px;">分類</div>
+        <a href="#" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">3C 數位</a>
+        <a href="#" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">美食餐廳</a>
+        <a href="#" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">健康醫療</a>
+        <a href="分類頁-寵物生活.dc.html" style="display: block; padding: 11px 2px; font-size: 15px; color: #0284c7; font-weight: 700; border-bottom: 1px solid #e6e2da;">寵物生活</a>
+        <a href="#" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">教育學習</a>
+        <div style="font-size: 12px; letter-spacing: 0.12em; color: #9c968d; font-weight: 700; padding: 16px 2px 6px;">網站</div>
+        <a href="熱門排行.dc.html" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">熱門排行</a>
+        <a href="關於我們-編輯方針.dc.html" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a; border-bottom: 1px solid #e6e2da;">關於我們</a>
+        <a href="聯絡我們.dc.html" style="display: block; padding: 11px 2px; font-size: 15px; color: #1d1c1a;">聯絡我們</a>
+      </div>
+    </nav>
+  </header>
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px);">
+
+    <nav style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #9c968d; padding: 28px 0 0;">
+      <a href="首頁.dc.html" style="color: #6f6a63;">首頁</a>
+      <span>/</span>
+      <span style="color: #1d1c1a;">寵物生活</span>
+    </nav>
+
+    <section style="display: flex; flex-wrap: wrap; gap: 24px 40px; align-items: flex-end; justify-content: space-between; padding: 26px 0 30px; border-bottom: 1px solid #e6e2da;">
+      <div style="max-width: 640px;">
+        <h1 style="font-family: 'Noto Serif TC', serif; font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.4;">寵物生活</h1>
+        <p style="font-size: 15px; line-height: 2; color: #6f6a63; margin-top: 12px; text-wrap: pretty;">從新手準備到日常照護，我們彙整飼主社群與電商評論中被反覆提到的經驗，整理成可以照著做的清單。共 10 篇。</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <sc-for list="{{ sorts }}" as="s" hint-placeholder-count="2">
+          <button type="button" onClick="{{ s.select }}" style="{{ s.style }}">{{ s.label }}</button>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 26px 0 0;">
+      <span style="font-size: 12px; color: #9c968d; letter-spacing: 0.08em; margin-right: 2px;">文章類型</span>
+      <sc-for list="{{ typeFilters }}" as="t" hint-placeholder-count="3">
+        <button type="button" onClick="{{ t.select }}" style="{{ t.style }}">
+          <span>{{ t.label }}</span>
+          <span style="{{ t.countStyle }}">{{ t.countLabel }}</span>
+        </button>
+      </sc-for>
+      <span style="font-size: 12px; color: #9c968d;">這個分類收錄 {{ typeHint }}</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 18px 0 0;">
+      <span style="font-size: 12px; color: #9c968d; letter-spacing: 0.08em; margin-right: 2px;">主題篩選</span>
+      <sc-for list="{{ tags }}" as="t" hint-placeholder-count="5">
+        <button type="button" onClick="{{ t.toggle }}" style="{{ t.style }}">{{ t.name }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ filtering }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 14px; padding: 20px 0 0; font-size: 13px; color: #6f6a63;">
+        <span>{{ statusText }}</span>
+        <button type="button" onClick="{{ clearTags }}" style="border: 0; background: none; font-family: inherit; font-size: 13px; color: #0284c7; cursor: pointer;">清除篩選</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showFeature }}" hint-placeholder-val="{{ true }}">
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; padding: 34px 0 40px; border-bottom: 1px solid #e6e2da;">
+        <a href="#" style="display: block;">
+          <span style="{{ feature.imgStyle }}"></span>
+        </a>
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; flex-wrap: wrap;">
+            <b style="color: #0284c7; font-weight: 700;">編輯精選</b>
+            <span style="color: #6f6a63; background: #f1eee8; border-radius: 999px; padding: 3px 11px;">{{ feature.type }}</span>
+            <span style="color: #9c968d;">{{ feature.date }}</span>
+          </div>
+          <h2 style="font-family: 'Noto Serif TC', serif; font-size: clamp(21px, 2.8vw, 27px); font-weight: 700; line-height: 1.5; letter-spacing: -0.015em; margin-top: 12px;">{{ feature.title }}</h2>
+          <p style="font-size: 15px; line-height: 1.95; color: #6f6a63; margin-top: 14px; text-wrap: pretty;">{{ feature.excerpt }}</p>
+          <div style="display: flex; align-items: center; gap: 9px; margin-top: 20px; font-size: 13px; color: #6f6a63;">
+            <i style="width: 26px; height: 26px; border-radius: 999px; background: #f1eee8; display: grid; place-items: center; font-style: normal; font-size: 11px; color: #6f6a63;">編</i>編輯部
+            <span style="color: #e6e2da;">·</span>
+            <span style="color: #9c968d;">{{ feature.readTime }}</span>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <section style="padding: 40px 0 0;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 36px 32px;">
+        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="6">
+          <a href="#" style="display: block;">
+            <span style="{{ p.imgStyle }}"></span>
+            <div style="display: flex; align-items: center; gap: 9px; font-size: 12px; margin-top: 14px; flex-wrap: wrap;">
+              <b style="color: #0284c7; font-weight: 700;">{{ p.kicker }}</b>
+              <span style="color: #6f6a63; background: #f1eee8; border-radius: 999px; padding: 3px 11px;">{{ p.type }}</span>
+              <span style="color: #9c968d;">{{ p.date }}</span>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 500; line-height: 1.65; margin-top: 8px;">{{ p.title }}</h3>
+            <p style="font-size: 14px; line-height: 1.9; color: #6f6a63; margin-top: 10px;">{{ p.excerpt }}</p>
+          </a>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 60px 0; text-align: center; color: #6f6a63; font-size: 15px;">找不到相關文章，試試其他主題</div>
+      </sc-if>
+
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; justify-content: center; padding: 48px 0 0;">
+          <button type="button" onClick="{{ loadMore }}" style="background: #0284c7; color: #fff; font-family: inherit; font-weight: 700; font-size: 14px; padding: 14px 40px; border: 0; border-radius: 10px; cursor: pointer;">載入更多</button>
+        </div>
+      </sc-if>
+    </section>
+
+    <section style="margin-top: 64px; background: #fff; border: 1px solid #e6e2da; border-radius: 20px; padding: 36px 40px;">
+      <div style="font-size: 12px; letter-spacing: 0.14em; color: #0284c7; font-weight: 700;">其他分類</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px;">
+        <sc-for list="{{ others }}" as="o" hint-placeholder-count="4">
+          <a href="#" style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid #e6e2da; border-radius: 14px; background: #fff;">
+            <span style="{{ o.imgStyle }}"></span>
+            <div>
+              <b style="display: block; font-size: 15px; font-weight: 500;">{{ o.name }}</b>
+              <span style="font-size: 12px; color: #9c968d;">{{ o.countLabel }}</span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </section>
+
+    <footer style="margin: 80px 0 0; padding-top: 56px; border-top: 1px solid #e6e2da; font-size: 13px; color: #6f6a63;">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin: 0 0 44px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: #1d1c1a;">
+        <img src="assets/logo-sa-mark.png" alt="" style="width: 38px; height: 38px; display: block;">
+        spaceA
+      </div>
+      <p style="max-width: 820px; margin: 0 auto; text-align: center; font-size: 13px; line-height: 2.1; color: #6f6a63;">spaceA 主打選物，提供閱讀者更多樣化選擇的資訊。本網站所載部分資訊亦有和合作廠商或相關單位合作，並由其提供產品相關資訊或第三方連結。為維護您的權益，請於使用本網站或閱讀本網站資訊時謹慎評估，資訊僅供参考之用。</p>
+      <div style="border-top: 1px solid #e6e2da; margin-top: 44px; padding: 30px 0 60px; text-align: center;">
+        <div style="font-size: 12px; color: #9c968d;">© 2026 spaceA. All rights reserved.</div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const PETS = 'assets/categories/pets.jpg';
+const HEALTH = 'assets/categories/health.jpg';
+const FOOD = 'assets/categories/food.jpg';
+
+const FEATURE = {
+  img: PETS,
+  type: '知識分享',
+  kicker: '新手',
+  tags: ['新手', '用品'],
+  date: '2025年1月19日',
+  readTime: '閱讀約 8 分鐘',
+  title: '第一次養貓要準備什麼？新手用品清單一次看',
+  excerpt: '貓砂、飼料、健康檢查與結紮費用，開銷與時程一次算給你看，避免臨時手忙腳亂。清單依「進門前一週」與「第一個月」分開整理。',
+};
+
+const POSTS = [
+  { img: PETS, kicker: '新手', type: '推薦文', date: '2025年1月12日', title: '貓砂六種材質比較：除臭、粉塵與清理難度', excerpt: '礦砂便宜但重，豆腐砂好清但容易受潮。用三隻貓的實際用量把成本算給你看。', tags: ['新手', '用品'] },
+  { img: HEALTH, kicker: '保險', type: '知識分享', date: '2024年12月30日', title: '寵物保險值不值得保？三家方案條款比較', excerpt: '理賠上限、等待期與既有疾病排除條款，是三家方案差距最大的地方。', tags: ['保險'] },
+  { img: PETS, kicker: '用品', type: '推薦文', date: '2024年12月18日', title: '自動餵食器實測：斷電、卡料與清洗難度', excerpt: '出門三天以上才看得出差別。我們把四款放在同一個空間連續測兩週。', tags: ['用品', '開箱'] },
+  { img: FOOD, kicker: '飲食', type: '知識分享', date: '2024年11月28日', title: '貓飼料怎麼看成分表？三個容易忽略的欄位', excerpt: '粗蛋白數字高不代表好吸收，先看蛋白質來源與碳水比例。', tags: ['飲食'] },
+  { img: HEALTH, kicker: '照護', type: '知識分享', date: '2024年11月14日', title: '貓咪定期健檢做哪些項目？依年齡分階段建議', excerpt: '七歲之後血檢與心臟超音波的必要性明顯提高，費用與頻率一次整理。', tags: ['照護'] },
+  { img: PETS, kicker: '用品', type: '知識分享', date: '2024年10月30日', title: '貓抓板選購指南：材質、角度與擺放位置', excerpt: '抓板沒被用，通常不是貓不喜歡，而是放錯位置。', tags: ['用品'] },
+  { img: PETS, kicker: '新手', type: '知識分享', date: '2024年10月16日', title: '中途送養流程說明：從申請到回報的每一步', excerpt: '常見的家訪標準與試養期規定，先了解可以少走很多冤枉路。', tags: ['新手'] },
+  { img: HEALTH, kicker: '照護', type: '知識分享', date: '2024年9月28日', title: '貓咪牙齒保健：刷牙、潔牙零食與洗牙的取捨', excerpt: '牙結石累積到需要麻醉洗牙前，日常能做的其實不多但有效。', tags: ['照護'] },
+  { img: FOOD, kicker: '飲食', type: '推薦文', date: '2024年9月10日', title: '濕食比例怎麼調？從飲水量反推的實用做法', excerpt: '泌尿道問題與飲水量高度相關，濕食是最容易執行的補水方式。', tags: ['飲食'] },
+];
+
+const TAGS = ['新手', '用品', '照護', '飲食', '保險', '開箱'];
+
+const OTHERS = [
+  { key: '3c', name: '3C 數位', count: 42, img: 'assets/categories/3c.jpg' },
+  { key: 'food', name: '美食餐廳', count: 31, img: FOOD },
+  { key: 'health', name: '健康醫療', count: 18, img: HEALTH },
+  { key: 'education', name: '教育學習', count: 9, img: 'assets/categories/education.jpg' },
+];
+
+const PILL = { borderRadius: '999px', padding: '6px 14px', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit', transition: '.15s' };
+const SORT = { borderRadius: '999px', padding: '8px 18px', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit', transition: '.15s' };
+
+class Component extends DCLogic {
+  state = { tags: [], sort: '最新', shown: 6, type: '全部' };
+
+  renderVals() {
+    const cover = (src, extra) => ({ display: 'block', backgroundImage: `url("${src}")`, backgroundSize: 'cover', backgroundPosition: 'center', ...extra });
+    const sel = this.state.tags;
+    const type = this.state.type;
+    const showFeature = sel.length === 0 && type === '全部';
+    const ALL = [FEATURE].concat(POSTS);
+    const source = showFeature ? POSTS : ALL;
+    let list = sel.length ? source.filter(p => p.tags.some(t => sel.includes(t))) : source.slice();
+    if (type !== '全部') list = list.filter(p => p.type === type);
+    if (this.state.sort === '熱門') list = list.slice().reverse();
+    const shown = list.slice(0, this.state.shown);
+
+    const typeDefs = [
+      { label: '全部', count: ALL.length },
+      { label: '推薦文', count: ALL.filter(p => p.type === '推薦文').length },
+      { label: '知識分享', count: ALL.filter(p => p.type === '知識分享').length },
+    ];
+
+    return {
+      typeFilters: typeDefs.map(t => {
+        const on = type === t.label;
+        return {
+          label: t.label,
+          countLabel: t.count + ' 篇',
+          style: {
+            display: 'flex', alignItems: 'baseline', gap: '8px', borderRadius: '999px', padding: '9px 18px',
+            fontSize: '14px', fontFamily: 'inherit', cursor: 'pointer', transition: '.15s',
+            background: on ? '#0284c7' : '#fff', border: '1px solid ' + (on ? '#0284c7' : '#e6e2da'),
+            color: on ? '#fff' : '#1d1c1a', fontWeight: on ? 700 : 500,
+          },
+          countStyle: { fontSize: '12px', fontWeight: 400, color: on ? 'rgba(255,255,255,0.75)' : '#9c968d' },
+          select: () => this.setState({ type: t.label, shown: 6 }),
+        };
+      }),
+      typeHint: typeDefs[1].count + ' 篇推薦文、' + typeDefs[2].count + ' 篇知識分享',
+      sorts: ['最新', '熱門'].map(label => {
+        const on = this.state.sort === label;
+        return {
+          label,
+          style: { ...SORT, background: on ? '#1d1c1a' : '#fff', border: '1px solid ' + (on ? '#1d1c1a' : '#e6e2da'), color: on ? '#fff' : '#6f6a63', fontWeight: on ? 700 : 400 },
+          select: () => this.setState({ sort: label }),
+        };
+      }),
+      tags: TAGS.map(name => {
+        const on = sel.includes(name);
+        return {
+          name,
+          style: { ...PILL, background: on ? '#0284c7' : '#fff', border: '1px solid ' + (on ? '#0284c7' : '#e6e2da'), color: on ? '#fff' : '#6f6a63' },
+          toggle: () => this.setState(s => ({
+            tags: s.tags.includes(name) ? s.tags.filter(v => v !== name) : s.tags.concat(name),
+            shown: 6,
+          })),
+        };
+      }),
+      filtering: sel.length > 0 || type !== '全部',
+      statusText: '篩選中，共 ' + list.length + ' 篇文章',
+      clearTags: () => this.setState({ tags: [], shown: 6, type: '全部' }),
+      showFeature,
+      feature: { ...FEATURE, imgStyle: cover(FEATURE.img, { width: '100%', aspectRatio: '16/10', borderRadius: '16px' }) },
+      posts: shown.map(p => ({ ...p, imgStyle: cover(p.img, { width: '100%', aspectRatio: '16/10', borderRadius: '14px' }) })),
+      noResults: list.length === 0,
+      hasMore: this.state.shown < list.length,
+      loadMore: () => this.setState(s => ({ shown: s.shown + 3 })),
+      others: OTHERS.map(o => ({
+        ...o,
+        countLabel: o.count + ' 篇',
+        imgStyle: cover(o.img, { width: '44px', height: '44px', borderRadius: '999px', flex: 'none' }),
+      })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -35,6 +35,12 @@ export const GET_ARTICLE = gql`
           slug
         }
       }
+      articleTypes {
+        nodes {
+          name
+          slug
+        }
+      }
       author {
         node {
           name

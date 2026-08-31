@@ -34,7 +34,7 @@
 - [ ] 測試：WP 發文 → 頁面自動更新
 
 ### Phase 6 — Analytics（選用）
-- [ ] Google Analytics 4 加入 layout
+- [x] Google Analytics 4 加入 layout（`src/app/layout.tsx` 用 `@next/third-parties/google` 的 `GoogleAnalytics`，讀取 `NEXT_PUBLIC_GA_ID`，未設定則不注入，本地 `.env.local` 尚未填值）
 
 ### Phase 7 — 上線
 - [x] 部署至 Zeabur（Docker，非原計畫的 Vercel — 已用 Dockerfile + docker-compose 部署，見 git log）
