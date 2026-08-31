@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { WPPostCard } from '@/types/wordpress'
 import CategoryImage from '@/components/layout/CategoryImage'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
 
 function formatDate(dateString: string) {
@@ -142,6 +143,11 @@ export default function HomeClient({ blocks }: HomeClientProps) {
                       {stripHtml(feature.excerpt)}
                     </p>
                   )}
+                  {feature.tags.nodes.length > 0 && (
+                    <div className="mt-3">
+                      <TagChips tags={feature.tags.nodes} max={5} />
+                    </div>
+                  )}
                 </Link>
                 <div>
                   <ul>
@@ -178,6 +184,11 @@ export default function HomeClient({ blocks }: HomeClientProps) {
                           >
                             {post.title}
                           </Link>
+                          {post.tags.nodes.length > 0 && (
+                            <div className="mt-1.5">
+                              <TagChips tags={post.tags.nodes} max={2} />
+                            </div>
+                          )}
                         </div>
                       </li>
                     ))}

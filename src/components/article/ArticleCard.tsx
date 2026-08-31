@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { WPPostCard } from '@/types/wordpress'
 import Badge from '@/components/ui/Badge'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
 
 interface ArticleCardProps {
@@ -65,6 +66,8 @@ export default function ArticleCard({ post }: ArticleCardProps) {
         <time dateTime={post.date} className="text-xs text-gray-400 mt-1">
           {formatDate(post.date)}
         </time>
+
+        {post.tags.nodes.length > 0 && <TagChips tags={post.tags.nodes} max={3} />}
       </div>
     </article>
   )

@@ -9,6 +9,7 @@ import { WPPost, WPPostCard } from '@/types/wordpress'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ArticleBody from '@/components/article/ArticleBody'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import TagChips from '@/components/article/TagChips'
 import ArticleJsonLd from '@/components/seo/ArticleJsonLd'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
@@ -109,7 +110,6 @@ export default async function ArticlePage({ params }: Props) {
   if (!post) notFound()
 
   const category = post.categories.nodes[0]
-  const tag = post.tags?.nodes?.[0]
   const articleType = resolveArticleType(post.articleTypes)
   const isKnowledge = articleType.slug === 'knowledge'
 
@@ -153,7 +153,11 @@ export default async function ArticlePage({ params }: Props) {
                 categoryHref={category ? `/${categorySlug}` : undefined}
                 type={articleType}
               />
-              {tag && <span className="text-xs text-paper-secondary mt-2 inline-block">· {tag.name}</span>}
+              {post.tags.nodes.length > 0 && (
+                <div className="mt-2.5">
+                  <TagChips tags={post.tags.nodes} size="sm" />
+                </div>
+              )}
 
               <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink mt-3 text-balance">
                 {post.title}

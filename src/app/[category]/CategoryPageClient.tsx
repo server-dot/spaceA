@@ -8,6 +8,7 @@ import { WPPostCard } from '@/types/wordpress'
 import { ARTICLE_TYPE_LABELS } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
+import TagChips from '@/components/article/TagChips'
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('zh-TW', {
@@ -34,14 +35,6 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
     initialType && initialType in ARTICLE_TYPE_LABELS ? initialType : null
   )
 
-  const tags = useMemo(() => {
-    const seen = new Map<string, string>()
-    posts.forEach((post) => {
-      post.tags.nodes.forEach((t) => seen.set(t.slug, t.name))
-    })
-    return Array.from(seen.entries()).map(([slug, name]) => ({ slug, name }))
-  }, [posts])
-
   const typeCounts = useMemo(() => {
     const counts: Record<string, number> = {}
     posts.forEach((post) => {
@@ -51,8 +44,26 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
     return counts
   }, [posts])
 
-  const byTag = tag ? posts.filter((post) => post.tags.nodes.some((t) => t.slug === tag)) : posts
-  const filtered = type ? byTag.filter((post) => resolveArticleType(post.articleTypes).slug === type) : byTag
+  // tag 篩選清單的來源要吃「文章類型」篩選結果，不能永遠用全部 posts 算——
+  // 不然選了某類型後，清單裡還會留著那個類型底下根本沒有文章的 tag
+  const byType = type ? posts.filter((post) => resolveArticleType(post.articleTypes).slug === type) : posts
+
+  const tags = useMemo(() => {
+    const counts = new Map<string, { name: string; count: number }>()
+    byType.forEach((post) => {
+      post.tags.nodes.forEach((t) => {
+        const entry = counts.get(t.slug)
+        counts.set(t.slug, { name: t.name, count: (entry?.count ?? 0) + 1 })
+      })
+    })
+    return Array.from(counts.entries()).map(([slug, v]) => ({ slug, name: v.name, count: v.count }))
+  }, [byType])
+
+  // 切換類型後，若目前選的 tag 在新類型底下已經沒有文章，一併清掉篩選
+  const activeTagValid = tag ? tags.some((t) => t.slug === tag) : true
+  const effectiveTag = activeTagValid ? tag : null
+
+  const filtered = effectiveTag ? byType.filter((post) => post.tags.nodes.some((t) => t.slug === effectiveTag)) : byType
   const [firstPost, ...others] = filtered
   // 類型不是「全部」時，不顯示「編輯精選」大版位，該篇併入下方文章格一起排
   const feature = type ? undefined : firstPost
@@ -105,26 +116,29 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
         <div className="flex items-center gap-2.5 flex-wrap pt-6">
           <span className="text-xs text-paper-muted tracking-wider mr-0.5">主題篩選</span>
           {tags.map((t) => {
-            const active = tag === t.slug
+            const active = effectiveTag === t.slug
             return (
               <button
                 key={t.slug}
                 type="button"
                 onClick={() => setTag(active ? null : t.slug)}
-                className={`rounded-full px-4 py-1.5 text-[13px] transition-colors ${
+                className={`flex items-baseline gap-1.5 rounded-full px-4 py-1.5 text-[13px] transition-colors ${
                   active
                     ? 'bg-brand-600 border border-brand-600 text-white font-bold'
                     : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
                 }`}
               >
                 {t.name}
+                <span className={`text-[11px] font-normal ${active ? 'text-white/75' : 'text-paper-muted'}`}>
+                  {t.count}
+                </span>
               </button>
             )
           })}
         </div>
       )}
 
-      {(tag || type) && (
+      {(effectiveTag || type) && (
         <div className="flex items-center gap-3.5 pt-5 text-[13px] text-paper-secondary">
           <span>篩選中，共 {filtered.length} 篇文章</span>
           <button
@@ -179,6 +193,11 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
                     {stripHtml(feature.excerpt)}
                   </p>
                 )}
+                {feature.tags.nodes.length > 0 && (
+                  <div className="mt-3.5">
+                    <TagChips tags={feature.tags.nodes} max={5} />
+                  </div>
+                )}
               </div>
             </section>
           )}
@@ -216,6 +235,11 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
                         <p className="text-sm leading-loose text-paper-secondary mt-2.5 line-clamp-2">
                           {stripHtml(post.excerpt)}
                         </p>
+                      )}
+                      {post.tags.nodes.length > 0 && (
+                        <div className="mt-2.5">
+                          <TagChips tags={post.tags.nodes} max={3} />
+                        </div>
                       )}
                     </Link>
                   )

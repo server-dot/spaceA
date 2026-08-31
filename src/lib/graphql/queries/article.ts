@@ -1,46 +1,17 @@
 import { gql } from '@apollo/client'
 import { SEO_FIELDS } from '../fragments/seoFields'
+import { ARTICLE_CARD_FIELDS } from '../fragments/articleFields'
 
 export const GET_ARTICLE = gql`
   ${SEO_FIELDS}
+  ${ARTICLE_CARD_FIELDS}
   query GetArticle($slug: ID!) {
     post(id: $slug, idType: SLUG) {
       id
       databaseId
-      title
-      slug
-      date
       modified
       content
-      excerpt
-      featuredImage {
-        node {
-          sourceUrl
-          altText
-          mediaDetails {
-            width
-            height
-          }
-        }
-      }
-      categories {
-        nodes {
-          name
-          slug
-        }
-      }
-      tags {
-        nodes {
-          name
-          slug
-        }
-      }
-      articleTypes {
-        nodes {
-          name
-          slug
-        }
-      }
+      ...ArticleCardFields
       author {
         node {
           name
