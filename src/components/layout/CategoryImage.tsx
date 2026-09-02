@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { hasCategoryImage } from '@/lib/category-images'
+import { getCategoryImageSrc } from '@/lib/category-images'
 
 interface Props {
   slug: string
@@ -11,14 +11,15 @@ interface Props {
 
 export default function CategoryImage({ slug, name }: Props) {
   const [failed, setFailed] = useState(false)
+  const src = getCategoryImageSrc(slug)
 
-  if (failed || !hasCategoryImage(slug)) {
+  if (failed || !src) {
     return <div className="absolute inset-0 bg-gradient-to-br from-sky-400 to-sky-600" />
   }
 
   return (
     <Image
-      src={`/categories/${slug}.jpg`}
+      src={src}
       alt={name}
       fill
       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
