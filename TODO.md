@@ -39,7 +39,7 @@
 ### Phase 7 — 上線
 - [x] 部署至 Zeabur（Docker，非原計畫的 Vercel — 已用 Dockerfile + docker-compose 部署，見 git log）
 - [x] 自訂網域 + SSL（`https://spacea.dg166.com`，已可連線）
-- [ ] **修正 Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL`** — 目前實際部署值是 `https://spacea.zeabur.app`（且 sitemap.xml 裡 `<loc>` 前面多一個空格），導致 sitemap.xml／robots.txt／canonical 全部指向錯的網域。要改成 `NEXT_PUBLIC_SITE_URL=https://spacea.dg166.com`（等號後不要留空格）並重新部署（build-time 變數，改了要重 build 才生效）
+- [x] 修正 Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL`（已確認改成 `https://spacea.dg166.com`）
 - [ ] Google Search Console 網域擁有權驗證（建議用 DNS TXT record）
 - [ ] 提交 sitemap.xml 到 Search Console
 - [ ] Lighthouse 審核（Performance > 90, SEO = 100）
