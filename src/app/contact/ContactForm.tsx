@@ -14,6 +14,16 @@ const TOPICS = [
 export default function ContactForm() {
   const [picked, setPicked] = useState<string[]>(['correction'])
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const [name, setName] = useState('')
+  const [org, setOrg] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [articleUrl, setArticleUrl] = useState('')
+  const [budget, setBudget] = useState('')
+  const [message, setMessage] = useState('')
 
   const has = (key: string) => picked.includes(key)
   const commercial = has('ad') || has('license') || has('media')
@@ -32,9 +42,52 @@ export default function ContactForm() {
     setPicked((prev) => (prev.includes(key) ? prev.filter((v) => v !== key) : prev.concat(key)))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSent(true)
+    if (!message.trim()) {
+      setError('請填寫詢問內容')
+      return
+    }
+    setSending(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          org,
+          email,
+          phone,
+          articleUrl,
+          budget,
+          message,
+          topics: picked.map((key) => TOPICS.find((t) => t.key === key)?.name ?? key),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.message || '送出失敗，請稍後再試')
+      }
+      setSent(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '送出失敗，請稍後再試')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  function resetForm() {
+    setSent(false)
+    setError(null)
+    setName('')
+    setOrg('')
+    setEmail('')
+    setPhone('')
+    setArticleUrl('')
+    setBudget('')
+    setMessage('')
+    setPicked(['correction'])
   }
 
   if (sent) {
@@ -42,11 +95,7 @@ export default function ContactForm() {
       <div className="bg-brand-50 border border-brand-500 rounded-2xl p-9">
         <b className="font-serif text-xl font-bold text-paper-ink">已收到，謝謝你</b>
         <p className="text-[15px] leading-loose text-paper-body mt-2.5">{note}</p>
-        <button
-          type="button"
-          onClick={() => setSent(false)}
-          className="mt-4 text-sm font-bold text-brand-600"
-        >
+        <button type="button" onClick={resetForm} className="mt-4 text-sm font-bold text-brand-600">
           再填一次
         </button>
       </div>
@@ -65,6 +114,8 @@ export default function ContactForm() {
           <span className="text-[13px] font-bold">稱呼</span>
           <input
             type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="怎麼稱呼你"
             className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
           />
@@ -73,6 +124,8 @@ export default function ContactForm() {
           <span className="text-[13px] font-bold">品牌／單位</span>
           <input
             type="text"
+            value={org}
+            onChange={(e) => setOrg(e.target.value)}
             placeholder="沒有可留空"
             className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
           />
@@ -81,6 +134,8 @@ export default function ContactForm() {
           <span className="text-[13px] font-bold">信箱</span>
           <input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="回覆用的信箱"
             className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
           />
@@ -89,6 +144,8 @@ export default function ContactForm() {
           <span className="text-[13px] font-bold">電話</span>
           <input
             type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="方便的話留一個"
             className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
           />
@@ -125,6 +182,8 @@ export default function ContactForm() {
             <span className="text-[13px] font-bold">相關文章網址</span>
             <input
               type="url"
+              value={articleUrl}
+              onChange={(e) => setArticleUrl(e.target.value)}
               placeholder="https://spacea.tw/..."
               className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
             />
@@ -135,6 +194,8 @@ export default function ContactForm() {
             <span className="text-[13px] font-bold">預算範圍與時程</span>
             <input
               type="text"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
               placeholder="例如：本季內、預算區間"
               className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
             />
@@ -144,11 +205,15 @@ export default function ContactForm() {
           <span className="text-[13px] font-bold">詢問內容</span>
           <textarea
             rows={6}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             placeholder={placeholder}
             className="p-3.5 border border-paper-border rounded-lg bg-paper text-sm leading-loose text-paper-ink resize-y focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
           />
         </label>
       </div>
+
+      {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
 
       <div className="flex items-center justify-between gap-5 flex-wrap mt-5 pt-5 border-t border-paper-border">
         <p className="text-xs leading-relaxed text-paper-muted max-w-xs">
@@ -156,9 +221,10 @@ export default function ContactForm() {
         </p>
         <button
           type="submit"
-          className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-[15px] px-11 py-3.5 rounded-lg transition-colors"
+          disabled={sending}
+          className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-[15px] px-11 py-3.5 rounded-lg transition-colors"
         >
-          送出
+          {sending ? '送出中...' : '送出'}
         </button>
       </div>
     </form>

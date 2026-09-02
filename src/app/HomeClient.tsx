@@ -8,27 +8,7 @@ import CategoryImage from '@/components/layout/CategoryImage'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-function stripHtml(html: string) {
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&hellip;/g, '…')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#8217;/g, '’')
-    .replace(/&#8216;/g, '‘')
-    .replace(/&#8211;/g, '–')
-    .replace(/&#8212;/g, '—')
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&')
-}
+import { formatDate, stripHtml } from '@/lib/format'
 
 export interface HomeCategoryBlock {
   slug: string

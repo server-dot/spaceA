@@ -1,26 +1,55 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import CategoryImage from '@/components/layout/CategoryImage'
-import { RANKED_ARTICLES, RANGES, CATEGORY_FILTERS, type RangeKey } from './data'
+import { RANGES, type RangeKey, type RankedArticle } from './data'
+import { WPCategory } from '@/types/wordpress'
 
 const BREADCRUMBS = [
   { label: '首頁', href: '/' },
   { label: '熱門排行', href: '/popular' },
 ]
 
-export default function PopularRankingClient() {
-  const [range, setRange] = useState<RangeKey>('week')
+function formatRangeLabel(days: number | null) {
+  const now = new Date()
+  if (days === null) return '全站累計'
+  const start = new Date(now)
+  start.setDate(start.getDate() - days)
+  const fmt = (d: Date) => d.toLocaleDateString('zh-TW', { month: 'long', day: 'numeric' })
+  return `${fmt(start)} – ${fmt(now)}`
+}
+
+interface Props {
+  articles: RankedArticle[]
+  categories: WPCategory[]
+}
+
+export default function PopularRankingClient({ articles, categories }: Props) {
+  const [range, setRange] = useState<RangeKey>('all')
   const [category, setCategory] = useState('全部')
 
-  const current = RANGES.find((r) => r.key === range) ?? RANGES[0]
+  const rangeLabel = useMemo(() => {
+    if (range === 'week') return formatRangeLabel(7)
+    if (range === 'month') return formatRangeLabel(30)
+    return formatRangeLabel(null)
+  }, [range])
 
-  let list = RANKED_ARTICLES.slice()
-  if (range === 'month') list = [...RANKED_ARTICLES.slice(2), ...RANKED_ARTICLES.slice(0, 2)]
-  else if (range === 'all') list = RANKED_ARTICLES.slice().reverse()
+  // 目前還沒有真實閱讀數據，暫以「發布時間」當篩選依據（真的落在該期間內才會出現），
+  // 不像舊版用 slice/reverse 假造不同區間的排序
+  let list = articles
+  if (range !== 'all') {
+    const days = range === 'week' ? 7 : 30
+    const cutoff = Date.now() - days * 24 * 60 * 60 * 1000
+    list = articles.filter((item) => new Date(item.dateISO).getTime() >= cutoff)
+  }
   if (category !== '全部') list = list.filter((item) => item.cat === category)
+
+  const categoryFilters = useMemo(() => {
+    const names = new Set(articles.map((a) => a.cat))
+    return ['全部', ...Array.from(names)]
+  }, [articles])
 
   return (
     <div className="bg-paper">
@@ -35,9 +64,9 @@ export default function PopularRankingClient() {
               熱門排行
             </h1>
             <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">
-              依實際閱讀數據排序，每週一更新。排行反映讀者在看什麼，不代表我們認為它最值得買——推薦理由請看文章本身。
+              目前依發布時間排序，帶你看最新上稿的推薦與知識內容。等實際閱讀數據串接完成，會改成依讀者行為排序。
             </p>
-            <p className="text-xs text-paper-muted mt-2.5">統計期間：{current.range}</p>
+            <p className="text-xs text-paper-muted mt-2.5">統計期間：{rangeLabel}</p>
           </div>
           <div className="flex gap-2.5">
             {RANGES.map((r) => {
@@ -60,26 +89,28 @@ export default function PopularRankingClient() {
           </div>
         </section>
 
-        <div className="flex items-center gap-2.5 flex-wrap pt-5">
-          <span className="text-xs text-paper-muted tracking-wider mr-0.5">分類</span>
-          {CATEGORY_FILTERS.map((name) => {
-            const active = name === category
-            return (
-              <button
-                key={name}
-                type="button"
-                onClick={() => setCategory(name)}
-                className={`rounded-full px-4 py-1.5 text-[13px] transition-colors ${
-                  active
-                    ? 'bg-brand-600 border border-brand-600 text-white font-bold'
-                    : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
-                }`}
-              >
-                {name}
-              </button>
-            )
-          })}
-        </div>
+        {categoryFilters.length > 2 && (
+          <div className="flex items-center gap-2.5 flex-wrap pt-5">
+            <span className="text-xs text-paper-muted tracking-wider mr-0.5">分類</span>
+            {categoryFilters.map((name) => {
+              const active = name === category
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setCategory(name)}
+                  className={`rounded-full px-4 py-1.5 text-[13px] transition-colors ${
+                    active
+                      ? 'bg-brand-600 border border-brand-600 text-white font-bold'
+                      : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
+                  }`}
+                >
+                  {name}
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-10 lg:gap-14 items-start pt-8">
           <div>
@@ -123,7 +154,7 @@ export default function PopularRankingClient() {
 
             {list.length === 0 && (
               <div className="py-16 text-center text-paper-secondary text-[15px]">
-                這個分類本週還沒有進榜的文章
+                這個區間還沒有進榜的文章
               </div>
             )}
           </div>
@@ -132,44 +163,28 @@ export default function PopularRankingClient() {
             <div className="bg-white border border-paper-border rounded-2xl p-6">
               <div className="text-xs tracking-wider text-paper-muted font-bold">排行怎麼算</div>
               <ul className="grid gap-3 mt-4 text-sm leading-relaxed text-paper-body">
-                <li>依頁面實際閱讀量排序，排除自家內部流量。</li>
-                <li>每週一重新統計，統計期間標示在標題下方。</li>
+                <li>目前依發布時間排序，之後會換成依實際閱讀量排序。</li>
+                <li>排除自家內部流量，統計期間標示在標題下方。</li>
                 <li>排行不受廣告或合作影響，也不對外開放付費。</li>
               </ul>
               <Link href="/about#how" className="block mt-4 text-[13px] font-bold text-brand-600">
                 看編輯方針
               </Link>
             </div>
-            <div className="bg-paper-surface rounded-2xl p-6">
-              <div className="text-xs tracking-wider text-paper-muted font-bold">逛分類</div>
-              <ul className="grid gap-3 mt-4 text-sm">
-                <li>
-                  <Link href="/pets" className="text-paper-body hover:text-brand-600 transition-colors">
-                    寵物生活
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/3c" className="text-paper-body hover:text-brand-600 transition-colors">
-                    3C 數位
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/food" className="text-paper-body hover:text-brand-600 transition-colors">
-                    美食餐廳
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/health" className="text-paper-body hover:text-brand-600 transition-colors">
-                    健康醫療
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/education" className="text-paper-body hover:text-brand-600 transition-colors">
-                    教育學習
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            {categories.length > 0 && (
+              <div className="bg-paper-surface rounded-2xl p-6">
+                <div className="text-xs tracking-wider text-paper-muted font-bold">逛分類</div>
+                <ul className="grid gap-3 mt-4 text-sm">
+                  {categories.map((c) => (
+                    <li key={c.slug}>
+                      <Link href={`/${c.slug}`} className="text-paper-body hover:text-brand-600 transition-colors">
+                        {c.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </aside>
         </section>
 

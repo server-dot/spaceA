@@ -5,17 +5,10 @@ import Badge from '@/components/ui/Badge'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
+import { formatDate, stripHtml } from '@/lib/format'
 
 interface ArticleCardProps {
   post: WPPostCard
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
 }
 
 export default function ArticleCard({ post }: ArticleCardProps) {
@@ -55,12 +48,9 @@ export default function ArticleCard({ post }: ArticleCardProps) {
         </Link>
 
         {post.excerpt && (
-          <p
-            className="text-sm text-gray-500 line-clamp-2 leading-relaxed"
-            dangerouslySetInnerHTML={{
-              __html: post.excerpt.replace(/<[^>]*>/g, ''),
-            }}
-          />
+          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+            {stripHtml(post.excerpt)}
+          </p>
         )}
 
         <time dateTime={post.date} className="text-xs text-gray-400 mt-1">

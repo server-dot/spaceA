@@ -5,7 +5,9 @@ import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
 import HomeClient, { type HomeCategoryBlock } from './HomeClient'
-import { RANKED_ARTICLES } from './popular/data'
+import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
+import { formatDate } from '@/lib/format'
+import { WPPostCard } from '@/types/wordpress'
 
 export const revalidate = 3600
 
@@ -25,17 +27,30 @@ interface HomepageBlocksData {
   }
 }
 
+interface LatestPostsData {
+  posts: { nodes: WPPostCard[] }
+}
+
 export default async function HomePage() {
   // 抓比較大的上限（涵蓋所有分類），避免 Uncategorized 佔掉名額後，排在後面的真實分類被截斷抓不到
-  const data = await fetchQuery<HomepageBlocksData>(GET_HOMEPAGE_BLOCKS, {
-    first: 20,
-    postsPerCategory: 5,
-  })
+  const [data, latestData] = await Promise.all([
+    fetchQuery<HomepageBlocksData>(GET_HOMEPAGE_BLOCKS, {
+      first: 20,
+      postsPerCategory: 5,
+    }),
+    fetchQuery<LatestPostsData>(GET_LATEST_POSTS, { first: 10 }),
+  ])
 
   const categories = data?.categories?.nodes ?? []
   const blocks: HomeCategoryBlock[] = categories
     .filter((c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && c.posts.nodes.length > 0)
     .map((c) => ({ slug: c.slug, name: c.name, count: c.count, posts: c.posts.nodes }))
+
+  // 「熱門排行」目前還沒有真實閱讀數據，先用最新發布的文章頂替（見 src/app/popular）
+  const latestPosts = (latestData?.posts?.nodes ?? []).filter((post) => {
+    const categorySlug = post.categories.nodes[0]?.slug
+    return categorySlug && !EXCLUDED_CATEGORY_SLUGS.includes(categorySlug)
+  })
 
   const categoryListSchema = {
     '@context': 'https://schema.org',
@@ -92,40 +107,48 @@ export default async function HomePage() {
             </div>
           </section>
 
-          <section>
-            <div className="flex items-center gap-3.5 pt-10 pb-5">
-              <span className="w-2 h-2 rounded-full bg-brand-600 shrink-0" />
-              <h2 className="font-serif text-[22px] font-bold whitespace-nowrap">本週熱門排行</h2>
-              <span className="flex-1 h-px bg-paper-border" />
-              <Link
-                href="/popular"
-                className="bg-brand-50 text-brand-600 text-[13px] font-bold px-4 py-1.5 rounded-full whitespace-nowrap hover:bg-brand-100 transition-colors"
-              >
-                完整排行
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-              {RANKED_ARTICLES.map((item, i) => (
+          {latestPosts.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3.5 pt-10 pb-5">
+                <span className="w-2 h-2 rounded-full bg-brand-600 shrink-0" />
+                <h2 className="font-serif text-[22px] font-bold whitespace-nowrap">熱門排行</h2>
+                <span className="flex-1 h-px bg-paper-border" />
                 <Link
-                  key={item.href}
-                  href={item.href}
-                  className="grid grid-cols-[34px_1fr] gap-3.5 items-baseline py-3.5 border-b border-paper-border"
+                  href="/popular"
+                  className="bg-brand-50 text-brand-600 text-[13px] font-bold px-4 py-1.5 rounded-full whitespace-nowrap hover:bg-brand-100 transition-colors"
                 >
-                  <b
-                    className={`font-serif text-lg font-bold ${i < 3 ? 'text-brand-600' : 'text-paper-muted'}`}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </b>
-                  <div>
-                    <h3 className="text-[15px] font-medium leading-relaxed hover:text-brand-600 transition-colors">
-                      {item.title}
-                    </h3>
-                    <span className="block text-xs text-paper-muted mt-1.5">{item.cat}</span>
-                  </div>
+                  完整排行
                 </Link>
-              ))}
-            </div>
-          </section>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
+                {latestPosts.map((post, i) => {
+                  const cat = post.categories.nodes[0]
+                  const href = `/${cat?.slug}/${post.slug}`
+                  return (
+                    <Link
+                      key={post.slug}
+                      href={href}
+                      className="grid grid-cols-[34px_1fr] gap-3.5 items-baseline py-3.5 border-b border-paper-border"
+                    >
+                      <b
+                        className={`font-serif text-lg font-bold ${i < 3 ? 'text-brand-600' : 'text-paper-muted'}`}
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </b>
+                      <div>
+                        <h3 className="text-[15px] font-medium leading-relaxed hover:text-brand-600 transition-colors">
+                          {post.title}
+                        </h3>
+                        <span className="block text-xs text-paper-muted mt-1.5">
+                          {cat?.name} · {formatDate(post.date)}
+                        </span>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </section>
+          )}
 
           {blocks[0] && (
             <section className="mt-16 mb-16 rounded-[20px] overflow-hidden grid grid-cols-1 sm:grid-cols-2 bg-brand-600 text-white">
