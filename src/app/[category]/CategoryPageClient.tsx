@@ -7,42 +7,49 @@ import { useSearchParams } from 'next/navigation'
 import { WPPostCard } from '@/types/wordpress'
 import { ARTICLE_TYPE_LABELS } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
+import { formatDate, stripHtml } from '@/lib/format'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-function stripHtml(html: string) {
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&hellip;/g, '…')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#8217;/g, '’')
-    .replace(/&#8216;/g, '‘')
-    .replace(/&#8211;/g, '–')
-    .replace(/&#8212;/g, '—')
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&')
-}
+import Pagination from '@/components/ui/Pagination'
 
 interface CategoryPageClientProps {
   categoryName: string
   posts: WPPostCard[]
+  initialPageInfo: { hasNextPage: boolean; endCursor: string }
 }
 
-export default function CategoryPageClient({ categoryName, posts }: CategoryPageClientProps) {
+export default function CategoryPageClient({
+  categoryName,
+  posts: initialPosts,
+  initialPageInfo,
+}: CategoryPageClientProps) {
+  const [posts, setPosts] = useState(initialPosts)
+  const [pageInfo, setPageInfo] = useState(initialPageInfo)
+  const [loadingMore, setLoadingMore] = useState(false)
+
   const [tag, setTag] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const initialType = searchParams.get('type')
   const [type, setType] = useState<string | null>(
     initialType && initialType in ARTICLE_TYPE_LABELS ? initialType : null
   )
+
+  async function handleLoadMore() {
+    if (!pageInfo.hasNextPage || loadingMore) return
+    setLoadingMore(true)
+    try {
+      const params = new URLSearchParams({ slug: categoryName, after: pageInfo.endCursor })
+      const res = await fetch(`/api/category-posts?${params.toString()}`)
+      if (!res.ok) throw new Error(`load more failed with ${res.status}`)
+      const data = await res.json()
+      setPosts((prev) => [...prev, ...((data.posts as WPPostCard[]) ?? [])])
+      setPageInfo(data.pageInfo ?? { hasNextPage: false, endCursor: '' })
+    } catch (err) {
+      console.error('[CategoryPageClient] 載入更多文章失敗', err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   const typeCounts = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -258,6 +265,8 @@ export default function CategoryPageClient({ categoryName, posts }: CategoryPage
           )}
         </>
       )}
+
+      <Pagination hasNextPage={pageInfo.hasNextPage} onLoadMore={handleLoadMore} loading={loadingMore} />
     </>
   )
 }

@@ -18,6 +18,7 @@ import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
+import { formatDate, stripHtml } from '@/lib/format'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
@@ -40,27 +41,6 @@ interface CategoryPostsData {
   category: {
     posts: { nodes: WPPostCard[] }
   } | null
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-TW', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-function stripHtml(html: string) {
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&hellip;/g, '…')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#8217;/g, '’')
-    .replace(/&#8216;/g, '‘')
-    .replace(/&#8211;/g, '–')
-    .replace(/&#8212;/g, '—')
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, '&')
 }
 
 function readingMinutes(html: string) {
@@ -102,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? [{ url: post.seo.opengraphImage.sourceUrl }]
         : post.featuredImage?.node?.sourceUrl
           ? [{ url: post.featuredImage.node.sourceUrl }]
-          : undefined,
+          : [{ url: '/og-default.jpg', width: 1024, height: 318 }],
     },
   }
 }

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { SITE_NAME, NAV_ITEMS, COMPANY_NAME, COMPANY_REG_NO } from '@/lib/constants'
+import { WPCategory } from '@/types/wordpress'
 
 const DISCLAIMER =
   'spaceA 主打選物，提供閱讀者更多樣化選擇的資訊。本網站所載部分資訊亦有和合作廠商或相關單位合作，並由其提供產品相關資訊或第三方連結。為維護您的權益，請於使用本網站或閱讀本網站資訊時謹慎評估，資訊僅供參考之用。'
@@ -13,7 +14,7 @@ const FOOTER_COLUMNS = [
     title: '關於 spaceA',
     links: [
       { label: '關於我們', href: '/about' },
-      { label: '推薦怎麼產生', href: '/about#how' },
+      { label: '推薦標準', href: '/about#how' },
       { label: '編輯部分工', href: '/about#team' },
       { label: '聯絡我們', href: '/contact' },
     ],
@@ -36,19 +37,25 @@ const FOOTER_COLUMNS = [
       { label: '使用條款', href: '/terms' },
     ],
   },
-  {
-    title: '逛逛 spaceA',
-    links: [
-      { label: '寵物生活', href: '/pets' },
-      { label: '熱門排行', href: '/popular' },
-    ],
-  },
 ]
 
-export default function Footer() {
+interface FooterProps {
+  categories: WPCategory[]
+}
+
+export default function Footer({ categories }: FooterProps) {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const year = new Date().getFullYear()
+
+  const browseColumn = {
+    title: '逛逛 spaceA',
+    links: [
+      ...categories.slice(0, 3).map((c) => ({ label: c.name, href: `/${c.slug}` })),
+      { label: '熱門排行', href: '/popular' },
+    ],
+  }
+  const footerColumns = [...FOOTER_COLUMNS, browseColumn]
 
   return (
     <footer className="bg-paper border-t border-paper-border mt-16">
@@ -67,7 +74,7 @@ export default function Footer() {
 
         {isHome ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 py-11">
-            {FOOTER_COLUMNS.map((col) => (
+            {footerColumns.map((col) => (
               <div key={col.title}>
                 <div className="text-sm font-bold text-paper-ink mb-4">{col.title}</div>
                 <ul className="grid gap-3">

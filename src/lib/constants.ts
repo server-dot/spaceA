@@ -19,7 +19,9 @@ export const ARTICLE_TYPE_LABELS: Record<string, string> = {
 export const NAV_ITEMS = [
   { label: '熱門排行', href: '/popular' },
   { label: '關於我們', href: '/about' },
-  { label: '最新消息', href: '/news' },
+  { label: '推薦標準', href: '/about#how' },
+  { label: '合作洽談', href: '/contact#form' },
+  { label: '聯絡我們', href: '/contact' },
 ]
 
 export const COMPANY_NAME = '積木媒體行銷股份有限公司'

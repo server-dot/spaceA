@@ -26,6 +26,7 @@ interface CategoryData {
     name: string
     slug: string
     description: string
+    count: number | null
     seo: WPSeo
     posts: {
       pageInfo: { hasNextPage: boolean; endCursor: string }
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: cat.seo?.opengraphDescription || cat.description || '',
       images: cat.seo?.opengraphImage?.sourceUrl
         ? [{ url: cat.seo.opengraphImage.sourceUrl }]
-        : undefined,
+        : [{ url: '/og-default.jpg', width: 1024, height: 318 }],
     },
   }
 }
@@ -74,7 +75,7 @@ export default async function CategoryPage({ params }: Props) {
   if (EXCLUDED_CATEGORY_SLUGS.includes(slug)) notFound()
 
   const [data, navData] = await Promise.all([
-    fetchQuery<CategoryData>(GET_CATEGORY, { slug, first: POSTS_PER_PAGE * 2 }),
+    fetchQuery<CategoryData>(GET_CATEGORY, { slug, first: POSTS_PER_PAGE }),
     fetchQuery<AllCategoriesData>(GET_NAVIGATION),
   ])
 
@@ -82,6 +83,7 @@ export default async function CategoryPage({ params }: Props) {
   if (!cat) notFound()
 
   const posts = cat.posts?.nodes ?? []
+  const pageInfo = cat.posts?.pageInfo ?? { hasNextPage: false, endCursor: '' }
   const otherCategories = (navData?.categories?.nodes ?? [])
     .filter((c) => c.slug !== slug && !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
     .slice(0, 4)
@@ -111,12 +113,12 @@ export default async function CategoryPage({ params }: Props) {
                   {cat.description}
                 </p>
               )}
-              <p className="text-xs text-paper-muted mt-2.5">共 {posts.length} 篇</p>
+              <p className="text-xs text-paper-muted mt-2.5">共 {cat.count ?? posts.length} 篇</p>
             </div>
           </section>
 
           <Suspense fallback={null}>
-            <CategoryPageClient categoryName={slug} posts={posts} />
+            <CategoryPageClient categoryName={slug} posts={posts} initialPageInfo={pageInfo} />
           </Suspense>
 
           {otherCategories.length > 0 && (

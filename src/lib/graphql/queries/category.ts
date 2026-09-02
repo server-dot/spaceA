@@ -10,6 +10,7 @@ export const GET_CATEGORY = gql`
       name
       slug
       description
+      count
       seo {
         ...TaxonomySeoFields
       }
