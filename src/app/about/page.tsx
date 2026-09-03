@@ -104,7 +104,7 @@ export default function AboutPage() {
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   spaceA 的收入來自聯盟行銷與廣告合作。這會影響網站怎麼經營，但不影響推薦內容本身：
                 </p>
-                <div className="mt-5 bg-brand-50 rounded-2xl p-6 max-w-2xl">
+                <div className="mt-5 bg-paper-surface rounded-2xl p-6 max-w-2xl">
                   <ul className="grid gap-3 pl-5 text-[15px] leading-loose text-paper-ink list-disc">
                     <li>文章中的購買連結可能是聯盟連結，你透過它購買我們會取得分潤，價格與你直接前往通路相同。</li>
                     <li>我們不接業配。推薦名單與排序不對外開放付費，廠商也不能審閱或修改稿件。</li>
