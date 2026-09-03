@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
+import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
 
 const DESCRIPTION =
@@ -37,7 +38,9 @@ export default function PrivacyPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_260px] gap-14 pt-8 pb-20 items-start">
             <article className="max-w-3xl">
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink">
+              <Breadcrumbs items={BREADCRUMBS} />
+
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink mt-[18px]">
                 隱私權政策
               </h1>
               <p className="text-[17px] leading-loose text-paper-body mt-5 text-balance">
@@ -47,16 +50,16 @@ export default function PrivacyPage() {
                 最後更新：<time dateTime={LAST_UPDATED}>2026年8月28日</time>
               </p>
 
-              <section id="collect" className="mt-11">
+              <section id="collect" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   我們蒐集哪些資料？
                 </h2>
-                <ul className="grid gap-3 mt-4 pl-5 text-base leading-loose text-paper-body list-disc">
-                  <li>
-                    <b className="font-bold">您主動提供的資料</b>：透過聯絡表單或電子郵件寄給我們的稱呼、信箱、電話與內容。
+                <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body">
+                  <li className="py-4">
+                    <b className="font-bold text-paper-ink">您主動提供的資料</b>：透過聯絡表單或電子郵件寄給我們的稱呼、信箱、電話與內容。
                   </li>
-                  <li>
-                    <b className="font-bold">瀏覽行為的匿名統計</b>：造訪頁面、來源、裝置與瀏覽器類型，用於了解哪些內容有幫助。
+                  <li className="py-4">
+                    <b className="font-bold text-paper-ink">瀏覽行為的匿名統計</b>：造訪頁面、來源、裝置與瀏覽器類型，用於了解哪些內容有幫助。
                   </li>
                 </ul>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
@@ -64,21 +67,28 @@ export default function PrivacyPage() {
                 </p>
               </section>
 
-              <section id="use" className="mt-11">
+              <section id="use" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   這些資料用在什麼地方？
                 </h2>
-                <ul className="grid gap-3 mt-4 pl-5 text-base leading-loose text-paper-body list-disc">
-                  <li>回覆您的來信，包括內容更正、選題建議與合作洽詢。</li>
-                  <li>改善網站內容與體驗，例如判斷哪些主題該補充、哪些頁面讀者看不完。</li>
-                  <li>統計聯盟連結的點擊與成效，用於了解推薦內容是否對讀者有用。</li>
+                <ul className="grid gap-[18px] mt-6 list-none">
+                  {[
+                    '回覆您的來信，包括內容更正、選題建議與合作洽詢。',
+                    '改善網站內容與體驗，例如判斷哪些主題該補充、哪些頁面讀者看不完。',
+                    '統計聯盟連結的點擊與成效，用於了解推薦內容是否對讀者有用。',
+                  ].map((text) => (
+                    <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
+                      <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
+                      <span className="text-base leading-loose text-paper-body text-balance">{text}</span>
+                    </li>
+                  ))}
                 </ul>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   我們不會將您的資料用於行銷名單，也不會出售或提供給第三方，除法律要求或您另行同意者外。
                 </p>
               </section>
 
-              <section id="cookie" className="mt-11">
+              <section id="cookie" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   Cookie 與分析工具怎麼運作？
                 </h2>
@@ -91,7 +101,7 @@ export default function PrivacyPage() {
                 </p>
               </section>
 
-              <section id="affiliate" className="mt-11">
+              <section id="affiliate" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   聯盟連結會追蹤什麼？
                 </h2>
@@ -100,23 +110,23 @@ export default function PrivacyPage() {
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
                   完整的合作揭露寫在
-                  <a href="/about#disclosure" className="text-brand-600 font-bold">
+                  <a href="/standards#disclosure" className="text-brand-600 font-bold">
                     編輯方針
                   </a>
                   。
                 </p>
               </section>
 
-              <section id="rights" className="mt-11">
+              <section id="rights" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   您可以行使哪些權利？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   您可以要求查詢、更正或刪除我們保有的您的資料，也可以要求停止使用。來信說明即可，我們核對身分後處理。
                 </p>
-                <div className="mt-5 bg-white border border-paper-border rounded-2xl p-6">
-                  <b className="text-base font-bold text-paper-ink">聯絡方式</b>
-                  <p className="text-base leading-loose text-paper-body mt-2">
+                <div className="mt-6 border-l-2 border-brand-200 pl-[22px]">
+                  <b className="text-xs font-bold tracking-wider text-brand-600">聯絡方式</b>
+                  <p className="text-base leading-loose text-paper-body mt-2 text-balance">
                     隱私權相關請寄{' '}
                     <a href="mailto:seo@stack.com.tw" className="text-brand-600 font-bold">
                       seo@stack.com.tw
@@ -130,9 +140,9 @@ export default function PrivacyPage() {
                 </div>
               </section>
 
-              <section className="mt-11 bg-paper-surface rounded-2xl p-7">
-                <h2 className="text-sm font-bold tracking-wider">政策修改</h2>
-                <p className="text-sm leading-relaxed text-paper-secondary mt-3">
+              <section className="mt-14 pt-10 border-t border-paper-border">
+                <h2 className="text-xs font-bold tracking-wider text-paper-secondary">政策修改</h2>
+                <p className="text-[15px] leading-loose text-paper-secondary mt-2.5 text-balance">
                   本政策如有調整，會更新本頁並修改最後更新日期。重大變更會在首頁公告。
                 </p>
               </section>
@@ -142,7 +152,7 @@ export default function PrivacyPage() {
               items={TOC_ITEMS}
               extraLinks={[
                 { label: '使用條款', href: '/terms' },
-                { label: '編輯方針', href: '/about' },
+                { label: '推薦標準', href: '/standards' },
               ]}
             />
           </div>

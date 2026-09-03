@@ -19,8 +19,7 @@ export const ARTICLE_TYPE_LABELS: Record<string, string> = {
 export const NAV_ITEMS = [
   { label: '熱門排行', href: '/popular' },
   { label: '關於我們', href: '/about' },
-  { label: '推薦標準', href: '/about#how' },
-  { label: '合作洽談', href: '/contact#form' },
+  { label: '推薦標準', href: '/standards' },
   { label: '聯絡我們', href: '/contact' },
 ]
 

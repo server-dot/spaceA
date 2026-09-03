@@ -167,8 +167,8 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                 <li>排除自家內部流量，統計期間標示在標題下方。</li>
                 <li>排行不受廣告或合作影響，也不對外開放付費。</li>
               </ul>
-              <Link href="/about#how" className="block mt-4 text-[13px] font-bold text-brand-600">
-                看編輯方針
+              <Link href="/standards#how" className="block mt-4 text-[13px] font-bold text-brand-600">
+                看推薦標準
               </Link>
             </div>
             {categories.length > 0 && (

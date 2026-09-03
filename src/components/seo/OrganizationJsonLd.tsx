@@ -10,8 +10,8 @@ export default function OrganizationJsonLd() {
     logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-sa-mark.png` },
     description:
       'spaceA 是推薦文內容平台，做法是彙整論壇、社群、電商評論與專業評測中的公開討論，交叉核對後由編輯部撰寫，並標註每則資訊的來源。',
-    publishingPrinciples: `${SITE_URL}/about`,
-    correctionsPolicy: `${SITE_URL}/about#corrections`,
+    publishingPrinciples: `${SITE_URL}/standards`,
+    correctionsPolicy: `${SITE_URL}/standards#corrections`,
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: '編輯部',

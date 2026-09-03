@@ -14,7 +14,7 @@ const FOOTER_COLUMNS = [
     title: '關於 spaceA',
     links: [
       { label: '關於我們', href: '/about' },
-      { label: '推薦標準', href: '/about#how' },
+      { label: '推薦標準', href: '/standards' },
       { label: '編輯部分工', href: '/about#team' },
       { label: '聯絡我們', href: '/contact' },
     ],
@@ -30,9 +30,9 @@ const FOOTER_COLUMNS = [
   {
     title: '條款與政策',
     links: [
-      { label: '合作與聯盟連結揭露', href: '/about#disclosure' },
-      { label: '內容更正政策', href: '/about#corrections' },
-      { label: '評測守則', href: '/about#limits' },
+      { label: '合作與聯盟連結揭露', href: '/standards#disclosure' },
+      { label: '內容更正政策', href: '/standards#corrections' },
+      { label: '評測守則', href: '/standards#limits' },
       { label: '隱私權政策', href: '/privacy' },
       { label: '使用條款', href: '/terms' },
     ],

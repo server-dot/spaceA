@@ -92,7 +92,7 @@ export default function ContactForm() {
 
   if (sent) {
     return (
-      <div className="bg-brand-50 border border-brand-500 rounded-2xl p-9">
+      <div className="border-l-2 border-brand-600 pl-6">
         <b className="font-serif text-xl font-bold text-paper-ink">已收到，謝謝你</b>
         <p className="text-[15px] leading-loose text-paper-body mt-2.5">{note}</p>
         <button type="button" onClick={resetForm} className="mt-4 text-sm font-bold text-brand-600">
@@ -102,58 +102,61 @@ export default function ContactForm() {
     )
   }
 
+  const fieldClass =
+    'bg-transparent border-0 border-b border-[#d8d3c9] px-0.5 py-2.5 text-[15px] text-paper-ink focus:outline-none focus:border-brand-500 transition-colors'
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-paper-border rounded-2xl p-8 sm:p-9">
+    <form onSubmit={handleSubmit}>
       <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">填表單與我們取得聯繫</h2>
       <p className="text-sm leading-relaxed text-paper-secondary mt-2.5">
         內容更正請附上文章網址與段落；合作請說明形式、時程與預算範圍，我們處理會快很多。
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-        <label className="grid gap-2">
-          <span className="text-[13px] font-bold">稱呼</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 mt-7">
+        <label className="grid gap-1.5">
+          <span className="text-[13px] font-bold text-paper-ink">稱呼</span>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="怎麼稱呼你"
-            className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+            className={fieldClass}
           />
         </label>
-        <label className="grid gap-2">
-          <span className="text-[13px] font-bold">品牌／單位</span>
+        <label className="grid gap-1.5">
+          <span className="text-[13px] font-bold text-paper-ink">品牌／單位</span>
           <input
             type="text"
             value={org}
             onChange={(e) => setOrg(e.target.value)}
             placeholder="沒有可留空"
-            className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+            className={fieldClass}
           />
         </label>
-        <label className="grid gap-2">
-          <span className="text-[13px] font-bold">信箱</span>
+        <label className="grid gap-1.5">
+          <span className="text-[13px] font-bold text-paper-ink">信箱</span>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="回覆用的信箱"
-            className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+            className={fieldClass}
           />
         </label>
-        <label className="grid gap-2">
-          <span className="text-[13px] font-bold">電話</span>
+        <label className="grid gap-1.5">
+          <span className="text-[13px] font-bold text-paper-ink">電話</span>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="方便的話留一個"
-            className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+            className={fieldClass}
           />
         </label>
       </div>
 
-      <div className="mt-5">
-        <span className="text-[13px] font-bold">諮詢事項（可多選）</span>
+      <div className="mt-[26px]">
+        <span className="text-[13px] font-bold text-paper-ink">諮詢事項（可多選）</span>
         <div className="flex flex-wrap gap-2.5 mt-3">
           {TOPICS.map((t) => {
             const on = has(t.key)
@@ -163,10 +166,10 @@ export default function ContactForm() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggle(t.key)}
-                className={`rounded-full px-4.5 py-2 text-sm transition-colors ${
+                className={`rounded-full px-[18px] py-2 text-sm transition-colors ${
                   on
                     ? 'bg-brand-600 border border-brand-600 text-white font-bold'
-                    : 'bg-paper border border-paper-border text-paper-secondary hover:border-paper-muted'
+                    : 'bg-transparent border border-paper-border text-paper-secondary hover:border-paper-muted'
                 }`}
               >
                 {t.name}
@@ -176,53 +179,53 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div className="grid gap-4 mt-5">
+      <div className="grid gap-5 mt-[26px]">
         {has('correction') && (
-          <label className="grid gap-2">
-            <span className="text-[13px] font-bold">相關文章網址</span>
+          <label className="grid gap-1.5">
+            <span className="text-[13px] font-bold text-paper-ink">相關文章網址</span>
             <input
               type="url"
               value={articleUrl}
               onChange={(e) => setArticleUrl(e.target.value)}
               placeholder="https://spacea.tw/..."
-              className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+              className={fieldClass}
             />
           </label>
         )}
         {commercial && (
-          <label className="grid gap-2">
-            <span className="text-[13px] font-bold">預算範圍與時程</span>
+          <label className="grid gap-1.5">
+            <span className="text-[13px] font-bold text-paper-ink">預算範圍與時程</span>
             <input
               type="text"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
               placeholder="例如：本季內、預算區間"
-              className="h-11 px-3.5 border border-paper-border rounded-lg bg-paper text-sm text-paper-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+              className={fieldClass}
             />
           </label>
         )}
-        <label className="grid gap-2">
-          <span className="text-[13px] font-bold">詢問內容</span>
+        <label className="grid gap-1.5">
+          <span className="text-[13px] font-bold text-paper-ink">詢問內容</span>
           <textarea
             rows={6}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={placeholder}
-            className="p-3.5 border border-paper-border rounded-lg bg-paper text-sm leading-loose text-paper-ink resize-y focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+            className={`${fieldClass} leading-loose resize-y`}
           />
         </label>
       </div>
 
       {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
 
-      <div className="flex items-center justify-between gap-5 flex-wrap mt-5 pt-5 border-t border-paper-border">
+      <div className="flex items-center justify-between gap-5 flex-wrap mt-[26px] pt-[22px] border-t border-paper-border">
         <p className="text-xs leading-relaxed text-paper-muted max-w-xs">
           送出表示你同意我們用這個信箱或電話回覆你，資料不會用於行銷或提供給第三方。
         </p>
         <button
           type="submit"
           disabled={sending}
-          className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-[15px] px-11 py-3.5 rounded-lg transition-colors"
+          className="bg-brand-600 hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-[15px] px-11 py-3.5 rounded-full transition-colors"
         >
           {sending ? '送出中...' : '送出'}
         </button>
