@@ -138,10 +138,7 @@ export default function StandardsPage() {
               </section>
             </article>
 
-            <PageToc
-              items={TOC_ITEMS}
-              extraLinks={[{ label: '關於我們', href: '/about' }]}
-            />
+            <PageToc items={TOC_ITEMS} />
           </div>
         </div>
       </div>
