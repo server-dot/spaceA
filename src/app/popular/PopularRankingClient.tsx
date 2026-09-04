@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
-import CategoryImage from '@/components/layout/CategoryImage'
 import { RANGES, type RangeKey, type RankedArticle } from './data'
 import { WPCategory } from '@/types/wordpress'
 
@@ -130,7 +130,19 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div className="relative w-full h-[70px] sm:h-[88px] rounded-xl overflow-hidden bg-paper-surface">
-                    <CategoryImage slug={p.catSlug} name={p.cat} />
+                    {p.image ? (
+                      <Image
+                        src={p.image.url}
+                        alt={p.image.alt}
+                        fill
+                        sizes="(max-width: 640px) 100px, 132px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">spaceA</span>
+                      </div>
+                    )}
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 text-xs">

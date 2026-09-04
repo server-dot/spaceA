@@ -48,6 +48,9 @@ export default async function PopularPage() {
 
   const articles: RankedArticle[] = posts.slice(0, 10).map((post) => {
     const category = post.categories.nodes[0]
+    const image = post.featuredImage?.node
+      ? { url: post.featuredImage.node.sourceUrl, alt: post.featuredImage.node.altText || post.title }
+      : null
     return {
       cat: category?.name ?? '未分類',
       catSlug: category?.slug ?? '',
@@ -56,6 +59,7 @@ export default async function PopularPage() {
       title: post.title,
       excerpt: post.excerpt ? stripHtml(post.excerpt) : '',
       href: `/${category?.slug}/${post.slug}`,
+      image,
     }
   })
 

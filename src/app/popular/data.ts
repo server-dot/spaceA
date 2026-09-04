@@ -6,6 +6,7 @@ export interface RankedArticle {
   title: string
   excerpt: string
   href: string
+  image: { url: string; alt: string } | null
 }
 
 export const RANGES = [
