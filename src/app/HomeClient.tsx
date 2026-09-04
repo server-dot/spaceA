@@ -17,11 +17,18 @@ export interface HomeCategoryBlock {
   posts: WPPostCard[]
 }
 
-interface HomeClientProps {
-  blocks: HomeCategoryBlock[]
+export interface HomeTopic {
+  slug: string
+  name: string
+  count: number
 }
 
-export default function HomeClient({ blocks }: HomeClientProps) {
+interface HomeClientProps {
+  blocks: HomeCategoryBlock[]
+  topics: HomeTopic[]
+}
+
+export default function HomeClient({ blocks, topics }: HomeClientProps) {
   const [selected, setSelected] = useState<string[]>([])
 
   function toggle(slug: string) {
@@ -38,13 +45,13 @@ export default function HomeClient({ blocks }: HomeClientProps) {
           <p className="text-[13px] text-paper-secondary">可複選，下方分區會即時篩選</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {blocks.map((b) => {
-            const on = selected.includes(b.slug)
+          {topics.map((t) => {
+            const on = selected.includes(t.slug)
             return (
               <button
-                key={b.slug}
+                key={t.slug}
                 type="button"
-                onClick={() => toggle(b.slug)}
+                onClick={() => toggle(t.slug)}
                 className={`relative flex flex-col items-center gap-2.5 py-4 px-2.5 rounded-2xl border transition-colors ${
                   on ? 'bg-brand-50 border-brand-600' : 'bg-white border-paper-border'
                 }`}
@@ -55,12 +62,12 @@ export default function HomeClient({ blocks }: HomeClientProps) {
                   </span>
                 )}
                 <span className="relative w-[58px] h-[58px] rounded-full overflow-hidden shrink-0">
-                  <CategoryImage slug={b.slug} name={b.name} />
+                  <CategoryImage slug={t.slug} name={t.name} />
                 </span>
                 <b className={`text-[15px] ${on ? 'font-bold text-brand-600' : 'font-medium text-paper-ink'}`}>
-                  {b.name}
+                  {t.name}
                 </b>
-                {b.count != null && <span className="text-xs text-paper-muted">{b.count} 篇</span>}
+                <span className="text-xs text-paper-muted">{t.count} 篇</span>
               </button>
             )
           })}

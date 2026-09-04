@@ -29,3 +29,8 @@ export const COMPANY_PHONE = '02-2745-7601'
 export const COMPANY_ADDRESS = '台北市信義區東興路49號11樓'
 export const EDITORIAL_EMAIL = 'seo@stack.com.tw'
 export const TECH_EMAIL = 'server@stack.com.tw'
+
+// 站上實際掛名的編輯身分（WP 帳號目前只有一個「admin」，沒設大頭貼/簡介，
+// 顯示名稱/頭像直接寫死，不吃 WP author 欄位，避免前台一直冒出「admin」+ 預設大頭貼
+export const EDITOR_NAME = '阿康'
+export const EDITOR_AVATAR_URL = 'https://aiqkangber.com/cucumber-avatar.png'

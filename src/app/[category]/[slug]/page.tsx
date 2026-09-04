@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { GET_ARTICLE, GET_ALL_POST_SLUGS } from '@/lib/graphql/queries/article'
 import { GET_CATEGORY } from '@/lib/graphql/queries/category'
+import { GET_ALL_CATEGORIES } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { WPPost, WPPostCard } from '@/types/wordpress'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
@@ -14,7 +15,7 @@ import ArticleJsonLd from '@/components/seo/ArticleJsonLd'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import HowToJsonLd from '@/components/seo/HowToJsonLd'
-import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
+import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
@@ -105,7 +106,6 @@ export default async function ArticlePage({ params }: Props) {
   const breadcrumbs = [
     { label: '首頁', href: '/' },
     ...(category ? [{ label: category.name, href: `/${categorySlug}` }] : []),
-    { label: articleType.name, href: `/${categorySlug}?type=${articleType.slug}`, pill: true },
     { label: post.title, href: `/${categorySlug}/${slug}` },
   ]
 
@@ -113,6 +113,13 @@ export default async function ArticlePage({ params }: Props) {
     ? await fetchQuery<CategoryPostsData>(GET_CATEGORY, { slug: category.slug, first: 4 })
     : null
   const related = (relatedData?.category?.posts?.nodes ?? []).filter((p) => p.slug !== slug).slice(0, 3)
+
+  const navData = await fetchQuery<{ categories: { nodes: Array<{ name: string; slug: string }> } }>(
+    GET_ALL_CATEGORIES
+  )
+  const otherCategories = (navData?.categories?.nodes ?? []).filter(
+    (c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && c.slug !== categorySlug
+  )
 
   const updated = post.modified && post.modified !== post.date
   // 結論/常見問題/TOC 兩種類型都套用；HowTo 判斷標準跟「這篇怎麼寫出來的」只給知識分享——
@@ -160,10 +167,10 @@ export default async function ArticlePage({ params }: Props) {
 
               <div className="flex flex-wrap items-center gap-3 text-[13px] text-paper-secondary mt-5">
                 <span className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-full bg-paper-surface grid place-items-center text-[11px] text-paper-secondary">
-                    編
+                  <span className="relative w-7 h-7 rounded-full overflow-hidden shrink-0 bg-paper-surface">
+                    <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="28px" className="object-cover" />
                   </span>
-                  <b className="font-bold text-paper-ink">{post.author?.node?.name ?? 'spaceA 編輯部'}</b>
+                  <b className="font-bold text-paper-ink">{EDITOR_NAME}</b>
                 </span>
                 <span className="text-paper-border">·</span>
                 <span>
@@ -182,7 +189,7 @@ export default async function ArticlePage({ params }: Props) {
               </div>
 
               {!isKnowledge && (
-                <p className="text-xs leading-loose text-paper-muted mt-4 px-4 py-3 bg-paper-surface rounded-lg">
+                <p className="text-xs leading-loose text-paper-muted mt-4 px-4 py-3 bg-white border border-paper-border rounded-lg">
                   本文彙整飼主社群、電商評論與公開資訊，並由編輯部核對後撰寫。文中不含業配，部分連結為聯盟連結，不影響推薦內容。價格與供貨請以通路頁面為準。
                 </p>
               )}
@@ -220,13 +227,13 @@ export default async function ArticlePage({ params }: Props) {
               {parsed.toc.length > 0 && (
                 <nav
                   aria-label="本篇目錄"
-                  className="mt-7 bg-[#F7F9FC] border-l-4 border-[#2B5CE6] rounded-lg px-6 py-5"
+                  className="mt-7 bg-white border border-paper-border border-l-4 border-l-brand-600 rounded-lg px-6 py-5"
                 >
-                  <p className="font-bold text-[#2B5CE6] mb-2.5">本篇目錄</p>
-                  <ol className="list-decimal pl-5 grid gap-1.5 marker:text-[#2B5CE6] marker:font-bold">
+                  <p className="font-bold text-brand-600 mb-3">本篇目錄</p>
+                  <ol className="list-decimal pl-5 grid gap-2 marker:text-brand-600 marker:font-bold">
                     {parsed.toc.map((item) => (
-                      <li key={item.id} className="text-sm leading-relaxed">
-                        <a href={`#${item.id}`} className="text-paper-ink no-underline hover:text-[#2B5CE6] transition-colors">
+                      <li key={item.id} className="text-[15px] leading-relaxed">
+                        <a href={`#${item.id}`} className="text-paper-ink no-underline hover:text-brand-600 transition-colors">
                           {item.label}
                         </a>
                       </li>
@@ -337,13 +344,11 @@ export default async function ArticlePage({ params }: Props) {
               )}
 
               <section className="mt-12 flex gap-4 items-start border-t border-paper-border pt-7">
-                <span className="w-11 h-11 rounded-full bg-paper-surface grid place-items-center text-sm text-paper-secondary shrink-0">
-                  編
+                <span className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-paper-surface">
+                  <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="44px" className="object-cover" />
                 </span>
                 <div>
-                  <b className="text-base font-bold text-paper-ink">
-                    {post.author?.node?.name ?? 'spaceA 編輯部'}
-                  </b>
+                  <b className="text-base font-bold text-paper-ink">{EDITOR_NAME}</b>
                   <p className="text-sm leading-loose text-paper-secondary mt-2">
                     我們彙整網路上公開的討論與評論，交叉核對後撰寫推薦，並標註每則資訊的來源與更新日期。發現內容有誤，歡迎
                     <a href={`mailto:${EDITORIAL_EMAIL}`} className="text-brand-600 font-bold">
@@ -372,7 +377,7 @@ export default async function ArticlePage({ params }: Props) {
                     </ol>
                   </div>
                 )}
-                <div className="bg-paper-surface rounded-2xl p-6">
+                <div className="bg-white border border-paper-border rounded-2xl p-6">
                   <div className="text-xs tracking-wider text-paper-secondary font-bold">關於知識分享</div>
                   <p className="text-[13px] leading-loose text-paper-secondary mt-3">
                     知識分享提供判斷方法與照護知識，不指定特定商品。想直接看整理好的選擇，請看推薦文。
@@ -388,34 +393,52 @@ export default async function ArticlePage({ params }: Props) {
                 </div>
               </aside>
             ) : (
-              related.length > 0 &&
+              (related.length > 0 || otherCategories.length > 0) &&
               category && (
-                <aside className="lg:sticky lg:top-24 bg-white border border-paper-border rounded-2xl p-6">
-                  <div className="text-xs tracking-wider text-paper-muted font-bold">同分類文章</div>
-                  <ul className="grid gap-4 mt-4">
-                    {related.map((p) => {
-                      const cat = p.categories.nodes[0]
-                      const tagName = p.tags.nodes[0]?.name
-                      return (
-                        <li key={p.slug}>
-                          <Link href={`/${cat?.slug ?? category.slug}/${p.slug}`} className="grid gap-1.5">
-                            {tagName && (
-                              <span className="text-[11px] font-bold text-brand-600 tracking-wider">{tagName}</span>
-                            )}
-                            <b className="text-sm font-medium leading-relaxed text-paper-ink hover:text-brand-600 transition-colors">
-                              {p.title}
-                            </b>
-                          </Link>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                  <Link
-                    href={`/${category.slug}`}
-                    className="block text-center mt-5 bg-brand-50 text-brand-600 font-bold text-[13px] py-2.5 rounded-lg hover:bg-brand-100 transition-colors"
-                  >
-                    看更多{category.name}
-                  </Link>
+                <aside className="lg:sticky lg:top-24 grid gap-5">
+                  {related.length > 0 && (
+                    <div className="bg-white border border-paper-border rounded-2xl p-6">
+                      <div className="text-xs tracking-wider text-paper-muted font-bold">同分類文章</div>
+                      <ul className="grid gap-4 mt-4">
+                        {related.map((p) => {
+                          const cat = p.categories.nodes[0]
+                          const tagName = p.tags.nodes[0]?.name
+                          return (
+                            <li key={p.slug}>
+                              <Link href={`/${cat?.slug ?? category.slug}/${p.slug}`} className="grid gap-1.5">
+                                {tagName && (
+                                  <span className="text-[11px] font-bold text-brand-600 tracking-wider">{tagName}</span>
+                                )}
+                                <b className="text-sm font-medium leading-relaxed text-paper-ink hover:text-brand-600 transition-colors">
+                                  {p.title}
+                                </b>
+                              </Link>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                      <Link
+                        href={`/${category.slug}`}
+                        className="block text-center mt-5 bg-brand-50 text-brand-600 font-bold text-[13px] py-2.5 rounded-lg hover:bg-brand-100 transition-colors"
+                      >
+                        看更多{category.name}
+                      </Link>
+                    </div>
+                  )}
+                  {otherCategories.length > 0 && (
+                    <div className="bg-white border border-paper-border rounded-2xl p-6">
+                      <div className="text-xs tracking-wider text-paper-muted font-bold">換個主題看</div>
+                      <ul className="grid gap-3 mt-4 text-sm">
+                        {otherCategories.map((c) => (
+                          <li key={c.slug}>
+                            <Link href={`/${c.slug}`} className="text-paper-body hover:text-brand-600 transition-colors">
+                              {c.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </aside>
               )
             )}

@@ -6,6 +6,7 @@ import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
 import { formatDate, stripHtml } from '@/lib/format'
+import ArticleImageFallback from '@/components/article/ArticleImageFallback'
 
 interface ArticleCardProps {
   post: WPPostCard
@@ -28,9 +29,7 @@ export default function ArticleCard({ post }: ArticleCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <span className="text-gray-400 text-sm">spaceA</span>
-          </div>
+          <ArticleImageFallback size={40} />
         )}
       </Link>
 

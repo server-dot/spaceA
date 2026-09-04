@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { GET_HOMEPAGE_BLOCKS } from '@/lib/graphql/queries/homepage'
+import { GET_ALL_CATEGORIES } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
@@ -31,20 +32,34 @@ interface LatestPostsData {
   posts: { nodes: WPPostCard[] }
 }
 
+interface AllCategoriesData {
+  categories: { nodes: Array<{ name: string; slug: string; count: number | null }> }
+}
+
 export default async function HomePage() {
   // 抓比較大的上限（涵蓋所有分類），避免 Uncategorized 佔掉名額後，排在後面的真實分類被截斷抓不到
-  const [data, latestData] = await Promise.all([
+  const [data, latestData, allCatsData] = await Promise.all([
     fetchQuery<HomepageBlocksData>(GET_HOMEPAGE_BLOCKS, {
       first: 20,
       postsPerCategory: 5,
     }),
     fetchQuery<LatestPostsData>(GET_LATEST_POSTS, { first: 10 }),
+    // 選主題 chip 要列出全部分類（含還沒發文的 0 篇），跟只含有文章分類的 blocks 分開查
+    fetchQuery<AllCategoriesData>(GET_ALL_CATEGORIES),
   ])
 
   const categories = data?.categories?.nodes ?? []
   const blocks: HomeCategoryBlock[] = categories
     .filter((c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && c.posts.nodes.length > 0)
     .map((c) => ({ slug: c.slug, name: c.name, count: c.count, posts: c.posts.nodes }))
+
+  // GET_HOMEPAGE_BLOCKS 用 hideEmpty:true 查，count 才拿得到正確數字（WPGraphQL 的怪癖，
+  // hideEmpty:false 時 count 永遠回傳 null）；沒文章的分類這裡直接補 0
+  const countBySlug = new Map(categories.map((c) => [c.slug, c.count ?? 0]))
+  const topics = (allCatsData?.categories?.nodes ?? [])
+    .filter((c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug))
+    .map((c) => ({ slug: c.slug, name: c.name, count: countBySlug.get(c.slug) ?? 0 }))
+    .sort((a, b) => b.count - a.count)
 
   // 「熱門排行」目前還沒有真實閱讀數據，先用最新發布的文章頂替（見 src/app/popular）
   const latestPosts = (latestData?.posts?.nodes ?? []).filter((post) => {
@@ -75,7 +90,7 @@ export default async function HomePage() {
         <Hero />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <HomeClient blocks={blocks} />
+          <HomeClient blocks={blocks} topics={topics} />
 
           <section className="mt-16 bg-white border border-paper-border rounded-[20px] px-9 sm:px-11 pt-10 pb-9">
             <div className="flex items-end justify-between gap-8 flex-wrap pb-7 border-b border-paper-border">

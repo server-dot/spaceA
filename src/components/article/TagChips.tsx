@@ -9,7 +9,7 @@ export default function TagChips({ tags, max, size = 'sm' }: TagChipsProps) {
 
   const shown = max ? tags.slice(0, max) : tags
   const extra = max && tags.length > max ? tags.length - max : 0
-  const chipClass = size === 'sm' ? 'text-[11px] px-2 py-0.5' : 'text-xs px-2.5 py-1'
+  const chipClass = size === 'sm' ? 'text-[13px] px-2.5 py-1' : 'text-sm px-2.5 py-1'
 
   return (
     <div className="flex flex-wrap gap-1.5">

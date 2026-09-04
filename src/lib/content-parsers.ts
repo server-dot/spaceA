@@ -104,13 +104,20 @@ function injectTocAnchors(html: string): { html: string; toc: ParsedArticleConte
   const toc: ParsedArticleContent['toc'] = []
   let index = 0
   const withIds = html.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (full, attrs: string, inner: string) => {
-    index += 1
-    const id = `section-${index}`
     const label = stripTags(inner)
     if (!label) return full
+    // H2 可能已經帶著上游（StackTool）指派的 id（例如 toc-2）——目錄連結必須指向那個既有 id，
+    // 不能另外生一個 section-N 塞進目錄卻不套用在標籤上，不然點目錄會連不到對應段落
+    const existingId = attrs.match(/\bid="([^"]+)"/)?.[1]
+    let id = existingId
+    let newAttrs = attrs
+    if (!id) {
+      index += 1
+      id = `section-${index}`
+      newAttrs = `${attrs} id="${id}"`
+    }
     toc.push({ id, label })
-    const hasId = /\bid=/.test(attrs)
-    return `<h2${hasId ? attrs : `${attrs} id="${id}"`}>${inner}</h2>`
+    return `<h2${newAttrs}>${inner}</h2>`
   })
   return { html: withIds, toc }
 }

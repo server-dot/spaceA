@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
+import ArticleImageFallback from '@/components/article/ArticleImageFallback'
 import { RANGES, type RangeKey, type RankedArticle } from './data'
 import { WPCategory } from '@/types/wordpress'
 
@@ -139,9 +140,7 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">spaceA</span>
-                      </div>
+                      <ArticleImageFallback size={24} />
                     )}
                   </div>
                   <div>
@@ -172,25 +171,21 @@ export default function PopularRankingClient({ articles, categories }: Props) {
           </div>
 
           <aside className="lg:sticky lg:top-24 grid gap-5">
-            <div className="bg-white border border-paper-border rounded-2xl p-6">
-              <div className="text-xs tracking-wider text-paper-muted font-bold">排行怎麼算</div>
-              <ul className="grid gap-3 mt-4 text-sm leading-relaxed text-paper-body">
-                <li>目前依發布時間排序，之後會換成依實際閱讀量排序。</li>
-                <li>排除自家內部流量，統計期間標示在標題下方。</li>
-                <li>排行不受廣告或合作影響，也不對外開放付費。</li>
-              </ul>
-              <Link href="/standards#how" className="block mt-4 text-[13px] font-bold text-brand-600">
-                看推薦標準
-              </Link>
-            </div>
             {categories.length > 0 && (
-              <div className="bg-paper-surface rounded-2xl p-6">
-                <div className="text-xs tracking-wider text-paper-muted font-bold">逛分類</div>
+              <div className="bg-white border border-paper-border rounded-2xl p-6">
+                <div className="text-xs tracking-wider text-paper-muted font-bold">換個主題看</div>
+                <p className="text-sm leading-relaxed text-paper-body mt-3">點進分類，看該主題底下的全部文章。</p>
                 <ul className="grid gap-3 mt-4 text-sm">
                   {categories.map((c) => (
                     <li key={c.slug}>
-                      <Link href={`/${c.slug}`} className="text-paper-body hover:text-brand-600 transition-colors">
-                        {c.name}
+                      <Link
+                        href={`/${c.slug}`}
+                        className="flex items-center justify-between text-paper-body hover:text-brand-600 transition-colors"
+                      >
+                        <span>{c.name}</span>
+                        {typeof c.count === 'number' && (
+                          <span className="text-paper-muted">{c.count} 篇</span>
+                        )}
                       </Link>
                     </li>
                   ))}
