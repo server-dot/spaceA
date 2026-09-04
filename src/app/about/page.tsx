@@ -1,18 +1,12 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
+import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
-import {
-  COMPANY_NAME,
-  COMPANY_REG_NO,
-  COMPANY_ADDRESS,
-  EDITORIAL_EMAIL,
-  EDITOR_NAME,
-  EDITOR_AVATAR_URL,
-} from '@/lib/constants'
+import { COMPANY_NAME, COMPANY_REG_NO, COMPANY_ADDRESS, EDITORIAL_EMAIL } from '@/lib/constants'
 
-const DESCRIPTION = 'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工與營運公司資訊。'
+const DESCRIPTION =
+  'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與營運公司資訊。'
 const LAST_UPDATED = '2026-09-04'
 
 const BREADCRUMBS = [
@@ -22,8 +16,8 @@ const BREADCRUMBS = [
 
 const TOC_ITEMS = [
   { label: '為什麼做這個網站', href: '#why' },
-  { label: '負責編輯', href: '#editor' },
   { label: '編輯部分工', href: '#team' },
+  { label: '常見問題', href: '#faq' },
   { label: '營運資訊', href: '#company' },
 ]
 
@@ -31,6 +25,28 @@ const COMPANY_INFO = [
   { label: '營運公司', value: COMPANY_NAME },
   { label: '統一編號', value: COMPANY_REG_NO },
   { label: '辦公室地址', value: COMPANY_ADDRESS },
+]
+
+const FAQ_ITEMS = [
+  {
+    question: '文章多久更新一次？',
+    answer:
+      '產品規格、價格與方案內容會隨時間變動，我們每季重新核對一次官方頁面與通路資訊；如果讀者回報內容有誤，會立即核實並更新，每篇文章開頭都標有「最後更新」日期，可以直接看到資訊新不新。',
+  },
+  {
+    question: '怎麼決定要寫哪些主題？',
+    answer:
+      '優先寫「選擇很多、但公開資訊很亂」的題目——這種主題讀者最需要有人先做過整理再看懂。挑選依據是讀者實際會搜尋、會拿來比較的問題，不是廠商想曝光的順序。',
+  },
+  {
+    question: '內容會不會因為廠商付費而改變？',
+    answer:
+      '不會。spaceA 不接受業配，不開放付費調整推薦名單、排序或結論，完整規則寫在推薦標準頁。',
+  },
+  {
+    question: '發現內容有誤或連結失效，該怎麼辦？',
+    answer: `直接來信 ${EDITORIAL_EMAIL} 或透過聯絡頁回報即可，我們核實後會更正內容，並更新文章的「最後更新」日期。`,
+  },
 ]
 
 export const metadata: Metadata = {
@@ -47,6 +63,7 @@ export default function AboutPage() {
   return (
     <>
       <BreadcrumbJsonLd items={BREADCRUMBS} />
+      <FaqJsonLd items={FAQ_ITEMS} />
       <div className="bg-paper">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-14 pt-8 pb-20 items-start">
@@ -70,28 +87,15 @@ export default function AboutPage() {
                   想解決的是這個——把分散在各平台的公開討論、規格與價格收集起來，交叉核對後，用讀得下去的方式寫清楚「這件事該怎麼判斷」。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
+                  舉個常見的例子：搜尋同一類商品或服務，常常會看到十篇文章有九篇的「優點」寫得幾乎一樣，只是把品牌名稱換掉——這通常代表它們用的是同一份通稿，而不是各自查證過的結論。這種內容看起來資訊量很大，實際上對決定要選哪一個完全沒有幫助，甚至會讓人誤以為每一家都差不多好。
+                </p>
+                <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   我們不是在教你「應該」怎麼選，而是把判斷依據攤開，讓你自己決定要不要照做。做不到有把握的結論時，我們會直說資料不足，不會硬湊一個看起來完整的答案。完整流程寫在
                   <a href="/standards" className="font-bold text-brand-600">
                     推薦標準
                   </a>
                   頁。
                 </p>
-              </section>
-
-              <section id="editor" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">負責編輯</h2>
-                <div className="flex gap-5 items-center mt-6 max-w-2xl">
-                  <span className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 bg-paper-surface">
-                    <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="80px" className="object-cover" />
-                  </span>
-                  <div>
-                    <b className="text-lg font-bold text-paper-ink">{EDITOR_NAME}</b>
-                    <p className="text-base leading-loose text-paper-secondary mt-1.5">
-                      本業是 AI 工程師，閒暇時最愛逛網拍、比較產品，找出 CP 值最高的選擇。spaceA
-                      的文章由我核對後撰寫發布，發現內容有誤歡迎直接來信。
-                    </p>
-                  </div>
-                </div>
               </section>
 
               <section id="team" className="mt-14 pt-10 border-t border-paper-border">
@@ -108,6 +112,18 @@ export default function AboutPage() {
                     <div key={role.title} className="border-t-2 border-brand-600 pt-3.5">
                       <b className="text-base font-bold text-paper-ink">{role.title}</b>
                       <p className="text-sm leading-loose text-paper-secondary mt-1.5">{role.body}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section id="faq" className="mt-14 pt-10 border-t border-paper-border">
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">常見問題</h2>
+                <div className="grid mt-6 divide-y divide-[#eeeae2] max-w-2xl">
+                  {FAQ_ITEMS.map((item) => (
+                    <div key={item.question} className="py-5">
+                      <b className="block text-base font-bold text-paper-ink">{item.question}</b>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.answer}</p>
                     </div>
                   ))}
                 </div>
