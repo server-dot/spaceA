@@ -3,10 +3,10 @@ import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
-import { COMPANY_NAME, COMPANY_REG_NO, COMPANY_ADDRESS, EDITORIAL_EMAIL } from '@/lib/constants'
+import { EDITORIAL_EMAIL } from '@/lib/constants'
 
 const DESCRIPTION =
-  'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與營運公司資訊。'
+  'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與網站的進度。'
 const LAST_UPDATED = '2026-09-04'
 
 const BREADCRUMBS = [
@@ -18,13 +18,25 @@ const TOC_ITEMS = [
   { label: '為什麼做這個網站', href: '#why' },
   { label: '編輯部分工', href: '#team' },
   { label: '常見問題', href: '#faq' },
-  { label: '營運資訊', href: '#company' },
+  { label: '網站的進度', href: '#timeline' },
 ]
 
-const COMPANY_INFO = [
-  { label: '營運公司', value: COMPANY_NAME },
-  { label: '統一編號', value: COMPANY_REG_NO },
-  { label: '辦公室地址', value: COMPANY_ADDRESS },
+const TIMELINE = [
+  {
+    date: '2026年5月',
+    title: '開始建站',
+    body: '規劃網站架構與內容方向，決定從讀者實際會查、會比較的主題切入，而不是先湊版面。',
+  },
+  {
+    date: '2026年8月',
+    title: '發布第一篇文章',
+    body: '第一篇推薦文正式發布，開始實際跑一遍蒐集、核對、審稿的流程，邊寫邊修正做法。',
+  },
+  {
+    date: '預計 2026年9月11日',
+    title: '正式對外上線',
+    body: '目前先把內容基礎打好，之後會逐步擴充到更多分類，不會為了衝數量一次塞進大量文章。',
+  },
 ]
 
 const FAQ_ITEMS = [
@@ -129,25 +141,18 @@ export default function AboutPage() {
                 </div>
               </section>
 
-              <section id="company" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">營運資訊</h2>
-                <ul className="grid mt-6 list-none max-w-2xl">
-                  {COMPANY_INFO.map((item) => (
-                    <li
-                      key={item.label}
-                      className="grid grid-cols-[128px_1fr] gap-5 text-base leading-loose py-3.5 border-b border-[#eeeae2]"
-                    >
-                      <span className="text-paper-muted">{item.label}</span>
-                      <span className="text-paper-body">{item.value}</span>
+              <section id="timeline" className="mt-14 pt-10 border-t border-paper-border">
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">網站的進度</h2>
+                <ol className="grid gap-8 mt-6 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
+                  {TIMELINE.map((item) => (
+                    <li key={item.date} className="relative">
+                      <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
+                      <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
+                      <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
                     </li>
                   ))}
-                  <li className="grid grid-cols-[128px_1fr] gap-5 text-base leading-loose py-3.5">
-                    <span className="text-paper-muted">聯絡信箱</span>
-                    <a href={`mailto:${EDITORIAL_EMAIL}`} className="font-medium text-brand-600">
-                      {EDITORIAL_EMAIL}
-                    </a>
-                  </li>
-                </ul>
+                </ol>
               </section>
             </article>
 
