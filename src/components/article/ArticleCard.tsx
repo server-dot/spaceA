@@ -5,7 +5,7 @@ import Badge from '@/components/ui/Badge'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
-import { formatDate, stripHtml } from '@/lib/format'
+import { formatDate, resolveSummary } from '@/lib/format'
 import ArticleImageFallback from '@/components/article/ArticleImageFallback'
 
 interface ArticleCardProps {
@@ -46,9 +46,9 @@ export default function ArticleCard({ post }: ArticleCardProps) {
           </h2>
         </Link>
 
-        {post.excerpt && (
+        {resolveSummary(post.excerpt) && (
           <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
-            {stripHtml(post.excerpt)}
+            {resolveSummary(post.excerpt)}
           </p>
         )}
 

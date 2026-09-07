@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { WPPostCard } from '@/types/wordpress'
 import { ARTICLE_TYPE_LABELS } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
-import { formatDate, stripHtml } from '@/lib/format'
+import { formatDate, resolveSummary } from '@/lib/format'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import Pagination from '@/components/ui/Pagination'
@@ -204,9 +204,9 @@ export default function CategoryPageClient({
                     {feature.title}
                   </Link>
                 </h2>
-                {feature.excerpt && (
+                {resolveSummary(feature.excerpt) && (
                   <p className="text-[15px] leading-loose text-paper-secondary mt-3.5">
-                    {stripHtml(feature.excerpt)}
+                    {resolveSummary(feature.excerpt)}
                   </p>
                 )}
                 {feature.tags.nodes.length > 0 && (
@@ -247,9 +247,9 @@ export default function CategoryPageClient({
                       <h3 className="text-lg font-medium leading-relaxed mt-2 group-hover:text-brand-600 transition-colors">
                         {post.title}
                       </h3>
-                      {post.excerpt && (
+                      {resolveSummary(post.excerpt) && (
                         <p className="text-sm leading-loose text-paper-secondary mt-2.5 line-clamp-2">
-                          {stripHtml(post.excerpt)}
+                          {resolveSummary(post.excerpt)}
                         </p>
                       )}
                       {post.tags.nodes.length > 0 && (

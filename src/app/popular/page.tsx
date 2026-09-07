@@ -7,7 +7,7 @@ import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
 import { GET_ALL_CATEGORIES, GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
-import { formatDate, stripHtml } from '@/lib/format'
+import { formatDate, resolveSummary } from '@/lib/format'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 
 export const revalidate = 3600
@@ -60,7 +60,7 @@ export default async function PopularPage() {
       date: formatDate(post.date),
       dateISO: post.date,
       title: post.title,
-      excerpt: post.excerpt ? stripHtml(post.excerpt) : '',
+      excerpt: resolveSummary(post.excerpt),
       href: `/${category?.slug}/${post.slug}`,
       image,
     }

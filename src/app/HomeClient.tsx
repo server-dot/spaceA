@@ -8,7 +8,7 @@ import CategoryImage from '@/components/layout/CategoryImage'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
-import { formatDate, stripHtml } from '@/lib/format'
+import { formatDate, resolveSummary } from '@/lib/format'
 
 export interface HomeCategoryBlock {
   slug: string
@@ -134,9 +134,9 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                   <h3 className="text-2xl font-bold leading-relaxed tracking-tight mt-2.5 text-paper-ink">
                     {feature.title}
                   </h3>
-                  {feature.excerpt && (
+                  {resolveSummary(feature.excerpt) && (
                     <p className="text-[15px] leading-loose text-paper-secondary mt-3">
-                      {stripHtml(feature.excerpt)}
+                      {resolveSummary(feature.excerpt)}
                     </p>
                   )}
                   {feature.tags.nodes.length > 0 && (

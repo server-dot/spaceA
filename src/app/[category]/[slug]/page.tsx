@@ -19,7 +19,7 @@ import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_UR
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
-import { formatDate, stripHtml } from '@/lib/format'
+import { formatDate, stripHtml, resolveSummary } from '@/lib/format'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
@@ -121,6 +121,9 @@ export default async function ArticlePage({ params }: Props) {
     (c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && c.slug !== categorySlug
   )
 
+  // WordPress 自動截的 excerpt 會把開頭的目錄區塊當摘要，改優先吃 Yoast 描述（見 resolveSummary）
+  const summary = resolveSummary(post.excerpt, post.seo?.metaDesc)
+
   const updated = post.modified && post.modified !== post.date
   // 結論/常見問題/TOC 兩種類型都套用；HowTo 判斷標準跟「這篇怎麼寫出來的」只給知識分享——
   // 推薦文的 <ol> 通常是排名清單不是操作步驟，硬套 HowTo 會誤用結構化資料
@@ -155,13 +158,13 @@ export default async function ArticlePage({ params }: Props) {
                 </div>
               )}
 
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink mt-3 text-balance">
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink mt-3">
                 {post.title}
               </h1>
 
-              {post.excerpt && (
-                <p className="text-[17px] leading-loose text-paper-secondary mt-5 max-w-[44em] text-balance">
-                  {stripHtml(post.excerpt)}
+              {summary && (
+                <p className="text-[17px] leading-loose text-paper-secondary mt-5">
+                  {summary}
                 </p>
               )}
 
