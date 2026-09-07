@@ -23,15 +23,14 @@ const config: Config = {
           700: '#0369a1',
         },
         paper: {
-          DEFAULT: '#f6f1e7',
+          DEFAULT: '#ffffff',
           ink: '#1d1c1a',
           body: '#46433f',
           secondary: '#6f6a63',
           muted: '#9c968d',
           border: '#e6e2da',
           surface: '#f1eee8',
-          // 卡片底：帶一點暖調的近白，直接用純白在米色底上會變成一塊塊冷白
-          card: '#fdf9f0',
+          card: '#ffffff',
         },
       },
     },

@@ -43,8 +43,8 @@ export default function Hero() {
           className="hidden motion-reduce:block object-cover object-[center_32%]"
         />
 
-        {/* 底部淡出到頁面米色，避免冷灰影片和米色內容區之間出現一條硬邊 */}
-        <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-[linear-gradient(180deg,rgba(246,241,231,0)_0%,rgba(246,241,231,0.75)_55%,#f6f1e7_100%)] z-[1]" />
+        {/* 底部淡出到頁面白底，避免冷灰影片和內容區之間出現一條硬邊 */}
+        <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.75)_55%,#ffffff_100%)] z-[1]" />
 
         {/* 左側柔化，讓文字在任何一幀上都讀得到 */}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(202,211,220,0.78)_0%,rgba(202,211,220,0.66)_30%,rgba(202,211,220,0.32)_52%,rgba(202,211,220,0)_74%)]" />

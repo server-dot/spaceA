@@ -22,17 +22,86 @@
   }
 }
 
-/* WordPress 文章內容自帶的 <style>（由 n8n 推薦文工具產生）把卡片寫死成純白，
-   在米色頁面上會變成一塊塊冷白。這裡用 .prose 提高權重覆蓋掉，
-   已發布的舊文章不用重貼也會跟著改 */
+/* 文章內文的 h2／h3 統一樣式：h2 深藍實心橫幅（前置 ✓），h3 深藍粗體＋虛線底線（前置 ▸）。
+   直接吃 WordPress 內容裡的裸 h2/h3，已發布的舊文章不用重貼也會套用。
+   色值統一吃品牌藍 brand-600，不另外引入第二套藍 */
 @layer components {
-  .prose .brand-card,
-  .prose .ai-article-body .brand-card {
-    background: theme('colors.paper.card');
-    border-color: theme('colors.paper.border');
+  .prose h2 {
+    background: theme('colors.brand.600');
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    padding: 0.7rem 1.1rem;
+    border-radius: 3px;
+    margin-top: 3rem;
+    margin-bottom: 1.4rem;
   }
 
-  .prose .brand-card .card-hero {
-    background: theme('colors.paper.surface');
+  .prose h2::before {
+    content: '✓';
+    margin-right: 0.6rem;
+    font-weight: 700;
+  }
+
+  .prose h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: theme('colors.brand.600');
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.6;
+    padding-bottom: 0.55rem;
+    border-bottom: 2px dotted theme('colors.brand.600');
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h3::before {
+    content: '▸';
+    flex: none;
+    font-size: 0.9em;
+  }
+
+  @media (min-width: 640px) {
+    .prose h2 {
+      font-size: 1.25rem;
+    }
+
+    .prose h3 {
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* 卡片／FAQ 收合區塊裡的標題有自己的排版，不套上面那組橫幅與虛線 */
+  .prose .brand-card h2,
+  .prose .brand-card h3,
+  .prose .faq-container h2,
+  .prose .faq-container h3,
+  .prose details h2,
+  .prose details h3,
+  .prose summary h2,
+  .prose summary h3 {
+    display: block;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    border: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .prose .brand-card h2::before,
+  .prose .brand-card h3::before,
+  .prose .faq-container h2::before,
+  .prose .faq-container h3::before,
+  .prose details h2::before,
+  .prose details h3::before,
+  .prose summary h2::before,
+  .prose summary h3::before {
+    content: none;
   }
 }
