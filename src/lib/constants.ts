@@ -32,5 +32,6 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 
 // 站上實際掛名的編輯身分（WP 帳號目前只有一個「admin」，沒設大頭貼/簡介，
 // 顯示名稱/頭像直接寫死，不吃 WP author 欄位，避免前台一直冒出「admin」+ 預設大頭貼
-export const EDITOR_NAME = '阿康'
-export const EDITOR_AVATAR_URL = 'https://aiqkangber.com/cucumber-avatar.png'
+// 頭像放在 public/ 自己控制，不外連別的網域（原本連 aiqkangber.com，對方掛掉這裡就破圖）
+export const EDITOR_NAME = 'Selina'
+export const EDITOR_AVATAR_URL = '/editor-avatar.png'
