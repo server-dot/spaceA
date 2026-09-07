@@ -12,7 +12,7 @@ interface PageTocProps {
 
 export default function PageToc({ items, extraLinks }: PageTocProps) {
   return (
-    <aside className="lg:sticky lg:top-24 bg-white border border-paper-border rounded-2xl p-[22px]">
+    <aside className="lg:sticky lg:top-24 bg-paper-card border border-paper-border rounded-2xl p-[22px]">
       <div className="flex items-center gap-2">
         <span className="w-[18px] h-0.5 bg-brand-600" />
         <div className="text-xs tracking-wider text-paper-muted font-bold">本頁內容</div>

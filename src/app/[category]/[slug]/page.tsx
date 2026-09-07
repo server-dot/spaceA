@@ -189,7 +189,7 @@ export default async function ArticlePage({ params }: Props) {
               </div>
 
               {!isKnowledge && (
-                <p className="text-xs leading-loose text-paper-muted mt-4 px-4 py-3 bg-white border border-paper-border rounded-lg">
+                <p className="text-xs leading-loose text-paper-muted mt-4 px-4 py-3 bg-paper-card border border-paper-border rounded-lg">
                   本文彙整飼主社群、電商評論與公開資訊，並由編輯部核對後撰寫。文中不含業配，部分連結為聯盟連結，不影響推薦內容。價格與供貨請以通路頁面為準。
                 </p>
               )}
@@ -227,7 +227,7 @@ export default async function ArticlePage({ params }: Props) {
               {parsed.toc.length > 0 && (
                 <nav
                   aria-label="本篇目錄"
-                  className="mt-7 bg-white border border-paper-border border-l-4 border-l-brand-600 rounded-lg px-6 py-5"
+                  className="mt-7 bg-paper-card border border-paper-border border-l-4 border-l-brand-600 rounded-lg px-6 py-5"
                 >
                   <p className="font-bold text-brand-600 mb-3">本篇目錄</p>
                   <ol className="list-decimal pl-5 grid gap-2 marker:text-brand-600 marker:font-bold">
@@ -286,7 +286,7 @@ export default async function ArticlePage({ params }: Props) {
               )}
 
               {isKnowledge && (
-                <section className="mt-11 bg-white border border-paper-border rounded-2xl px-7 py-6">
+                <section className="mt-11 bg-paper-card border border-paper-border rounded-2xl px-7 py-6">
                   <h2 className="text-xs tracking-wider text-paper-muted font-bold">這篇怎麼寫出來的</h2>
                   {parsed.provenance && (
                     <div className="grid gap-3 mt-4">
@@ -317,7 +317,7 @@ export default async function ArticlePage({ params }: Props) {
                         <Link
                           key={p.slug}
                           href={`/${cat?.slug ?? category.slug}/${p.slug}`}
-                          className="block bg-white border border-paper-border rounded-2xl overflow-hidden hover:border-brand-600 transition-colors"
+                          className="block bg-paper-card border border-paper-border rounded-2xl overflow-hidden hover:border-brand-600 transition-colors"
                         >
                           {p.featuredImage?.node?.sourceUrl && (
                             <div className="relative w-full aspect-[16/9]">
@@ -363,7 +363,7 @@ export default async function ArticlePage({ params }: Props) {
             {isKnowledge ? (
               <aside className="lg:sticky lg:top-24 grid gap-5">
                 {parsed.howTo && (
-                  <div className="bg-white border border-paper-border rounded-2xl p-6">
+                  <div className="bg-paper-card border border-paper-border rounded-2xl p-6">
                     <div className="text-xs tracking-wider text-paper-muted font-bold">
                       {parsed.howTo.sectionTitle}
                     </div>
@@ -377,7 +377,7 @@ export default async function ArticlePage({ params }: Props) {
                     </ol>
                   </div>
                 )}
-                <div className="bg-white border border-paper-border rounded-2xl p-6">
+                <div className="bg-paper-card border border-paper-border rounded-2xl p-6">
                   <div className="text-xs tracking-wider text-paper-secondary font-bold">關於知識分享</div>
                   <p className="text-[13px] leading-loose text-paper-secondary mt-3">
                     知識分享提供判斷方法與照護知識，不指定特定商品。想直接看整理好的選擇，請看推薦文。
@@ -397,7 +397,7 @@ export default async function ArticlePage({ params }: Props) {
               category && (
                 <aside className="lg:sticky lg:top-24 grid gap-5">
                   {related.length > 0 && (
-                    <div className="bg-white border border-paper-border rounded-2xl p-6">
+                    <div className="bg-paper-card border border-paper-border rounded-2xl p-6">
                       <div className="text-xs tracking-wider text-paper-muted font-bold">同分類文章</div>
                       <ul className="grid gap-4 mt-4">
                         {related.map((p) => {
@@ -426,7 +426,7 @@ export default async function ArticlePage({ params }: Props) {
                     </div>
                   )}
                   {otherCategories.length > 0 && (
-                    <div className="bg-white border border-paper-border rounded-2xl p-6">
+                    <div className="bg-paper-card border border-paper-border rounded-2xl p-6">
                       <div className="text-xs tracking-wider text-paper-muted font-bold">換個主題看</div>
                       <ul className="grid gap-3 mt-4 text-sm">
                         {otherCategories.map((c) => (

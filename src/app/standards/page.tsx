@@ -130,7 +130,7 @@ export default function StandardsPage() {
                   </a>
                   <a
                     href="/contact#form"
-                    className="inline-flex items-center bg-white hover:border-brand-600 hover:text-brand-600 text-paper-ink font-bold text-sm px-6 py-3 border border-paper-border rounded-lg transition-colors"
+                    className="inline-flex items-center bg-paper-card hover:border-brand-600 hover:text-brand-600 text-paper-ink font-bold text-sm px-6 py-3 border border-paper-border rounded-lg transition-colors"
                   >
                     合作與廣告洽詢
                   </a>

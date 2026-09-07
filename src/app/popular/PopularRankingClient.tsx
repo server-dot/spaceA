@@ -80,7 +80,7 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                   className={`rounded-full px-4 py-2 text-[13px] transition-colors ${
                     active
                       ? 'bg-paper-ink border border-paper-ink text-white font-bold'
-                      : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
+                      : 'bg-paper-card border border-paper-border text-paper-secondary hover:border-paper-muted'
                   }`}
                 >
                   {r.label}
@@ -103,7 +103,7 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                   className={`rounded-full px-4 py-1.5 text-[13px] transition-colors ${
                     active
                       ? 'bg-brand-600 border border-brand-600 text-white font-bold'
-                      : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
+                      : 'bg-paper-card border border-paper-border text-paper-secondary hover:border-paper-muted'
                   }`}
                 >
                   {name}
@@ -172,7 +172,7 @@ export default function PopularRankingClient({ articles, categories }: Props) {
 
           <aside className="lg:sticky lg:top-24 grid gap-5">
             {categories.length > 0 && (
-              <div className="bg-white border border-paper-border rounded-2xl p-6">
+              <div className="bg-paper-card border border-paper-border rounded-2xl p-6">
                 <div className="text-xs tracking-wider text-paper-muted font-bold">換個主題看</div>
                 <p className="text-sm leading-relaxed text-paper-body mt-3">點進分類，看該主題底下的全部文章。</p>
                 <ul className="grid gap-3 mt-4 text-sm">

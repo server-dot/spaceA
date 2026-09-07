@@ -92,7 +92,7 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <HomeClient blocks={blocks} topics={topics} />
 
-          <section className="mt-16 bg-white border border-paper-border rounded-[20px] px-9 sm:px-11 pt-10 pb-9">
+          <section className="mt-16 bg-paper-card border border-paper-border rounded-[20px] px-9 sm:px-11 pt-10 pb-9">
             <div className="flex items-end justify-between gap-8 flex-wrap pb-7 border-b border-paper-border">
               <div className="max-w-xl">
                 <div className="text-xs tracking-wider text-brand-600 font-bold">我們怎麼挑</div>

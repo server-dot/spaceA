@@ -109,7 +109,7 @@ export default function CategoryPageClient({
                   className={`flex items-baseline gap-2 rounded-full px-[18px] py-[9px] text-sm transition-colors ${
                     active
                       ? 'bg-brand-600 border border-brand-600 text-white font-bold'
-                      : 'bg-white border border-paper-border text-paper-ink font-medium'
+                      : 'bg-paper-card border border-paper-border text-paper-ink font-medium'
                   }`}
                 >
                   {opt.label}
@@ -141,7 +141,7 @@ export default function CategoryPageClient({
                 className={`flex items-baseline gap-1.5 rounded-full px-4 py-1.5 text-[13px] transition-colors ${
                   active
                     ? 'bg-brand-600 border border-brand-600 text-white font-bold'
-                    : 'bg-white border border-paper-border text-paper-secondary hover:border-paper-muted'
+                    : 'bg-paper-card border border-paper-border text-paper-secondary hover:border-paper-muted'
                 }`}
               >
                 {t.name}

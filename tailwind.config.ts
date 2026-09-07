@@ -30,6 +30,8 @@ const config: Config = {
           muted: '#9c968d',
           border: '#e6e2da',
           surface: '#f1eee8',
+          // 卡片底：帶一點暖調的近白，直接用純白在米色底上會變成一塊塊冷白
+          card: '#fdf9f0',
         },
       },
     },

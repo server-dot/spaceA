@@ -17,7 +17,7 @@ export default function ArticleCard({ post }: ArticleCardProps) {
   const href = category ? `/${category.slug}/${post.slug}` : `/${post.slug}`
 
   return (
-    <article className="group flex flex-col bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-md transition-all duration-200">
+    <article className="group flex flex-col bg-paper-card rounded-xl overflow-hidden border border-gray-100 hover:shadow-md transition-all duration-200">
       {/* Thumbnail */}
       <Link href={href} className="block relative aspect-[16/9] bg-gray-100 overflow-hidden">
         {post.featuredImage?.node ? (

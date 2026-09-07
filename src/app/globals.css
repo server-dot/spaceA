@@ -12,12 +12,27 @@
   }
 
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-paper text-paper-ink;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* WordPress 文章內容自帶的 <style>（由 n8n 推薦文工具產生）把卡片寫死成純白，
+   在米色頁面上會變成一塊塊冷白。這裡用 .prose 提高權重覆蓋掉，
+   已發布的舊文章不用重貼也會跟著改 */
+@layer components {
+  .prose .brand-card,
+  .prose .ai-article-body .brand-card {
+    background: theme('colors.paper.card');
+    border-color: theme('colors.paper.border');
+  }
+
+  .prose .brand-card .card-hero {
+    background: theme('colors.paper.surface');
   }
 }

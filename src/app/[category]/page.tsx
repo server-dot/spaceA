@@ -122,14 +122,14 @@ export default async function CategoryPage({ params }: Props) {
           </Suspense>
 
           {otherCategories.length > 0 && (
-            <section className="mt-16 bg-white border border-paper-border rounded-2xl p-9">
+            <section className="mt-16 bg-paper-card border border-paper-border rounded-2xl p-9">
               <div className="text-xs tracking-wider text-brand-600 font-bold">其他分類</div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
                 {otherCategories.map((c) => (
                   <Link
                     key={c.slug}
                     href={`/${c.slug}`}
-                    className="flex items-center gap-3.5 p-3.5 border border-paper-border rounded-2xl bg-white hover:border-brand-600 transition-colors"
+                    className="flex items-center gap-3.5 p-3.5 border border-paper-border rounded-2xl bg-paper-card hover:border-brand-600 transition-colors"
                   >
                     <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-paper-surface">
                       <CategoryImage slug={c.slug} name={c.name} />

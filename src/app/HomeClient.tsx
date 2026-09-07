@@ -39,7 +39,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
 
   return (
     <>
-      <section id="topics" className="relative z-10 -mt-12 scroll-mt-24 bg-white border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6">
+      <section id="topics" className="relative z-10 -mt-12 scroll-mt-24 bg-paper-card border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6">
         <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
           <div className="font-serif text-xl font-bold tracking-tight text-paper-ink">想看哪些主題？</div>
           <p className="text-[13px] text-paper-secondary">可複選，下方分區會即時篩選</p>
@@ -53,7 +53,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                 type="button"
                 onClick={() => toggle(t.slug)}
                 className={`relative flex flex-col items-center gap-2.5 py-4 px-2.5 rounded-2xl border transition-colors ${
-                  on ? 'bg-brand-50 border-brand-600' : 'bg-white border-paper-border'
+                  on ? 'bg-brand-50 border-brand-600' : 'bg-paper-card border-paper-border'
                 }`}
               >
                 {on && (

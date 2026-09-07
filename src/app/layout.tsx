@@ -65,7 +65,7 @@ export default async function RootLayout({
 
   return (
     <html lang="zh-TW" className={`${notoSansTC.variable} ${notoSerifTC.variable}`}>
-      <body className="min-h-screen flex flex-col bg-white text-gray-900">
+      <body className="min-h-screen flex flex-col bg-paper text-paper-ink">
         <WebsiteJsonLd />
         <OrganizationJsonLd />
         <Header />
