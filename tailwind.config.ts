@@ -23,7 +23,7 @@ const config: Config = {
           700: '#0369a1',
         },
         paper: {
-          DEFAULT: '#fbfaf7',
+          DEFAULT: '#f6f1e7',
           ink: '#1d1c1a',
           body: '#46433f',
           secondary: '#6f6a63',

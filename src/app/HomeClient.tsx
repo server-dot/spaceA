@@ -39,7 +39,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
 
   return (
     <>
-      <section className="relative z-10 -mt-12 bg-white border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6">
+      <section id="topics" className="relative z-10 -mt-12 scroll-mt-24 bg-white border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6">
         <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
           <div className="font-serif text-xl font-bold tracking-tight text-paper-ink">想看哪些主題？</div>
           <p className="text-[13px] text-paper-secondary">可複選，下方分區會即時篩選</p>
