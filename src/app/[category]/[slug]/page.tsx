@@ -15,7 +15,14 @@ import ArticleJsonLd from '@/components/seo/ArticleJsonLd'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import HowToJsonLd from '@/components/seo/HowToJsonLd'
-import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_URL } from '@/lib/constants'
+import {
+  EDITORIAL_EMAIL,
+  EXCLUDED_CATEGORY_SLUGS,
+  EDITOR_NAME,
+  EDITOR_AVATAR_URL,
+  EDITOR_ROLE,
+  EDITOR_BIO,
+} from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
@@ -245,6 +252,23 @@ export default async function ArticlePage({ params }: Props) {
                   />
                 </div>
               )}
+
+              {/* 編者介紹：資料來源是站上的 EDITOR_* 常數，不吃 WordPress 內文——
+                  StackTool 生成的文章自帶一塊編者介紹，人設常跟文章主題無關，
+                  已在 content-parsers 的 stripUpstreamAuthorBlock 挑掉 */}
+              <section className="mt-7 bg-paper-card border border-paper-border rounded-2xl px-6 py-5">
+                <h2 className="text-xs tracking-wider text-paper-muted font-bold">編者介紹</h2>
+                <div className="flex gap-4 items-start mt-3.5">
+                  <span className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 bg-paper-surface">
+                    <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="56px" className="object-cover" />
+                  </span>
+                  <div>
+                    <b className="text-[15px] font-bold text-paper-ink">{EDITOR_NAME}</b>
+                    <span className="text-[13px] text-paper-secondary ml-2">{EDITOR_ROLE}</span>
+                    <p className="text-sm leading-loose text-paper-secondary mt-1.5">{EDITOR_BIO}</p>
+                  </div>
+                </div>
+              </section>
 
               {parsed.toc.length > 0 && (
                 <nav

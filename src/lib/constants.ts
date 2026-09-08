@@ -35,3 +35,8 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 // 頭像放在 public/ 自己控制，不外連別的網域（原本連 aiqkangber.com，對方掛掉這裡就破圖）
 export const EDITOR_NAME = 'Selina'
 export const EDITOR_AVATAR_URL = '/editor-avatar.png'
+export const EDITOR_ROLE = 'spaceA 編輯部主編'
+// 文章上方「編者介紹」用的簡介。內容只寫編輯部實際在做的事（彙整、交叉核對、標註來源），
+// 不掛任何學歷、證照或年資，避免寫出無法查證的資歷
+export const EDITOR_BIO =
+  '負責推薦文與選購指南的資料彙整與核對：從公開討論、電商評論與品牌官方資訊交叉比對後撰寫，並標註每則資訊的來源與更新日期。'
