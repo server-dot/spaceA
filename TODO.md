@@ -9,9 +9,21 @@
 - 聯絡表單（`/contact`）已可收件 — `src/app/api/contact/route.ts` 轉發到 n8n webhook「spaceA-聯絡表單通知」→ Slack #機器人測試。若之後想改成寄 email，再接 email 服務即可（webhook URL 可用 `N8N_CONTACT_WEBHOOK_URL` 覆蓋）
 - 分類頁移除了「熱門」排序切換 — 原設計稿的排序是假資料（reverse），怕誤導使用者以為有真實熱門度，先只保留「最新」
 - 首頁「編輯精選專題」橫幅拿掉了原設計稿的假統計數字（12,000+ 篇評論等），改成不掛數字的說法，避免不實資料
+- `npm run lint` 目前跑不起來 — `.eslintrc.json` 有 circular structure 錯誤（`Converting circular structure to JSON`），跟改動無關，是既有問題
 
 ### 設計優化
 - [x] 文章頁「先看結論」改成白底細框卡 ＋ 騎在上緣的藍色掛耳標籤，重點條列改 ✓ ＋ 分隔線（`src/app/[category]/[slug]/page.tsx`）
+- [x] 文章頁「編者介紹」區塊 — 放在封面圖之後、本篇目錄之前，資料吃 `EDITOR_NAME`／`EDITOR_ROLE`／`EDITOR_BIO`／`EDITOR_AVATAR_URL` 常數，不吃 WordPress 內文（StackTool 自帶那塊人設常跟主題無關，已在 `stripUpstreamAuthorBlock` 挑掉）
+- [x] 修掉 StackTool 內文 `<style>` 的 `.ai-article-body h2/h3` 跟站上 `.prose h2/h3` 權重打架（深藍字壓在藍底上）— `stripUpstreamHeadingStyles`
+
+### 推薦文封面圖（n8n workflow `推薦文-3-完整生成`, id `wHUHCGjX2iyiY7wA`）
+- [x] 改掉舊 prompt — 舊版寫「拍攝風格情境照＋絕對禁止任何文字」，生出來是制式 stock photo。現在的模型畫得出正確的繁體中文，所以 `封面圖提示詞` 節點改成直接生一張設計過的橫幅：照片滿版、左上膠囊標籤（年份＋最新推薦）、兩行大標（主題／怎麼選？）、副標（精選 N 家口碑推薦）、三個圓形 icon 徽章、右下便利貼
+- [x] 模板吃文章資料：標題會切掉「2026精選8家…推薦」尾巴再拆兩行、`brands.length` 帶「精選 N 家」、`subject_type` 決定情境（service 走辦公室／product 走使用產品）與徽章標籤
+- [x] 關鍵措辭：必須寫「四個邊角都是照片內容」＋「嚴格禁止大面積純白／過曝／留白」，否則模型會把左側打亮成白牆
+- [x] 既有文章換新封面：post 187（media 204）、post 112（media 206）
+- [ ] post 161（短影音器材）還是舊封面 — 它是選購指南不是推薦文，「精選 N 家口碑推薦」文案不適用，要另做指南版文案（例：膠囊標籤「新手指南」、徽章「必備清單／預算範圍／新手重點」）
+- [ ] `封面圖區塊` 節點還是把封面塞進內文 `<div class="cover-image">` 且 `alt=""` — 但文章頁本身就會渲染精選圖片，兩張會重複（187 已手動移除內文那張）。應改成不再塞進內文，或至少補 alt
+- [ ] 封面輸出仍是 PNG（約 1.4MB），該轉 JPEG／WebP 再上傳，不然拖 LCP，影響下面的 Lighthouse 目標
 
 ### 內容策略 — 文章類型規劃
 除了核心推薦文，規劃以下內容類型（同一利基內互相導流，避免無關話題稀釋主題權威度）：
@@ -30,7 +42,8 @@
 - [x] llms.txt（`src/app/llms.txt/route.ts`，動態抓 WP 分類，每小時 revalidate）
 - [x] FAQ schema 元件（`src/components/seo/FaqJsonLd.tsx`，已在文章頁套用）
 - [x] 文章頁內容解析（`src/lib/content-parsers.ts`）— 從 `post.content` 抽出「結論」「常見問題」「這篇怎麼寫出來的」，幫 h2 補錨點 id 產生「本篇目錄」（TOC），並清掉 StackTool 自帶的舊 `<nav class="toc">`
-- [x] 文章頁 FAQ 自動偵測 — 約定格式為 `<h2>常見問題</h2>` + `<h3>Q：…</h3>`／`<p>A：…</p>` 配對，解析後套 FaqJsonLd
+- [x] 文章頁 FAQ 自動偵測 — 兩種格式都認：選購指南的 `<h2>常見問題</h2>` + `<h3>Q：…</h3>`／`<p>A：…</p>`，以及 StackTool 推薦文的 `<h2>FAQ</h2>` + `<details class="faq-item">`（`.question-text`／`.answer-container`）。解析後套 FaqJsonLd
+- [ ] 選配：`extractConclusion` 是否也認「總結」— StackTool 推薦文的結論叫「總結」且放在文末，所以那些文章的「先看結論」框目前是空的。認了就能把結論前置（對 GEO 有利），但會改動既有文章版面
 - [x] HowTo schema（`HowToJsonLd`）— 只給知識分享用，推薦文的 `<ol>` 是排名清單不套
 
 ### Phase 5 — ISR Webhook
