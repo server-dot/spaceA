@@ -49,6 +49,19 @@ function stripLegacyToc(html: string): string {
   return html.replace(/<nav[^>]*\bclass="toc"[^>]*>[\s\S]*?<\/nav>\s*/i, '')
 }
 
+/**
+ * StackTool 生成的文章會在 `post.content` 裡自己塞一段 `<style>`，用 `.ai-article-body h2/h3`
+ * 覆寫標題樣式（藍字＋底線／左側線）。那組選擇器跟站上 `globals.css` 的 `.prose h2/h3`
+ * 權重相同，而內容裡的 style 出現在後面，於是「顏色、字級、邊距」吃 StackTool 的、
+ * 「藍色底、✓ 前綴」吃站上的，混在一起變成深藍字壓在藍底上。
+ * 這裡只挑掉那兩條標題規則，其餘（.brand-card、.faq-container）是 StackTool 元件要用的，保留。
+ */
+function stripUpstreamHeadingStyles(html: string): string {
+  return html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, (block) =>
+    block.replace(/\.ai-article-body\s+h[23]\s*\{[^}]*\}\s*/gi, '')
+  )
+}
+
 function cutSection(html: string, heading: string): { block: string; rest: string } | null {
   const re = new RegExp(`<h2[^>]*>\\s*${heading}\\s*</h2>([\\s\\S]*?)(?=<h2[\\s>]|$)`, 'i')
   const match = html.match(re)
@@ -156,7 +169,7 @@ export function parseArticleContent(
 ): ParsedArticleContent {
   const { extractHowTo: shouldExtractHowTo = true, extractProvenance: shouldExtractProvenance = true } = options
 
-  const withoutLegacyToc = stripLegacyToc(html)
+  const withoutLegacyToc = stripUpstreamHeadingStyles(stripLegacyToc(html))
   const { conclusion, rest: afterConclusion } = extractConclusion(withoutLegacyToc)
   const { faq, rest: afterFaq } = extractFaq(afterConclusion)
   const { provenance, rest: afterProvenance } = shouldExtractProvenance

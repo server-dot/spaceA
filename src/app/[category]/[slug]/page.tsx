@@ -19,7 +19,7 @@ import { EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_UR
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
-import { formatDate, stripHtml, resolveSummary } from '@/lib/format'
+import { formatDate, resolveSummary, isAutoExcerpt } from '@/lib/format'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
@@ -69,13 +69,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {}
 
   const categorySlug = post.categories.nodes[0]?.slug ?? ''
+  // Yoast 沒填描述時退回 excerpt（自動截斷的目錄殘骸會被 resolveSummary 判掉），
+  // 免得 meta description 整個空著
+  const description = resolveSummary(post.excerpt, post.seo?.metaDesc)
+  // Yoast 的 og 描述也可能直接吃 WordPress 自動摘要（＝目錄殘骸），一樣要判掉
+  const ogDescription =
+    post.seo?.opengraphDescription && !isAutoExcerpt(post.seo.opengraphDescription)
+      ? post.seo.opengraphDescription
+      : description
   return {
     title: post.seo?.title || post.title,
-    description: post.seo?.metaDesc || '',
+    description,
     alternates: { canonical: `/${categorySlug}/${post.slug}` },
     openGraph: {
       title: post.seo?.opengraphTitle || post.title,
-      description: post.seo?.opengraphDescription || '',
+      description: ogDescription,
       type: 'article',
       publishedTime: post.date,
       modifiedTime: post.modified,
@@ -197,15 +205,26 @@ export default async function ArticlePage({ params }: Props) {
                 </p>
               )}
 
+              {/* 白底細框卡＋騎在上緣的「先看結論」掛耳標籤。
+                  圓角刻意收到 4px（不用其他卡片的 rounded-2xl），跟內文 h2 橫幅同一個直角家族；
+                  重點條列前綴用 ✓，呼應 globals.css 給內文 h2 的 ✓。
+                  標籤是絕對定位、往上位移一半，所以卡片上緣要留 pt-8 才不會壓到內文 */}
               {parsed.conclusion && (
-                <div className="mt-6 bg-brand-100 rounded-2xl px-7 py-6">
-                  <h2 className="text-xs tracking-wider text-brand-600 font-bold">先看結論</h2>
-                  <p className="text-[15px] leading-loose mt-3.5 text-balance">{parsed.conclusion.body}</p>
+                <div className="relative mt-10 bg-paper-card border border-paper-border rounded px-7 pt-8 pb-2 sm:px-8 shadow-[0_1px_2px_rgba(29,28,26,0.05),0_14px_30px_-18px_rgba(29,28,26,0.28)]">
+                  <h2 className="absolute top-0 left-6 -translate-y-1/2 bg-brand-600 text-white text-xs font-bold tracking-[0.14em] rounded-[3px] px-3.5 py-1">
+                    先看結論
+                  </h2>
+                  <p className="text-[15.5px] leading-loose text-paper-body text-balance">
+                    {parsed.conclusion.body}
+                  </p>
                   {parsed.conclusion.takeaways.length > 0 && (
-                    <ul className="grid gap-2.5 mt-4">
+                    <ul className="grid mt-4">
                       {parsed.conclusion.takeaways.map((t, i) => (
-                        <li key={i} className="grid grid-cols-[18px_1fr] gap-2.5 text-sm leading-relaxed text-paper-ink">
-                          <span className="text-brand-600 font-bold">·</span>
+                        <li
+                          key={i}
+                          className="grid grid-cols-[18px_1fr] gap-3 py-3.5 border-t border-paper-border text-sm leading-relaxed text-paper-body"
+                        >
+                          <span className="text-brand-600 font-bold">✓</span>
                           <span>{t}</span>
                         </li>
                       ))}

@@ -6,10 +6,12 @@
 ## 待辦
 
 ### 已知簡化（後續要補）
-- 聯絡表單（`/contact`）目前只有前端互動，送出後沒有真的寄信 — 需要接後端 API（email 服務）才能真正收信
-- 文章頁沒有「本文目錄」（TOC）— 需要解析 `post.content` 內的標題並注入錨點 id 才能做，先跳過
+- 聯絡表單（`/contact`）已可收件 — `src/app/api/contact/route.ts` 轉發到 n8n webhook「spaceA-聯絡表單通知」→ Slack #機器人測試。若之後想改成寄 email，再接 email 服務即可（webhook URL 可用 `N8N_CONTACT_WEBHOOK_URL` 覆蓋）
 - 分類頁移除了「熱門」排序切換 — 原設計稿的排序是假資料（reverse），怕誤導使用者以為有真實熱門度，先只保留「最新」
 - 首頁「編輯精選專題」橫幅拿掉了原設計稿的假統計數字（12,000+ 篇評論等），改成不掛數字的說法，避免不實資料
+
+### 設計優化
+- [x] 文章頁「先看結論」改成白底細框卡 ＋ 騎在上緣的藍色掛耳標籤，重點條列改 ✓ ＋ 分隔線（`src/app/[category]/[slug]/page.tsx`）
 
 ### 內容策略 — 文章類型規劃
 除了核心推薦文，規劃以下內容類型（同一利基內互相導流，避免無關話題稀釋主題權威度）：
@@ -26,8 +28,10 @@
 - [x] sitemap.xml（`src/app/sitemap.ts`，動態抓 WP 分類/文章）
 - [x] TKD（Yoast SEO 透過 WPGraphQL 拉取，各頁 generateMetadata）
 - [x] llms.txt（`src/app/llms.txt/route.ts`，動態抓 WP 分類，每小時 revalidate）
-- [x] FAQ schema 元件（`src/components/seo/FaqJsonLd.tsx`，目前未使用中，等文章頁 FAQ 解析邏輯做好後套用）
-- [ ] 文章頁 FAQ 自動偵測：等開始寫「選購指南」類文章時，跟編輯部約定 WordPress 裡標記 FAQ 區塊的方式（固定 heading 文字或 shortcode），解析 `post.content` 抓出 Q&A 並套用 FaqJsonLd
+- [x] FAQ schema 元件（`src/components/seo/FaqJsonLd.tsx`，已在文章頁套用）
+- [x] 文章頁內容解析（`src/lib/content-parsers.ts`）— 從 `post.content` 抽出「結論」「常見問題」「這篇怎麼寫出來的」，幫 h2 補錨點 id 產生「本篇目錄」（TOC），並清掉 StackTool 自帶的舊 `<nav class="toc">`
+- [x] 文章頁 FAQ 自動偵測 — 約定格式為 `<h2>常見問題</h2>` + `<h3>Q：…</h3>`／`<p>A：…</p>` 配對，解析後套 FaqJsonLd
+- [x] HowTo schema（`HowToJsonLd`）— 只給知識分享用，推薦文的 `<ol>` 是排名清單不套
 
 ### Phase 5 — ISR Webhook
 - [ ] WordPress WP Webhooks plugin 設定
