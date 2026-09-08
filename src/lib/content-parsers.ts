@@ -37,6 +37,8 @@ function stripTags(html: string) {
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    // 內容裡的換行與縮排在純文字欄位（結論、FAQ）會變成多餘空白，統一收成單一空格
+    .replace(/\s+/g, ' ')
     .trim()
 }
 
@@ -60,6 +62,19 @@ function stripUpstreamHeadingStyles(html: string): string {
   return html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, (block) =>
     block.replace(/\.ai-article-body\s+h[23]\s*\{[^}]*\}\s*/gi, '')
   )
+}
+
+/**
+ * StackTool 會在內文塞一塊自己的「編者介紹」：小標是純樣式的 `<p>`（不是 heading），
+ * 後面接 `.author-block`。因為小標不是 h2，`cutSection('結論')` 抓「結論到下一個 h2」時
+ * 會把整塊編者介紹一起吃進去，`<p>` 全被串成結論內文——這就是結論框裡混進自介的原因。
+ * 站上每篇文章末尾本來就會渲染自己的編輯介紹（EDITOR_NAME），內文這塊是重複的，
+ * 而且人設常常跟文章主題無關，所以整塊挑掉。
+ */
+function stripUpstreamAuthorBlock(html: string): string {
+  return html
+    .replace(/<p[^>]*>\s*編者介紹\s*<\/p>\s*/gi, '')
+    .replace(/<div[^>]*\bclass="author-block"[^>]*>[\s\S]*?<\/div>\s*/gi, '')
 }
 
 function cutSection(html: string, heading: string): { block: string; rest: string } | null {
@@ -88,13 +103,26 @@ function extractConclusion(html: string): { conclusion: ParsedArticleContent['co
   }
 }
 
+/** FAQ 區塊的 h2 標題寫法：選購指南用「常見問題」，StackTool 推薦文用「FAQ」 */
+const FAQ_HEADING_PATTERN = '(?:常見問題|常見問答|FAQ)'
+
 function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
-  const cut = cutSection(html, '常見問題')
+  const cut = cutSection(html, FAQ_HEADING_PATTERN)
   if (!cut) return { faq: null, rest: html }
 
-  const pairs = [
+  // 選購指南／準備清單文的約定格式：<h3>Q：…</h3> 緊接 <p>A：…</p>
+  const headingPairs = [
     ...cut.block.matchAll(/<h3[^>]*>\s*Q[:：]?\s*([\s\S]*?)<\/h3>\s*<p[^>]*>\s*A[:：]?\s*([\s\S]*?)<\/p>/gi),
   ]
+  // StackTool 推薦文的格式：<details class="faq-item"> 手風琴，
+  // 問題在 .question-text、答案在 .answer-container（都是 div，不是 h3/p）
+  const accordionPairs = [
+    ...cut.block.matchAll(
+      /<div[^>]*\bclass="question-text"[^>]*>([\s\S]*?)<\/div>[\s\S]*?<div[^>]*\bclass="answer-container"[^>]*>([\s\S]*?)<\/div>/gi
+    ),
+  ]
+
+  const pairs = headingPairs.length > 0 ? headingPairs : accordionPairs
   if (pairs.length === 0) return { faq: null, rest: html }
 
   return {
@@ -169,8 +197,8 @@ export function parseArticleContent(
 ): ParsedArticleContent {
   const { extractHowTo: shouldExtractHowTo = true, extractProvenance: shouldExtractProvenance = true } = options
 
-  const withoutLegacyToc = stripUpstreamHeadingStyles(stripLegacyToc(html))
-  const { conclusion, rest: afterConclusion } = extractConclusion(withoutLegacyToc)
+  const cleaned = stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
+  const { conclusion, rest: afterConclusion } = extractConclusion(cleaned)
   const { faq, rest: afterFaq } = extractFaq(afterConclusion)
   const { provenance, rest: afterProvenance } = shouldExtractProvenance
     ? extractProvenance(afterFaq)
