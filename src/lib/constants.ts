@@ -33,8 +33,8 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 // 站上實際掛名的編輯身分（WP 帳號目前只有一個「admin」，沒設大頭貼/簡介，
 // 顯示名稱/頭像直接寫死，不吃 WP author 欄位，避免前台一直冒出「admin」+ 預設大頭貼
 // 頭像放在 public/ 自己控制，不外連別的網域（原本連 aiqkangber.com，對方掛掉這裡就破圖）
-export const EDITOR_NAME = 'Selina'
-export const EDITOR_AVATAR_URL = '/editor-avatar.png'
+export const EDITOR_NAME = '阿康'
+export const EDITOR_AVATAR_URL = '/editor-avatar-akang.png'
 export const EDITOR_ROLE = 'spaceA 編輯部主編'
 // 文章上方「編者介紹」用的簡介。內容只寫編輯部實際在做的事（彙整、交叉核對、標註來源），
 // 不掛任何學歷、證照或年資，避免寫出無法查證的資歷
