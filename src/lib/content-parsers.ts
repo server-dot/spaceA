@@ -86,8 +86,14 @@ function cutSection(html: string, heading: string): { block: string; rest: strin
   return { block, rest }
 }
 
+/**
+ * 結論區塊的 h2 標題寫法：選購指南寫「結論」，StackTool 推薦文寫「總結」而且放在文末。
+ * 兩種都認，把結論前置到「先看結論」框裡（對 GEO 有利，讀者也不用捲到最後）。
+ */
+const CONCLUSION_HEADING_PATTERN = '(?:結論|總結)'
+
 function extractConclusion(html: string): { conclusion: ParsedArticleContent['conclusion']; rest: string } {
-  const cut = cutSection(html, '結論')
+  const cut = cutSection(html, CONCLUSION_HEADING_PATTERN)
   if (!cut) return { conclusion: null, rest: html }
 
   const paragraphs = [...cut.block.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => stripTags(m[1]))

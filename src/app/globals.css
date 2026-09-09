@@ -76,6 +76,36 @@
   }
 
   /* 卡片／FAQ 收合區塊裡的標題有自己的排版，不套上面那組橫幅與虛線 */
+  /* 「小編點評」是每張品牌卡片最有價值的一段（唯一的人味與判斷），但 StackTool 內文自帶的
+     `.brand-card .verdict` 只給 16px 文字＋一條虛線底線，跟旁邊的規格欄位長得一樣，整個被淹沒。
+     這裡用 `.prose .brand-card .verdict`（權重 0,3,0）壓過內文那條 `.brand-card .verdict`（0,2,0），
+     改成淺藍底＋左側粗色條的引言卡，標籤做成實心膠囊。 */
+  .prose .brand-card .verdict {
+    position: relative;
+    background: theme('colors.brand.50');
+    border: 1px solid theme('colors.brand.100');
+    border-left: 4px solid theme('colors.brand.600');
+    border-radius: 10px;
+    padding: 1.15rem 1.25rem 1.15rem 1.35rem;
+    margin: 0 0 1.5rem;
+    font-size: 16.5px;
+    line-height: 1.85;
+    color: theme('colors.paper.body');
+  }
+
+  .prose .brand-card .verdict .lbl {
+    display: inline-block;
+    background: theme('colors.brand.600');
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    padding: 0.4rem 0.7rem;
+    border-radius: 3px;
+    margin-bottom: 0.7rem;
+  }
+
   .prose .brand-card h2,
   .prose .brand-card h3,
   .prose .faq-container h2,

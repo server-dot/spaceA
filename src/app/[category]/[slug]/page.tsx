@@ -320,12 +320,28 @@ export default async function ArticlePage({ params }: Props) {
                   <h2 className="font-serif text-2xl font-bold leading-snug tracking-tight text-paper-ink">
                     常見問題
                   </h2>
+                  {/* 手風琴用原生 <details>／<summary>，不用 client component 也能收合。
+                      第一題預設展開，讓讀者一眼看得出這區是可以點開的。
+                      收合狀態下答案不在畫面上，但仍在 DOM 裡，FaqJsonLd 也另外輸出結構化資料，
+                      所以不影響 SEO 與 AI 抓取。 */}
                   <div className="grid mt-5 border-t border-paper-border">
                     {parsed.faq.map((f, i) => (
-                      <div key={i} className="py-6 border-b border-paper-border">
-                        <h3 className="text-[17px] font-bold leading-relaxed text-paper-ink">{f.question}</h3>
-                        <p className="text-[15px] leading-loose text-paper-secondary mt-2.5">{f.answer}</p>
-                      </div>
+                      <details
+                        key={i}
+                        open={i === 0}
+                        className="group border-b border-paper-border [&_summary::-webkit-details-marker]:hidden"
+                      >
+                        <summary className="flex cursor-pointer list-none items-start gap-3 py-5 text-[17px] font-bold leading-relaxed text-paper-ink transition-colors hover:text-brand-600">
+                          <span
+                            aria-hidden
+                            className="mt-1 shrink-0 text-brand-600 transition-transform duration-200 group-open:rotate-90"
+                          >
+                            ▶
+                          </span>
+                          <span className="flex-1">{f.question}</span>
+                        </summary>
+                        <p className="pb-6 pl-7 text-[15px] leading-loose text-paper-secondary">{f.answer}</p>
+                      </details>
                     ))}
                   </div>
                 </section>
