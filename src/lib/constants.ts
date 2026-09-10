@@ -36,7 +36,7 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 // 頭像放在 public/ 自己控制，不外連別的網域（原本連 aiqkangber.com，對方掛掉這裡就破圖）
 export const EDITOR_NAME = '阿康'
 export const EDITOR_AVATAR_URL = '/editor-avatar-akang.jpg'
-export const EDITOR_ROLE = '積木行銷 AI 流程開發工程師'
+export const EDITOR_ROLE = '內容編輯'
 // 文章上方「編者介紹」用的簡介。寫的是這個人怎麼買東西，不是編輯流程說明
 // （流程已經寫在文章上方的揭露句，兩邊講一樣的事等於重複）。
 // 姓名與職稱在版面上另外一行（職稱做成膠囊），所以這段只寫自介本身。

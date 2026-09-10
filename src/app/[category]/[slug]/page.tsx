@@ -276,7 +276,7 @@ export default async function ArticlePage({ params }: Props) {
               {/* 編者介紹：資料來源是站上的 EDITOR_* 常數，不吃 WordPress 內文——
                   StackTool 生成的文章自帶一塊編者介紹，人設常跟文章主題無關，
                   已在 content-parsers 的 stripUpstreamAuthorBlock 挑掉 */}
-              <section className="mt-7 bg-paper-card border border-paper-border rounded-2xl px-6 py-5">
+              <section className="relative overflow-hidden mt-7 bg-paper-card border border-paper-border rounded-2xl px-6 py-5 bg-gradient-to-bl from-brand-100 via-paper-card via-40% to-paper-card">
                 <h2 className="flex items-center gap-2 text-xs tracking-wider text-paper-muted font-bold">
                   <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-brand-600 shrink-0" />
                   編者介紹
@@ -288,12 +288,12 @@ export default async function ArticlePage({ params }: Props) {
                   </span>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <b className="text-base font-bold text-paper-ink">{EDITOR_NAME}</b>
+                      <b className="text-[17px] font-bold text-paper-ink">{EDITOR_NAME}</b>
                       <span className="rounded-full bg-brand-50 text-brand-700 text-xs px-2.5 py-1">
                         {EDITOR_ROLE}
                       </span>
                     </div>
-                    <p className="text-sm leading-loose text-paper-secondary mt-2">{EDITOR_BIO}</p>
+                    <p className="text-sm leading-relaxed text-paper-secondary mt-2">{EDITOR_BIO}</p>
                   </div>
                 </div>
               </section>
@@ -445,7 +445,7 @@ export default async function ArticlePage({ params }: Props) {
                   <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="44px" className="object-cover" />
                 </span>
                 <div>
-                  <b className="text-base font-bold text-paper-ink">{EDITOR_NAME}</b>
+                  <b className="text-[17px] font-bold text-paper-ink">{EDITOR_NAME}</b>
                   <p className="text-sm leading-loose text-paper-secondary mt-2">
                     我們彙整網路上公開的討論與評論，交叉核對後撰寫推薦，並標註每則資訊的來源與更新日期。發現內容有誤，歡迎
                     <a href={`mailto:${EDITORIAL_EMAIL}`} className="text-brand-600 font-bold">
