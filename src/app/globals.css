@@ -94,7 +94,10 @@
   }
 
   .prose .brand-card .verdict .lbl {
-    display: inline-block;
+    /* 膠囊要自己佔一行、寬度只包住文字：用 inline-block 會被後面的點評文字接在同一行，
+       行高 1.85 又把第二行推開，看起來像跑版 */
+    display: block;
+    width: fit-content;
     background: theme('colors.brand.600');
     color: #fff;
     font-size: 12px;
