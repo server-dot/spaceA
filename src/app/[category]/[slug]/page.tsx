@@ -226,7 +226,7 @@ export default async function ArticlePage({ params }: Props) {
 
               {!isKnowledge && (
                 <p className="text-xs leading-loose text-paper-muted mt-4 px-4 py-3 bg-paper-card border border-paper-border rounded-lg">
-                  本文彙整網路公開討論、電商與訂房平台評論及品牌官方資訊，並由編輯部核對後撰寫。文中不含業配，部分連結為聯盟連結，不影響推薦內容。價格與供貨請以通路頁面為準。
+                  本文彙整網路公開討論、電商與訂房平台評論及品牌官方資訊，並由編輯部核對後撰寫。部分連結為聯盟連結，不影響推薦內容。價格與供貨請以通路頁面為準。
                 </p>
               )}
 
