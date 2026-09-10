@@ -19,6 +19,12 @@ export interface ParseArticleContentOptions {
   extractHowTo?: boolean
   /** 是否解析「這篇怎麼寫出來的」區塊，只給知識分享用（推薦文用固定的業配揭露文字）*/
   extractProvenance?: boolean
+  /**
+   * 是否把「結論／總結」抽出來給頁面上方的「先看結論」框。
+   * 推薦文不顯示那個框，這時候一定要關掉，否則整段總結會被抽走又沒地方渲染，
+   * 讀者看到的文章就會少一段（2026-09-10 實際發生過）。
+   */
+  extractConclusion?: boolean
 }
 
 export interface ParsedArticleContent {
@@ -29,6 +35,11 @@ export interface ParsedArticleContent {
   toc: { id: string; label: string }[]
   /** 抽掉「結論」「常見問題」「這篇怎麼寫出來的」區塊、並幫剩餘 H2 補上錨點 id 之後的內文，交給既有的 prose 樣式渲染 */
   bodyHtml: string
+  /**
+   * 「總結」以後（含總結、參考資料）的內文。常見問題要排在總結之前，
+   * 所以頁面渲染順序是 bodyHtml → 常見問題 → bodyTailHtml。
+   */
+  bodyTailHtml: string
 }
 
 function stripTags(html: string) {
@@ -203,10 +214,16 @@ export function parseArticleContent(
   html: string,
   options: ParseArticleContentOptions = {}
 ): ParsedArticleContent {
-  const { extractHowTo: shouldExtractHowTo = true, extractProvenance: shouldExtractProvenance = true } = options
+  const {
+    extractHowTo: shouldExtractHowTo = true,
+    extractProvenance: shouldExtractProvenance = true,
+    extractConclusion: shouldExtractConclusion = true,
+  } = options
 
   const cleaned = stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
-  const { conclusion, rest: afterConclusion } = extractConclusion(cleaned)
+  const { conclusion, rest: afterConclusion } = shouldExtractConclusion
+    ? extractConclusion(cleaned)
+    : { conclusion: null, rest: cleaned }
   const { faq, rest: afterFaq } = extractFaq(afterConclusion)
   const { provenance, rest: afterProvenance } = shouldExtractProvenance
     ? extractProvenance(afterFaq)
@@ -214,16 +231,26 @@ export function parseArticleContent(
   const { howTo, rest: afterHowTo } = shouldExtractHowTo
     ? extractHowTo(afterProvenance)
     : { howTo: null, rest: afterProvenance }
-  const { html: bodyHtml, toc } = injectTocAnchors(afterHowTo)
+  const { html: fullBodyHtml, toc } = injectTocAnchors(afterHowTo)
+
+  // 常見問題要排在總結前面，所以把「總結」以後的內容切出來，頁面在中間插入 FAQ
+  const summaryMatch = /<h2[^>]*>\s*(?:總結|結語)\s*<\/h2>/.exec(fullBodyHtml)
+  const splitAt = summaryMatch ? summaryMatch.index : fullBodyHtml.length
+  const bodyHtml = fullBodyHtml.slice(0, splitAt)
+  const bodyTailHtml = fullBodyHtml.slice(splitAt)
 
   if (howTo) {
     toc.unshift({ id: HOWTO_SECTION_ID, label: howTo.sectionTitle })
   }
   if (faq) {
-    toc.push({ id: FAQ_SECTION_ID, label: '常見問題' })
+    // 目錄也要跟著實際順序：常見問題插在總結那一項之前
+    const summaryIndex = toc.findIndex((item) => /^(總結|結語)/.test(item.label))
+    const entry = { id: FAQ_SECTION_ID, label: '常見問題' }
+    if (summaryIndex >= 0) toc.splice(summaryIndex, 0, entry)
+    else toc.push(entry)
   }
 
-  return { conclusion, faq, howTo, provenance, toc, bodyHtml }
+  return { conclusion, faq, howTo, provenance, toc, bodyHtml, bodyTailHtml }
 }
 
 /**

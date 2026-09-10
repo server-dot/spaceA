@@ -67,6 +67,10 @@
 - [ ] 選配：`extractConclusion` 是否也認「總結」— StackTool 推薦文的結論叫「總結」且放在文末，所以那些文章的「先看結論」框目前是空的。認了就能把結論前置（對 GEO 有利），但會改動既有文章版面
 - [x] HowTo schema（`HowToJsonLd`）— 只給知識分享用，推薦文的 `<ol>` 是排名清單不套
 
+### 文章頁區塊順序
+- [x] 修好推薦文「總結」整段消失 — `extractConclusion` 會把總結抽去給「先看結論」框，但推薦文已經不顯示那個框，抽走就沒地方渲染。`parseArticleContent` 新增 `extractConclusion` 選項，推薦文關掉、知識分享維持原樣
+- [x] 區塊順序改成 常見問題 → 總結 → 參考資料 — parser 以 `<h2>總結</h2>` 為界把內文切成 `bodyHtml` 與 `bodyTailHtml`，頁面在中間插入 FAQ；本篇目錄的「常見問題」也插到「總結」之前，跟實際順序一致
+
 ### 文章頁快取
 - [x] `src/app/[category]/[slug]/page.tsx` 補上 `export const revalidate = 3600` — 原本沒設，文章頁在部署當下被靜態化後就不再更新，WordPress 改了內容要等下次部署才會反映（首頁、分類頁、sitemap 本來就有設）
 

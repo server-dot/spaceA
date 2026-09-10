@@ -161,6 +161,8 @@ export default async function ArticlePage({ params }: Props) {
   const parsed = parseArticleContent(post.content, {
     extractHowTo: isKnowledge,
     extractProvenance: isKnowledge,
+    // 推薦文沒有「先看結論」框，抽走總結就等於整段消失
+    extractConclusion: isKnowledge,
   })
 
   return (
@@ -363,6 +365,13 @@ export default async function ArticlePage({ params }: Props) {
                     ))}
                   </div>
                 </section>
+              )}
+
+              {/* 總結與參考資料排在常見問題之後（見 parseArticleContent 的 bodyTailHtml） */}
+              {parsed.bodyTailHtml && (
+                <div className="mt-11">
+                  <ArticleBody content={parsed.bodyTailHtml} />
+                </div>
               )}
 
               {isKnowledge && (
