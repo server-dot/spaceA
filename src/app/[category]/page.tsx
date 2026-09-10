@@ -55,10 +55,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = data?.category
   if (!cat) return {}
 
+  // 還沒有文章的分類頁是空列表，首頁的主題格子又直接連過去，放給 Google 索引等於自己送一批
+  // thin content 進去。等這個分類有第一篇文章就會自動恢復索引（follow 保留，才不會擋住內部連結）
+  const isEmpty = !cat.count || cat.count === 0
+
   return {
     title: cat.seo?.title || cat.name,
     description: cat.seo?.metaDesc || cat.description || '',
     alternates: { canonical: `/${slug}` },
+    ...(isEmpty && { robots: { index: false, follow: true } }),
     openGraph: {
       title: cat.seo?.opengraphTitle || cat.name,
       description: cat.seo?.opengraphDescription || cat.description || '',

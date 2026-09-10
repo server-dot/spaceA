@@ -215,8 +215,10 @@ export default async function ArticlePage({ params }: Props) {
               {/* 白底細框卡＋騎在上緣的「先看結論」掛耳標籤。
                   圓角刻意收到 4px（不用其他卡片的 rounded-2xl），跟內文 h2 橫幅同一個直角家族；
                   重點條列前綴用 ✓，呼應 globals.css 給內文 h2 的 ✓。
-                  標籤是絕對定位、往上位移一半，所以卡片上緣要留 pt-8 才不會壓到內文 */}
-              {parsed.conclusion && (
+                  標籤是絕對定位、往上位移一半，所以卡片上緣要留 pt-8 才不會壓到內文。
+                  只給知識分享／選購指南：推薦文的結論叫「總結」且放在文末，抽到前面會跟前言講一樣的話，
+                  推薦文改由前言本身承擔前置重點（GEO 用） */}
+              {isKnowledge && parsed.conclusion && (
                 <div className="relative mt-10 bg-paper-card border border-paper-border rounded px-7 pt-8 pb-2 sm:px-8 shadow-[0_1px_2px_rgba(29,28,26,0.05),0_14px_30px_-18px_rgba(29,28,26,0.28)]">
                   <h2 className="absolute top-0 left-6 -translate-y-1/2 bg-brand-600 text-white text-xs font-bold tracking-[0.14em] rounded-[3px] px-3.5 py-1">
                     先看結論
