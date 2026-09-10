@@ -67,6 +67,9 @@
 - [ ] 選配：`extractConclusion` 是否也認「總結」— StackTool 推薦文的結論叫「總結」且放在文末，所以那些文章的「先看結論」框目前是空的。認了就能把結論前置（對 GEO 有利），但會改動既有文章版面
 - [x] HowTo schema（`HowToJsonLd`）— 只給知識分享用，推薦文的 `<ol>` 是排名清單不套
 
+### 文章頁快取
+- [x] `src/app/[category]/[slug]/page.tsx` 補上 `export const revalidate = 3600` — 原本沒設，文章頁在部署當下被靜態化後就不再更新，WordPress 改了內容要等下次部署才會反映（首頁、分類頁、sitemap 本來就有設）
+
 ### Phase 5 — ISR Webhook
 - [ ] WordPress WP Webhooks plugin 設定
 - [ ] 測試：WP 發文 → 頁面自動更新

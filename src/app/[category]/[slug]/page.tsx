@@ -62,6 +62,10 @@ function readingMinutes(html: string) {
   return Math.max(1, Math.round(textLength / 400))
 }
 
+// 文章頁少了這行，部署完內容就凍在 build 當下：WordPress 改了字要等下次部署才會更新。
+// 首頁、分類頁、sitemap 都是 3600，這裡跟著一致（之後接上 on-demand webhook 可以再縮短）
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   const data = await fetchQuery<AllSlugsData>(GET_ALL_POST_SLUGS)
   return (data?.posts?.nodes ?? []).flatMap((post) =>
