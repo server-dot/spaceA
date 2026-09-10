@@ -3,7 +3,8 @@ import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
-import { EDITORIAL_EMAIL } from '@/lib/constants'
+import { SITE_NAME, EDITORIAL_EMAIL } from '@/lib/constants'
+import Link from 'next/link'
 
 const DESCRIPTION =
   'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與網站的進度。'
@@ -65,9 +66,14 @@ export const metadata: Metadata = {
   title: '關於我們',
   description: DESCRIPTION,
   alternates: { canonical: '/about' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '關於我們',
     description: DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 
@@ -103,9 +109,9 @@ export default function AboutPage() {
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   我們不是在教你「應該」怎麼選，而是把判斷依據攤開，讓你自己決定要不要照做。做不到有把握的結論時，我們會直說資料不足，不會硬湊一個看起來完整的答案。完整流程寫在
-                  <a href="/standards" className="font-bold text-brand-600">
+                  <Link href="/standards" className="font-bold text-brand-600">
                     推薦標準
-                  </a>
+                  </Link>
                   頁。
                 </p>
               </section>

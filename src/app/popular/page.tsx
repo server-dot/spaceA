@@ -6,7 +6,7 @@ import { POPULAR_PAGE_DESCRIPTION, type RankedArticle } from './data'
 import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
 import { GET_ALL_CATEGORIES, GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
-import { EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
+import { SITE_NAME, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { formatDate, resolveSummary } from '@/lib/format'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 
@@ -29,9 +29,14 @@ export const metadata: Metadata = {
   title: '熱門排行',
   description: POPULAR_PAGE_DESCRIPTION,
   alternates: { canonical: '/popular' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '熱門排行',
     description: POPULAR_PAGE_DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 

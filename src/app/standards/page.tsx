@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
+import Link from 'next/link'
+import { SITE_NAME } from '@/lib/constants'
 
 const DESCRIPTION =
   'spaceA 如何彙整網路上公開的討論與評論、如何交叉核對、如何揭露合作關係，以及讀者發現內容有誤時的更正流程。'
@@ -23,9 +25,14 @@ export const metadata: Metadata = {
   title: '推薦標準',
   description: DESCRIPTION,
   alternates: { canonical: '/standards' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '推薦標準',
     description: DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 
@@ -122,18 +129,18 @@ export default function StandardsPage() {
                   歡迎直接告訴我們。收到指正後我們會核對來源，確認有誤即更正並更新「最後更新」日期；若更動影響原本的推薦結論，會在文末加註修正說明，不會默默改掉。
                 </p>
                 <div className="flex gap-3 flex-wrap mt-6">
-                  <a
+                  <Link
                     href="/contact#form"
                     className="inline-flex items-center bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-3 rounded-lg transition-colors"
                   >
                     回報內容問題
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/contact#form"
                     className="inline-flex items-center bg-paper-card hover:border-brand-600 hover:text-brand-600 text-paper-ink font-bold text-sm px-6 py-3 border border-paper-border rounded-lg transition-colors"
                   >
                     合作與廣告洽詢
-                  </a>
+                  </Link>
                 </div>
               </section>
             </article>

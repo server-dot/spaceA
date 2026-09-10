@@ -75,9 +75,10 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
       </section>
 
       <section className="pt-9 max-w-3xl">
-        <h1 className="font-serif text-[28px] font-bold tracking-tight leading-snug text-paper-ink text-balance">
+        {/* 首頁的 h1 是 Hero 那句標語，這裡改成 h2 — 一頁只能有一個 h1 */}
+        <h2 className="font-serif text-[28px] font-bold tracking-tight leading-snug text-paper-ink text-balance">
           spaceA 推薦文：彙整網路真實聲量的選物指南
-        </h1>
+        </h2>
         <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">
           精選推薦文章，幫你找到最值得的選擇。每篇推薦都標明資料來源與更新日期。
         </p>

@@ -37,12 +37,16 @@ export default function PopularRankingClient({ articles, categories }: Props) {
     return formatRangeLabel(null)
   }, [range])
 
+  // 「現在」只在初次掛載時取一次：直接在 render 裡呼叫 Date.now() 會讓每次重繪的篩選結果
+  // 都可能不同（react-hooks/purity），用 lazy initializer 就能固定住這個值
+  const [now] = useState(() => Date.now())
+
   // 目前還沒有真實閱讀數據，暫以「發布時間」當篩選依據（真的落在該期間內才會出現），
   // 不像舊版用 slice/reverse 假造不同區間的排序
   let list = articles
   if (range !== 'all') {
     const days = range === 'week' ? 7 : 30
-    const cutoff = Date.now() - days * 24 * 60 * 60 * 1000
+    const cutoff = now - days * 24 * 60 * 60 * 1000
     list = articles.filter((item) => new Date(item.dateISO).getTime() >= cutoff)
   }
   if (category !== '全部') list = list.filter((item) => item.cat === category)

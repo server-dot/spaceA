@@ -1,3 +1,5 @@
+import { stripHtml } from '@/lib/format'
+
 export interface FaqItem {
   question: string
   answer: string
@@ -222,4 +224,30 @@ export function parseArticleContent(
   }
 
   return { conclusion, faq, howTo, provenance, toc, bodyHtml }
+}
+
+/**
+ * meta description 的最後一道防線：Yoast 沒填、WordPress 自動摘要又是目錄殘骸時，
+ * 直接從內文抓第一段像樣的文字。搜尋結果摘要與 AI 引用都吃這個欄位，空著等於白丟。
+ */
+export function deriveMetaDescription(html: string, maxLength = 150): string {
+  if (!html) return ''
+  const cleaned = stripLegacyToc(html)
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<nav[\s\S]*?<\/nav>/gi, '')
+
+  const paragraphs = Array.from(cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
+    .map((m) => stripHtml(m[1]).replace(/\s+/g, ' ').trim())
+    .filter((text) => text.length >= 30 && !/^目錄/.test(text))
+
+  const source = paragraphs[0]
+  if (!source) return ''
+  if (source.length <= maxLength) return source
+
+  // 盡量切在句號／分號，切不到再硬切，結尾補刪節號
+  const window = source.slice(0, maxLength)
+  const lastStop = Math.max(window.lastIndexOf('。'), window.lastIndexOf('；'), window.lastIndexOf('！'))
+  if (lastStop >= maxLength * 0.5) return window.slice(0, lastStop + 1)
+  return window.trim() + '…'
 }

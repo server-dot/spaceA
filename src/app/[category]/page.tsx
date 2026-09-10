@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import { GET_CATEGORY, GET_ALL_CATEGORIES } from '@/lib/graphql/queries/category'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
-import { POSTS_PER_PAGE, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
+import { SITE_NAME, POSTS_PER_PAGE, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import CategoryImage from '@/components/layout/CategoryImage'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
@@ -14,6 +14,7 @@ import CategoryPageClient from './CategoryPageClient'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 import { WPSeo } from '@/types/seo'
 import { decodeRouteParam } from '@/lib/route-params'
+import { stripWpSiteSuffix } from '@/lib/format'
 
 export const revalidate = 3600
 
@@ -59,14 +60,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // thin content 進去。等這個分類有第一篇文章就會自動恢復索引（follow 保留，才不會擋住內部連結）
   const isEmpty = !cat.count || cat.count === 0
 
+  // Yoast 與分類描述都沒填時給一句制式的，總比整頁沒有 meta description 好
+  const description =
+    cat.seo?.metaDesc ||
+    cat.description ||
+    `spaceA 的${cat.name}推薦文與選購指南，每篇都標明資料來源與更新日期，幫你比完再決定。`
+
   return {
-    title: cat.seo?.title || cat.name,
-    description: cat.seo?.metaDesc || cat.description || '',
+    title: stripWpSiteSuffix(cat.seo?.title) || cat.name,
+    description,
     alternates: { canonical: `/${slug}` },
     ...(isEmpty && { robots: { index: false, follow: true } }),
     openGraph: {
-      title: cat.seo?.opengraphTitle || cat.name,
-      description: cat.seo?.opengraphDescription || cat.description || '',
+      // 子頁的 openGraph 會整組蓋掉 layout 的，siteName/locale/url 要自己帶
+      siteName: SITE_NAME,
+      locale: 'zh_TW',
+      url: `/${slug}`,
+      title: stripWpSiteSuffix(cat.seo?.opengraphTitle) || cat.name,
+      description: cat.seo?.opengraphDescription || description,
       images: cat.seo?.opengraphImage?.sourceUrl
         ? [{ url: cat.seo.opengraphImage.sourceUrl }]
         : [{ url: '/og-default.jpg', width: 1024, height: 318 }],

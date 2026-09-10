@@ -16,6 +16,7 @@ import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import HowToJsonLd from '@/components/seo/HowToJsonLd'
 import {
+  SITE_NAME,
   EDITORIAL_EMAIL,
   EXCLUDED_CATEGORY_SLUGS,
   EDITOR_NAME,
@@ -25,8 +26,13 @@ import {
 } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
-import { parseArticleContent, HOWTO_SECTION_ID, FAQ_SECTION_ID } from '@/lib/content-parsers'
-import { formatDate, resolveSummary, isAutoExcerpt } from '@/lib/format'
+import {
+  parseArticleContent,
+  deriveMetaDescription,
+  HOWTO_SECTION_ID,
+  FAQ_SECTION_ID,
+} from '@/lib/content-parsers'
+import { formatDate, resolveSummary, isAutoExcerpt, stripWpSiteSuffix } from '@/lib/format'
 
 interface Props {
   params: Promise<{ category: string; slug: string }>
@@ -77,19 +83,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const categorySlug = post.categories.nodes[0]?.slug ?? ''
   // Yoast 沒填描述時退回 excerpt（自動截斷的目錄殘骸會被 resolveSummary 判掉），
-  // 免得 meta description 整個空著
-  const description = resolveSummary(post.excerpt, post.seo?.metaDesc)
+  // 兩者都空就從內文第一段生一句 — StackTool 生成的推薦文兩個欄位都是空的，
+  // 不補這一層的話整頁連 <meta name="description"> 都不會輸出
+  const description =
+    resolveSummary(post.excerpt, post.seo?.metaDesc) || deriveMetaDescription(post.content)
   // Yoast 的 og 描述也可能直接吃 WordPress 自動摘要（＝目錄殘骸），一樣要判掉
   const ogDescription =
     post.seo?.opengraphDescription && !isAutoExcerpt(post.seo.opengraphDescription)
       ? post.seo.opengraphDescription
       : description
   return {
-    title: post.seo?.title || post.title,
+    title: stripWpSiteSuffix(post.seo?.title) || post.title,
     description,
     alternates: { canonical: `/${categorySlug}/${post.slug}` },
     openGraph: {
-      title: post.seo?.opengraphTitle || post.title,
+      // 子頁的 openGraph 會整組蓋掉 layout 的，siteName/locale/url 要自己帶
+      siteName: SITE_NAME,
+      locale: 'zh_TW',
+      url: `/${categorySlug}/${post.slug}`,
+      title: stripWpSiteSuffix(post.seo?.opengraphTitle) || post.title,
       description: ogDescription,
       type: 'article',
       publishedTime: post.date,

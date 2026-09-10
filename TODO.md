@@ -21,7 +21,7 @@
 - 聯絡表單（`/contact`）已可收件 — `src/app/api/contact/route.ts` 轉發到 n8n webhook「spaceA-聯絡表單通知」→ Slack #機器人測試。若之後想改成寄 email，再接 email 服務即可（webhook URL 可用 `N8N_CONTACT_WEBHOOK_URL` 覆蓋）
 - 分類頁移除了「熱門」排序切換 — 原設計稿的排序是假資料（reverse），怕誤導使用者以為有真實熱門度，先只保留「最新」
 - 首頁「編輯精選專題」橫幅拿掉了原設計稿的假統計數字（12,000+ 篇評論等），改成不掛數字的說法，避免不實資料
-- `npm run lint` 目前跑不起來 — `.eslintrc.json` 有 circular structure 錯誤（`Converting circular structure to JSON`），跟改動無關，是既有問題
+- [x] `npm run lint` 修好了 — eslint 9 + eslint-config-next 16 只吃 flat config，舊的 `.eslintrc.json` 會噴 `Converting circular structure to JSON`。改成 `eslint.config.mjs`（只 spread `eslint-config-next/core-web-vitals`，它已含 next 與 next/typescript）、script 改 `eslint .`、忽略 `design-handoff/`。順手修掉：站內 `<a>` 改 `<Link>`（about／contact／privacy／standards／terms）、`PopularRankingClient` 的 `Date.now()` 改成 `useState` lazy initializer（react-hooks/purity）
 
 ### 設計優化
 - [x] 文章頁「先看結論」改成白底細框卡 ＋ 騎在上緣的藍色掛耳標籤，重點條列改 ✓ ＋ 分隔線（`src/app/[category]/[slug]/page.tsx`）

@@ -13,8 +13,23 @@ import { WPPostCard } from '@/types/wordpress'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: SITE_NAME,
+  // 首頁不套 layout 的 `%s | spaceA` 樣板，直接給一個吃得到關鍵字的完整標題
+  // （原本只有「spaceA」六個字，搜尋結果看不出這站在做什麼）
+  title: {
+    absolute: `${SITE_NAME}｜推薦文與選購指南，比完再決定`,
+  },
   description: SITE_DESCRIPTION,
+  alternates: { canonical: '/' },
+  // openGraph 在子頁面是整組覆蓋掉 layout 的，所以 image/type/siteName 要一起帶
+  openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
+    url: '/',
+    title: `${SITE_NAME}｜推薦文與選購指南`,
+    description: SITE_DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
+  },
 }
 
 interface HomepageBlocksData {

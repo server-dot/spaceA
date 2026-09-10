@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
+import Link from 'next/link'
+import { SITE_NAME } from '@/lib/constants'
 
 const DESCRIPTION = 'spaceA 內容的使用範圍、轉載與引用規則、免責聲明、第三方連結與條款修改方式。'
 const LAST_UPDATED = '2026-08-28'
@@ -22,9 +24,14 @@ export const metadata: Metadata = {
   title: '使用條款',
   description: DESCRIPTION,
   alternates: { canonical: '/terms' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '使用條款',
     description: DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 
@@ -68,9 +75,9 @@ export default function TermsPage() {
                 </ul>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
                   授權洽詢請走
-                  <a href="/contact#form" className="text-brand-600 font-bold">
+                  <Link href="/contact#form" className="text-brand-600 font-bold">
                     聯絡表單
-                  </a>
+                  </Link>
                   並勾選「內容授權」。
                 </p>
               </section>
@@ -99,9 +106,9 @@ export default function TermsPage() {
                     <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
                     <span className="text-base leading-loose text-paper-body text-balance">
                       若您發現內容有誤，歡迎依
-                      <a href="/standards#corrections" className="text-brand-600 font-bold">
+                      <Link href="/standards#corrections" className="text-brand-600 font-bold">
                         更正流程
-                      </a>
+                      </Link>
                       告訴我們，我們會核對後處理。
                     </span>
                   </li>
@@ -118,9 +125,9 @@ export default function TermsPage() {
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   廣告與編輯內容分開呈現。我們不接業配，推薦名單與排序不對外開放付費，詳見
-                  <a href="/standards#disclosure" className="text-brand-600 font-bold">
+                  <Link href="/standards#disclosure" className="text-brand-600 font-bold">
                     合作揭露
-                  </a>
+                  </Link>
                   。
                 </p>
               </section>

@@ -44,3 +44,10 @@ export function resolveSummary(
   if (!raw || isAutoExcerpt(raw)) return ''
   return stripHtml(raw)
 }
+
+// Yoast 產的標題結尾會掛 WordPress 站名（「… - 推薦網」），前端 layout 又會再接
+// 「| spaceA」，變成一個標題兩個品牌後綴。渲染前先把 WordPress 那組拿掉。
+const WP_SITE_SUFFIX = /\s*[-–—|｜]\s*推薦網\s*$/
+export function stripWpSiteSuffix(title: string | null | undefined) {
+  return (title ?? '').replace(WP_SITE_SUFFIX, '').trim()
+}

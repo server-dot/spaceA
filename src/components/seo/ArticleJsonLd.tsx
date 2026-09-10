@@ -1,5 +1,7 @@
-import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_URL, EDITOR_NAME, EDITOR_ROLE } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
+import { resolveSummary } from '@/lib/format'
+import { deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
 
 interface ArticleJsonLdProps {
@@ -23,7 +25,9 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
-    description: post.seo?.metaDesc || post.excerpt,
+    // 跟 <meta name="description"> 走同一套：直接吃 post.excerpt 會把 HTML 標籤與
+    // WordPress 的截斷符號（[&hellip;]）原封不動送進結構化資料
+    description: resolveSummary(post.excerpt, post.seo?.metaDesc) || deriveMetaDescription(post.content),
     articleSection: articleType.name,
     url,
     inLanguage: 'zh-TW',
@@ -35,9 +39,12 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
         ? { '@type': 'ImageObject', url: image.sourceUrl, width: imageWidth, height: imageHeight }
         : [image.sourceUrl]
       : undefined,
+    // WordPress 的作者帳號是 admin，文章頁顯示的編者是阿康，兩邊要一致才有 E-E-A-T 意義
     author: {
       '@type': 'Person',
-      name: post.author?.node?.name ?? SITE_NAME,
+      name: EDITOR_NAME,
+      jobTitle: EDITOR_ROLE,
+      worksFor: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
     },
     publisher: {
       '@type': 'Organization',

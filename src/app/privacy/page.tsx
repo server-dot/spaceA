@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
+import Link from 'next/link'
+import { SITE_NAME } from '@/lib/constants'
 
 const DESCRIPTION =
   'spaceA 蒐集哪些資料、如何使用 Cookie 與分析工具、聯盟連結的追蹤方式，以及您可以行使的權利。'
@@ -24,9 +26,14 @@ export const metadata: Metadata = {
   title: '隱私權政策',
   description: DESCRIPTION,
   alternates: { canonical: '/privacy' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '隱私權政策',
     description: DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 
@@ -110,9 +117,9 @@ export default function PrivacyPage() {
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
                   完整的合作揭露寫在
-                  <a href="/standards#disclosure" className="text-brand-600 font-bold">
+                  <Link href="/standards#disclosure" className="text-brand-600 font-bold">
                     編輯方針
-                  </a>
+                  </Link>
                   。
                 </p>
               </section>
@@ -132,9 +139,9 @@ export default function PrivacyPage() {
                       seo@stack.com.tw
                     </a>
                     ，或透過
-                    <a href="/contact#form" className="text-brand-600 font-bold">
+                    <Link href="/contact#form" className="text-brand-600 font-bold">
                       聯絡表單
-                    </a>
+                    </Link>
                     告訴我們。
                   </p>
                 </div>

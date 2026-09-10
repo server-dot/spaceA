@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from './ContactForm'
-import { COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
+import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
+import Link from 'next/link'
 
 const DESCRIPTION = '內容更正、選題建議、廣告與內容授權洽詢的聯絡方式。內容更正會優先處理。'
 
@@ -15,9 +16,14 @@ export const metadata: Metadata = {
   title: '聯絡我們',
   description: DESCRIPTION,
   alternates: { canonical: '/contact' },
+  // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
+    type: 'website',
+    locale: 'zh_TW',
+    siteName: SITE_NAME,
     title: '聯絡我們',
     description: DESCRIPTION,
+    images: [{ url: '/og-default.jpg', width: 1024, height: 318 }],
   },
 }
 
@@ -38,9 +44,9 @@ export default function ContactPage() {
             </p>
             <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
               spaceA 的編輯內容與商務往來分開處理，推薦名單與排序不對外開放付費，也不接業配。詳細作法寫在
-              <a href="/standards" className="text-brand-600 font-bold">
+              <Link href="/standards" className="text-brand-600 font-bold">
                 推薦標準
-              </a>
+              </Link>
               。
             </p>
           </section>

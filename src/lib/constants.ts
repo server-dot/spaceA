@@ -1,5 +1,6 @@
 export const SITE_NAME = 'spaceA'
-export const SITE_DESCRIPTION = '精選推薦文章，幫你找到最值得的選擇'
+export const SITE_DESCRIPTION =
+  'spaceA 彙整網路真實聲量的推薦文與選購指南，涵蓋旅遊住宿、美妝保養、行銷服務等主題，每篇都標明資料來源與更新日期，幫你比完再決定買什麼、找誰。'
 export const POSTS_PER_PAGE = 12
 export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL!
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!
