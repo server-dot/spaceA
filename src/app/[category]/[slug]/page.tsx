@@ -277,14 +277,24 @@ export default async function ArticlePage({ params }: Props) {
                   StackTool 生成的文章自帶一塊編者介紹，人設常跟文章主題無關，
                   已在 content-parsers 的 stripUpstreamAuthorBlock 挑掉 */}
               <section className="mt-7 bg-paper-card border border-paper-border rounded-2xl px-6 py-5">
-                <h2 className="text-xs tracking-wider text-paper-muted font-bold">編者介紹</h2>
-                {/* 姓名與職稱已經寫在 EDITOR_BIO 的第一句，這裡不再單獨掛一行，
-                    省下來的高度給頭像（56px → 88px），照片才看得清楚 */}
+                <h2 className="flex items-center gap-2 text-xs tracking-wider text-paper-muted font-bold">
+                  <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-brand-600 shrink-0" />
+                  編者介紹
+                </h2>
+                {/* 頭像 88px，右邊第一行是姓名＋職稱膠囊，第二行才是自介 */}
                 <div className="flex gap-5 items-center mt-3.5">
                   <span className="relative w-[88px] h-[88px] rounded-full overflow-hidden shrink-0 bg-paper-surface">
                     <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="88px" className="object-cover" />
                   </span>
-                  <p className="text-sm leading-loose text-paper-secondary">{EDITOR_BIO}</p>
+                  <div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <b className="text-base font-bold text-paper-ink">{EDITOR_NAME}</b>
+                      <span className="rounded-full bg-brand-50 text-brand-700 text-xs px-2.5 py-1">
+                        {EDITOR_ROLE}
+                      </span>
+                    </div>
+                    <p className="text-sm leading-loose text-paper-secondary mt-2">{EDITOR_BIO}</p>
+                  </div>
                 </div>
               </section>
 
