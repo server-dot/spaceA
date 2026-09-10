@@ -1,5 +1,13 @@
 # spaceA 開發進度
 
+## 明天（2026-09-11）要做
+
+1. **GSC 綁定** — 用 `seo@stack.com.tw` 登入 Search Console → 新增資源選「網域」→ 輸入 `spacea.com.tw`（不是 dg166 那個舊網域）→ 拿到 `google-site-verification=…` → 加到 spacea.com.tw 的 DNS，類型 TXT、名稱 `@`（DNS 看起來在 Cloudflare）→ `dig +short TXT spacea.com.tw` 查得到就回去按驗證
+2. **提交 sitemap** — GSC → Sitemap → 填 `sitemap.xml`
+3. **兩篇送索引** — 網址審查列貼上 `https://spacea.com.tw/travel/xindian-hotels-guide`、`https://spacea.com.tw/beauty/exosome-skincare-recommendation`，各按「要求建立索引」
+4. **確認 Zeabur 部署到 `19150cd`** — 檢查前台：編者介紹（阿康／內容編輯／現職與經歷）、揭露句已無「文中不含業配」、區塊順序是常見問題→總結→參考資料、文章頁有 revalidate（WordPress 改內容一小時內會反映）
+5. **開始寫第三篇** — 十篇還剩八個主題，動筆前先照 `docs/推薦文交件檢查清單.md` 決定「推薦對象」要選產品還是服務（卡片要圖就選產品）
+
 ## 進行中
 - [ ] 寫新文章 — 目前 WordPress 只有 3 篇（都在「行銷」「影音器材」分類），內容太少，熱門排行/分類頁/首頁都撐不起來，要盡快補文章
 
