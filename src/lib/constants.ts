@@ -36,9 +36,10 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 // 頭像放在 public/ 自己控制，不外連別的網域（原本連 aiqkangber.com，對方掛掉這裡就破圖）
 export const EDITOR_NAME = '阿康'
 export const EDITOR_AVATAR_URL = '/editor-avatar-akang.jpg'
-export const EDITOR_ROLE = 'spaceA 編輯部主編'
+export const EDITOR_ROLE = '積木行銷 AI 流程開發工程師'
 // 文章上方「編者介紹」用的簡介。寫的是這個人怎麼買東西，不是編輯流程說明
 // （流程已經寫在文章上方的揭露句，兩邊講一樣的事等於重複）。
+// 職稱直接寫進第一句，版面上就不用再單獨掛一行，頭像可以放大一點。
 // 一樣不掛學歷、證照或年資，避免寫出無法查證的資歷
 export const EDITOR_BIO =
-  '習慣在下單前先問 AI，再開五六個分頁逐項比價，喜歡滑 Threads 看實際使用者的評價與心得。'
+  `${EDITOR_NAME}，${EDITOR_ROLE}。習慣在下單前先問 AI，再開五六個分頁逐項比價，喜歡滑 Threads 看實際使用者的評價與心得。`

@@ -278,15 +278,13 @@ export default async function ArticlePage({ params }: Props) {
                   已在 content-parsers 的 stripUpstreamAuthorBlock 挑掉 */}
               <section className="mt-7 bg-paper-card border border-paper-border rounded-2xl px-6 py-5">
                 <h2 className="text-xs tracking-wider text-paper-muted font-bold">編者介紹</h2>
-                <div className="flex gap-4 items-start mt-3.5">
-                  <span className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 bg-paper-surface">
-                    <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="56px" className="object-cover" />
+                {/* 姓名與職稱已經寫在 EDITOR_BIO 的第一句，這裡不再單獨掛一行，
+                    省下來的高度給頭像（56px → 88px），照片才看得清楚 */}
+                <div className="flex gap-5 items-center mt-3.5">
+                  <span className="relative w-[88px] h-[88px] rounded-full overflow-hidden shrink-0 bg-paper-surface">
+                    <Image src={EDITOR_AVATAR_URL} alt={EDITOR_NAME} fill sizes="88px" className="object-cover" />
                   </span>
-                  <div>
-                    <b className="text-[15px] font-bold text-paper-ink">{EDITOR_NAME}</b>
-                    <span className="text-[13px] text-paper-secondary ml-2">{EDITOR_ROLE}</span>
-                    <p className="text-sm leading-loose text-paper-secondary mt-1.5">{EDITOR_BIO}</p>
-                  </div>
+                  <p className="text-sm leading-loose text-paper-secondary">{EDITOR_BIO}</p>
                 </div>
               </section>
 
