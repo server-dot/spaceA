@@ -40,6 +40,7 @@
 ### 推薦文章節標題（n8n workflow `推薦文-3-完整生成`）
 - [x] 推薦清單章節的 h2 不再寫死「品牌推薦」— 新增 `章節標題` 節點（chainLlm，掛在 `抓人設` 後平行跑，共用既有 OpenRouter Chat Model），吃標題／關鍵字／品牌數／subject_type，依語意輸出一行 h2：量詞看主題（商品→款、店家公司飯店診所→家、景點→個、課程→門），商品類寫「5款外泌體保養品推薦」、店家類寫「精選8家新店飯店推薦」。`組卡片章節` 讀它的輸出，抓不到或超過 30 字就退回「品牌推薦」。節點 `onError: continueRegularOutput`，失敗不擋發文
 - 已回頭手改的既有文章：post 224「精選8家新店飯店推薦」、post 214「5款外泌體保養品推薦」（含 `nav.toc` 對應那行）
+- [x] 「沒有就別提」：`未見／未發現／查無…獲獎／認證／紀錄` 這種沒有資訊量、又把被推薦對象寫得像有缺陷的句子，`組卡片章節` 會整條 `<li>` 或整格欄位丟掉（`NEGATIVE_FINDING`）。post 224／214 已回頭清乾淨
 - [x] 品牌卡片的「官方產品頁」改成看網址判斷：連到首頁（含 /zh-tw 語系首頁）寫「官方網站」，路徑兩層以上才寫「官方產品頁」——飯店、店家寫產品頁很怪。順手把 href 夾到空白/換行的髒網址切乾淨（碧潭飯店那筆混進了圖片網址）
 - [x] 「官方資訊」的地址掛 Google Maps 連結（`地址：` 標籤與「位於…」開頭兩種都認）
 - [x] 文章頁「小編點評」的膠囊標籤改 `display:block; width:fit-content`（原本 inline-block 會被點評文字接在同一行，看起來跑版）
@@ -75,9 +76,9 @@
 
 ### Phase 7 — 上線
 - [x] 部署至 Zeabur（Docker，非原計畫的 Vercel — 已用 Dockerfile + docker-compose 部署，見 git log）
-- [x] 自訂網域 + SSL（`https://spacea.dg166.com`，已可連線）
-- [x] 修正 Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL`（已確認改成 `https://spacea.dg166.com`）
-- [ ] Google Search Console 網域擁有權驗證（建議用 DNS TXT record）
+- [x] 自訂網域 + SSL — 正式網址是 `https://spacea.com.tw`（2026-09-10 起）；舊的 `spacea.dg166.com` 已經回 404，不要再拿來當 canonical
+- [ ] **Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL` 要改成 `https://spacea.com.tw` 並重新部署** — 目前還是舊值，導致 canonical／sitemap／robots／JSON-LD 全部指向已經 404 的 spacea.dg166.com
+- [ ] Google Search Console 網域擁有權驗證（`spacea.com.tw`，用 seo@stack.com.tw 這個帳號，建議 DNS TXT record）
 - [ ] 提交 sitemap.xml 到 Search Console
 - [ ] Lighthouse 審核（Performance > 90, SEO = 100）
 - [ ] Google Rich Results Test 驗證
