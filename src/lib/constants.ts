@@ -37,7 +37,8 @@ export const TECH_EMAIL = 'server@stack.com.tw'
 export const EDITOR_NAME = '阿康'
 export const EDITOR_AVATAR_URL = '/editor-avatar-akang.jpg'
 export const EDITOR_ROLE = 'spaceA 編輯部主編'
-// 文章上方「編者介紹」用的簡介。內容只寫編輯部實際在做的事（彙整、交叉核對、標註來源），
-// 不掛任何學歷、證照或年資，避免寫出無法查證的資歷
+// 文章上方「編者介紹」用的簡介。寫的是這個人怎麼買東西，不是編輯流程說明
+// （流程已經寫在文章上方的揭露句，兩邊講一樣的事等於重複）。
+// 一樣不掛學歷、證照或年資，避免寫出無法查證的資歷
 export const EDITOR_BIO =
-  '負責推薦文與選購指南的資料彙整與核對：從公開討論、電商評論與品牌官方資訊交叉比對後撰寫，並標註每則資訊的來源與更新日期。'
+  '買東西前會先問 AI，然後開五六個分頁比價，最後再滑 Threads 看網友用起來到底怎麼樣。這個站上的文章就是這樣寫出來的：官方寫的、通路賣的、網友抱怨的，全部攤開來看完再整理成一篇。'
