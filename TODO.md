@@ -37,6 +37,9 @@
 - [x] `封面圖區塊` 不再把封面塞進內文 — 文章頁本身就會渲染精選圖片，塞進內文會重複一張。節點改成只輸出空區塊佔位（`text: ''`），Merge 第 9 個輸入才不會落空；封面仍由 `設定精選圖片` 掛成 featured_media。112／187／161 內文都已確認沒有殘留 `<div class="cover-image">`
 - [x] 封面上傳前轉 JPEG — 新增 `封面圖壓成JPEG` 節點（Edit Image，resize 1600×900 onlyIfLarger ＋ format jpeg / quality 82），接在 `轉封面圖檔` 和 `上傳封面圖到WordPress` 之間，上傳檔名改 `cover.jpg`。實測 1.4MB PNG → 約 180KB JPEG。n8n 主機有 graphicsmagick，Edit Image 可用
 
+### 推薦文交件檢查清單
+- [x] `docs/推薦文交件檢查清單.md` — 生成後的健檢流程（比較表價格、文案殘句與 B2B 殘留、卡片圖與連結、封面、SEO 前台檢查），附「推薦對象怎麼選」與「已經寫進 n8n 不用逐條人工檢」的對照表。範本文章：post 224 新店飯店
+
 ### 推薦文章節標題（n8n workflow `推薦文-3-完整生成`）
 - [x] 推薦清單章節的 h2 不再寫死「品牌推薦」— 新增 `章節標題` 節點（chainLlm，掛在 `抓人設` 後平行跑，共用既有 OpenRouter Chat Model），吃標題／關鍵字／品牌數／subject_type，依語意輸出一行 h2：量詞看主題（商品→款、店家公司飯店診所→家、景點→個、課程→門），商品類寫「5款外泌體保養品推薦」、店家類寫「精選8家新店飯店推薦」。`組卡片章節` 讀它的輸出，抓不到或超過 30 字就退回「品牌推薦」。節點 `onError: continueRegularOutput`，失敗不擋發文
 - 已回頭手改的既有文章：post 224「精選8家新店飯店推薦」、post 214「5款外泌體保養品推薦」（含 `nav.toc` 對應那行）
