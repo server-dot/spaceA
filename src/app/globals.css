@@ -127,6 +127,13 @@
     margin-bottom: 0;
   }
 
+  /* 品牌卡片的圖：StackTool 內文寫死 object-fit:contain，圖不是 2:1（例如 16:9 的拼圖、官網 og 圖）
+     時兩側會留白邊，看起來像跑版。改成 cover 讓圖填滿 16:8 的框，多出來的邊裁掉。 */
+  .prose .brand-card .card-hero img {
+    object-fit: cover;
+    object-position: center;
+  }
+
   .prose .brand-card h2::before,
   .prose .brand-card h3::before,
   .prose .faq-container h2::before,
