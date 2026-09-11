@@ -3,8 +3,8 @@
 ## 明天（2026-09-11）要做
 
 1. ~~**GSC 綁定**~~ — 2026-09-11 已完成，網域資源 `spacea.com.tw` 用 seo@stack.com.tw 驗好了
-2. **提交 sitemap** — GSC → Sitemap → 填 `sitemap.xml`
-3. **兩篇送索引** — 網址審查列貼上 `https://spacea.com.tw/travel/xindian-hotels-guide`、`https://spacea.com.tw/beauty/exosome-skincare-recommendation`，各按「要求建立索引」
+2. ~~**提交 sitemap**~~ — 2026-09-11 已提交，狀態成功、發現 15 個網址
+3. ~~**兩篇送索引**~~ — 2026-09-11 新店飯店、外泌體兩篇都已「要求建立索引」
 4. **確認 Zeabur 部署到 `19150cd`** — 檢查前台：編者介紹（阿康／內容編輯／現職與經歷）、揭露句已無「文中不含業配」、區塊順序是常見問題→總結→參考資料、文章頁有 revalidate（WordPress 改內容一小時內會反映）
 5. **開始寫第三篇** — 十篇還剩八個主題，動筆前先照 `docs/推薦文交件檢查清單.md` 決定「推薦對象」要選產品還是服務（卡片要圖就選產品）
 
@@ -96,9 +96,9 @@
 ### Phase 7 — 上線
 - [x] 部署至 Zeabur（Docker，非原計畫的 Vercel — 已用 Dockerfile + docker-compose 部署，見 git log）
 - [x] 自訂網域 + SSL — 正式網址是 `https://spacea.com.tw`（2026-09-10 起）；舊的 `spacea.dg166.com` 已經回 404，不要再拿來當 canonical
-- [ ] **Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL` 要改成 `https://spacea.com.tw` 並重新部署** — 目前還是舊值，導致 canonical／sitemap／robots／JSON-LD 全部指向已經 404 的 spacea.dg166.com
-- [ ] Google Search Console 網域擁有權驗證（`spacea.com.tw`，用 seo@stack.com.tw 這個帳號，建議 DNS TXT record）
-- [ ] 提交 sitemap.xml 到 Search Console
+- [x] Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL` 已改成 `https://spacea.com.tw`（2026-09-11 線上 sitemap 確認全部指向新網域）
+- [x] Google Search Console 網域擁有權驗證（`spacea.com.tw`，seo@stack.com.tw）
+- [x] 提交 sitemap.xml 到 Search Console
 - [ ] Lighthouse 審核（Performance > 90, SEO = 100）
 - [ ] Google Rich Results Test 驗證
 
