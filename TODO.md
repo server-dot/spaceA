@@ -54,6 +54,7 @@
 - [x] 封面上傳前轉 JPEG — 新增 `封面圖壓成JPEG` 節點（Edit Image，resize 1600×900 onlyIfLarger ＋ format jpeg / quality 82），接在 `轉封面圖檔` 和 `上傳封面圖到WordPress` 之間，上傳檔名改 `cover.jpg`。實測 1.4MB PNG → 約 180KB JPEG。n8n 主機有 graphicsmagick，Edit Image 可用
 
 ### 推薦文交件檢查清單
+- [ ] StackTool 生成器的預估時間要改（`/Users/kc/stacktools/app/recommendation/page.tsx`）— UI 寫「研究 1～3 分鐘」「生成 3～5 分鐘」，實測研究 5～7 分鐘、完整生成 10～16 分鐘（8～10 家）。**改好先不要 push，使用者說等他決定再觸發部署**
 - [ ] 選配：商品類文章的封面改用真實商品圖拼底圖（mybest 做法）— 版型（膠囊、大標、徽章、便利貼）不動，只有底圖從 AI 情境照換成卡片抓到的 8 張商品圖拼成 2×4。下一篇商品類（寵物用品／巧克力／膠原蛋白）再決定要不要試。2026-09-11 討論結論：版型固定不是問題，AI 情境照千篇一律才是
 - [ ] n8n 參考資料要改 — WF2 只搜關鍵字、只留摘要，抓到隱私政策這種無關頁；`格式化參考資料` 應改成列研究階段 `brandDetails[].reference_links`（社群討論串）＋有關的官方來源，不列官方產品頁。目前每篇靠手動補（見檢查清單 2b）
 - [x] post 112、187 的總結已回頭改成不點名品牌、不掛 CTA（2026-09-11）
