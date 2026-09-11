@@ -2,7 +2,7 @@
 
 ## 明天（2026-09-11）要做
 
-1. **GSC 綁定** — 用 `seo@stack.com.tw` 登入 Search Console → 新增資源選「網域」→ 輸入 `spacea.com.tw`（不是 dg166 那個舊網域）→ 拿到 `google-site-verification=…` → 加到 spacea.com.tw 的 DNS，類型 TXT、名稱 `@`（DNS 看起來在 Cloudflare）→ `dig +short TXT spacea.com.tw` 查得到就回去按驗證
+1. ~~**GSC 綁定**~~ — 2026-09-11 已完成，網域資源 `spacea.com.tw` 用 seo@stack.com.tw 驗好了
 2. **提交 sitemap** — GSC → Sitemap → 填 `sitemap.xml`
 3. **兩篇送索引** — 網址審查列貼上 `https://spacea.com.tw/travel/xindian-hotels-guide`、`https://spacea.com.tw/beauty/exosome-skincare-recommendation`，各按「要求建立索引」
 4. **確認 Zeabur 部署到 `19150cd`** — 檢查前台：編者介紹（阿康／內容編輯／現職與經歷）、揭露句已無「文中不含業配」、區塊順序是常見問題→總結→參考資料、文章頁有 revalidate（WordPress 改內容一小時內會反映）
@@ -51,6 +51,7 @@
 ### 推薦文章節標題（n8n workflow `推薦文-3-完整生成`）
 - [x] 推薦清單章節的 h2 不再寫死「品牌推薦」— 新增 `章節標題` 節點（chainLlm，掛在 `抓人設` 後平行跑，共用既有 OpenRouter Chat Model），吃標題／關鍵字／品牌數／subject_type，依語意輸出一行 h2：量詞看主題（商品→款、店家公司飯店診所→家、景點→個、課程→門），商品類寫「5款外泌體保養品推薦」、店家類寫「精選8家新店飯店推薦」。`組卡片章節` 讀它的輸出，抓不到或超過 30 字就退回「品牌推薦」。節點 `onError: continueRegularOutput`，失敗不擋發文
 - 已回頭手改的既有文章：post 224「精選8家新店飯店推薦」、post 214「5款外泌體保養品推薦」（含 `nav.toc` 對應那行）
+- [x] 總結不再業配 — `總結` 節點原本強制「品牌名加粗至少 1 次」＋結尾置中「了解更多」連到客戶官網，太明顯。提示詞改成：總結只講「怎麼選」的判斷步驟，禁止點名任何單一品牌，結尾不加連結。post 224／214 已回頭手改（224 拿掉「需要品牌服務保障可參考白金花園」那句與官網連結；214 拿掉「了解更多」）
 - [x] 「沒有就別提」：`未見／未發現／查無…獲獎／認證／紀錄` 這種沒有資訊量、又把被推薦對象寫得像有缺陷的句子，`組卡片章節` 會整條 `<li>` 或整格欄位丟掉（`NEGATIVE_FINDING`）。post 224／214 已回頭清乾淨
 - [x] 品牌卡片的「官方產品頁」改成看網址判斷：連到首頁（含 /zh-tw 語系首頁）寫「官方網站」，路徑兩層以上才寫「官方產品頁」——飯店、店家寫產品頁很怪。順手把 href 夾到空白/換行的髒網址切乾淨（碧潭飯店那筆混進了圖片網址）
 - [x] 「官方資訊」的地址掛 Google Maps 連結（`地址：` 標籤與「位於…」開頭兩種都認）
