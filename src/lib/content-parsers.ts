@@ -207,6 +207,46 @@ function extractHowTo(html: string): { howTo: ParsedArticleContent['howTo']; res
   return { howTo: { sectionTitle, steps }, rest }
 }
 
+/**
+ * 把 HTML 從 splitAt 切成兩半，並把切點當下還沒關的區塊元素補齊：前半補 `</tag>`、後半補回同樣的開頭標籤。
+ * StackTool 推薦文整篇包在 `<div class="ai-article-body">` 裡，切點落在 wrapper 內部，
+ * 直接 slice 會讓前半少一個 `</div>`——瀏覽器解析時就把頁面接在後面的 FAQ section 吞進去，
+ * DOM 跟 React 預期的樹對不上，整頁 hydration 失敗。
+ */
+function splitHtmlAt(html: string, splitAt: number): { bodyHtml: string; bodyTailHtml: string } {
+  const head = html.slice(0, splitAt)
+  const tail = html.slice(splitAt)
+  if (!tail) return { bodyHtml: head, bodyTailHtml: '' }
+
+  // 只追蹤會包住整段內容的容器標籤；inline 標籤不會跨到 h2 之後
+  const CONTAINER_TAGS = new Set(['div', 'section', 'article', 'main'])
+  const open: string[] = []
+  const tagPattern = /<(\/?)([a-zA-Z][a-zA-Z0-9-]*)([^>]*)>/g
+  let match: RegExpExecArray | null
+  while ((match = tagPattern.exec(head)) !== null) {
+    const [full, closing, rawName] = match
+    const name = rawName.toLowerCase()
+    if (!CONTAINER_TAGS.has(name)) continue
+    if (closing) {
+      for (let i = open.length - 1; i >= 0; i -= 1) {
+        if (open[i].toLowerCase().startsWith(`<${name}`)) {
+          open.splice(i, 1)
+          break
+        }
+      }
+    } else if (!full.endsWith('/>')) {
+      open.push(full)
+    }
+  }
+  if (open.length === 0) return { bodyHtml: head, bodyTailHtml: tail }
+
+  const closers = open
+    .map((tag) => `</${tag.match(/^<([a-zA-Z0-9-]+)/)![1]}>`)
+    .reverse()
+    .join('')
+  return { bodyHtml: head + closers, bodyTailHtml: open.join('') + tail }
+}
+
 export const HOWTO_SECTION_ID = 'criteria-section'
 export const FAQ_SECTION_ID = 'faq-section'
 
@@ -236,8 +276,7 @@ export function parseArticleContent(
   // 常見問題要排在總結前面，所以把「總結」以後的內容切出來，頁面在中間插入 FAQ
   const summaryMatch = /<h2[^>]*>\s*(?:總結|結語)\s*<\/h2>/.exec(fullBodyHtml)
   const splitAt = summaryMatch ? summaryMatch.index : fullBodyHtml.length
-  const bodyHtml = fullBodyHtml.slice(0, splitAt)
-  const bodyTailHtml = fullBodyHtml.slice(splitAt)
+  const { bodyHtml, bodyTailHtml } = splitHtmlAt(fullBodyHtml, splitAt)
 
   if (howTo) {
     toc.unshift({ id: HOWTO_SECTION_ID, label: howTo.sectionTitle })

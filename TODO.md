@@ -82,6 +82,7 @@
 
 ### 文章頁區塊順序
 - [x] 修好推薦文「總結」整段消失 — `extractConclusion` 會把總結抽去給「先看結論」框，但推薦文已經不顯示那個框，抽走就沒地方渲染。`parseArticleContent` 新增 `extractConclusion` 選項，推薦文關掉、知識分享維持原樣
+- [x] 修好 hydration 錯誤 — 上一條的切法直接在 `<h2>總結</h2>` slice，切點在 StackTool 的 `<div class="ai-article-body">` wrapper 裡面，`bodyHtml` 少一個 `</div>`，瀏覽器把接在後面的 FAQ section 吞進去，DOM 跟 React 樹對不上，每篇推薦文都會噴 hydration failed。新增 `splitHtmlAt()`：切點當下還沒關的容器標籤，前半補 `</div>`、後半補回同樣的開頭標籤
 - [x] 區塊順序改成 常見問題 → 總結 → 參考資料 — parser 以 `<h2>總結</h2>` 為界把內文切成 `bodyHtml` 與 `bodyTailHtml`，頁面在中間插入 FAQ；本篇目錄的「常見問題」也插到「總結」之前，跟實際順序一致
 
 ### 文章頁快取
