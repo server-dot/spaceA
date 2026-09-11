@@ -50,6 +50,7 @@
   - 便利貼：原本引號框住「挑選時要看哪三件事」，模型會照抄成文案；改成「只寫三個項目本身」＋只能在頓號換行、不准把同一個字寫兩次
   - post 266 封面 media 280（雪梨歌劇院實景）。另加：徽章直徑約等於大標一行高、便利貼斜約 4 度、三行固定不亂斷（模型對尺寸指令吃得不準，徽章還是偏大）
 - [ ] 封面檔名要獨特 — n8n 每次都上傳 `cover.jpg`，WordPress 改名成 `cover-1.jpg` 之後被 Cloudflare 快取，換文章也拿到舊圖（post 283 一度顯示 266 的封面）。`上傳封面圖到WordPress` 的檔名要帶 slug 或時間戳
+- [x] Wix 網站的卡片圖 — Wix（wixstatic.com）的 og:image 是全站共用首頁那張，翻玩墨爾本、悠游墨爾本都抓成首頁圖。`Code in JavaScript2`（抓官方頁）改成：og:image 是 wixstatic 就只給 10 分，內文的 wixstatic.com/media 圖加 90 分（有 fill/fit 尺寸參數再加 20）。post 283 兩張已手動換
 - [x] 封面上傳前轉 JPEG — 新增 `封面圖壓成JPEG` 節點（Edit Image，resize 1600×900 onlyIfLarger ＋ format jpeg / quality 82），接在 `轉封面圖檔` 和 `上傳封面圖到WordPress` 之間，上傳檔名改 `cover.jpg`。實測 1.4MB PNG → 約 180KB JPEG。n8n 主機有 graphicsmagick，Edit Image 可用
 
 ### 推薦文交件檢查清單
