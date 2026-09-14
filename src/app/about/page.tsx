@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
 import { SITE_NAME, EDITORIAL_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
+import Reveal from '@/components/ui/Reveal'
 
 const DESCRIPTION =
   'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與網站的進度。'
@@ -98,7 +99,7 @@ export default function AboutPage() {
                 最後更新：<time dateTime={LAST_UPDATED}>2026年9月4日</time>
               </p>
 
-              <section id="why" className="mt-14 pt-10 border-t border-paper-border">
+              <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">為什麼做這個網站？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   網路上找資訊的問題通常不是「沒有答案」，而是答案太多、立場太雜：業配文把每一家都寫成第一名，論壇留言真假難辨，比較清單常常是為了湊字數而不是為了幫你做決定。spaceA
@@ -114,9 +115,9 @@ export default function AboutPage() {
                   </Link>
                   頁。
                 </p>
-              </section>
+              </Reveal>
 
-              <section id="team" className="mt-14 pt-10 border-t border-paper-border">
+              <Reveal as="section" id="team" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">誰在寫這些文章？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   文章由 spaceA 編輯部撰寫，內容分成三種角色分工：蒐集與整理公開討論、核對規格與價格、審稿與發布。每篇文章都會署名負責的編輯。
@@ -133,9 +134,9 @@ export default function AboutPage() {
                     </div>
                   ))}
                 </div>
-              </section>
+              </Reveal>
 
-              <section id="faq" className="mt-14 pt-10 border-t border-paper-border">
+              <Reveal as="section" id="faq" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">常見問題</h2>
                 <div className="grid mt-6 divide-y divide-[#eeeae2] max-w-2xl">
                   {FAQ_ITEMS.map((item) => (
@@ -145,21 +146,21 @@ export default function AboutPage() {
                     </div>
                   ))}
                 </div>
-              </section>
+              </Reveal>
 
-              <section id="timeline" className="mt-14 pt-10 border-t border-paper-border">
+              <Reveal as="section" id="timeline" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">網站的進度</h2>
                 <ol className="grid gap-8 mt-6 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
-                  {TIMELINE.map((item) => (
-                    <li key={item.date} className="relative">
+                  {TIMELINE.map((item, i) => (
+                    <Reveal as="li" key={item.date} delay={i * 120} className="relative">
                       <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
                       <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
                       <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
                       <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
-                    </li>
+                    </Reveal>
                   ))}
                 </ol>
-              </section>
+              </Reveal>
             </article>
 
             <PageToc items={TOC_ITEMS} />

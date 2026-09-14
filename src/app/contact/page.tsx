@@ -4,6 +4,7 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from './ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
+import Reveal from '@/components/ui/Reveal'
 
 const DESCRIPTION = '內容更正、選題建議、廣告與內容授權洽詢的聯絡方式。內容更正會優先處理。'
 
@@ -106,7 +107,7 @@ export default function ContactPage() {
             <ContactForm />
           </section>
 
-          <section className="mt-14 pt-10 border-t border-paper-border">
+          <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
             <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">我們怎麼處理來信</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-7 mt-7">
               <div className="border-t-2 border-brand-600 pt-3.5">
@@ -128,7 +129,7 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
-          </section>
+          </Reveal>
         </div>
       </div>
     </>

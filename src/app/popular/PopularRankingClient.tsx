@@ -7,6 +7,7 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ArticleImageFallback from '@/components/article/ArticleImageFallback'
 import { RANGES, type RangeKey, type RankedArticle } from './data'
 import { WPCategory } from '@/types/wordpress'
+import Reveal from '@/components/ui/Reveal'
 
 const BREADCRUMBS = [
   { label: '首頁', href: '/' },
@@ -121,8 +122,10 @@ export default function PopularRankingClient({ articles, categories }: Props) {
           <div>
             <ol className="grid">
               {list.map((p, i) => (
-                <li
+                <Reveal
+                  as="li"
                   key={p.href}
+                  delay={Math.min(i, 6) * 70}
                   className={`grid grid-cols-[40px_100px_1fr] sm:grid-cols-[56px_132px_1fr] gap-4 sm:gap-5 items-start py-5 border-b border-paper-border ${
                     i === 0 ? 'border-t' : ''
                   }`}
@@ -163,7 +166,7 @@ export default function PopularRankingClient({ articles, categories }: Props) {
                     </h2>
                     <p className="text-sm leading-loose text-paper-secondary mt-2">{p.excerpt}</p>
                   </div>
-                </li>
+                </Reveal>
               ))}
             </ol>
 

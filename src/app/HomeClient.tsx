@@ -7,6 +7,7 @@ import { WPPostCard } from '@/types/wordpress'
 import CategoryImage from '@/components/layout/CategoryImage'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
+import Reveal from '@/components/ui/Reveal'
 import { resolveArticleType } from '@/lib/article-type'
 import { formatDate, resolveSummary } from '@/lib/format'
 
@@ -39,7 +40,10 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
 
   return (
     <>
-      <section id="topics" className="relative z-10 -mt-12 scroll-mt-24 bg-paper-card border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6">
+      <section
+        id="topics"
+        className="relative z-10 -mt-12 scroll-mt-24 bg-paper-card border border-paper-border rounded-[20px] shadow-[0_18px_44px_rgba(30,25,15,0.08)] px-7 sm:px-9 pt-8 pb-6"
+      >
         <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
           <div className="font-serif text-xl font-bold tracking-tight text-paper-ink">想看哪些主題？</div>
           <p className="text-[13px] text-paper-secondary">可複選，下方分區會即時篩選</p>
@@ -52,8 +56,8 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                 key={t.slug}
                 type="button"
                 onClick={() => toggle(t.slug)}
-                className={`relative flex flex-col items-center gap-2.5 py-4 px-2.5 rounded-2xl border transition-colors ${
-                  on ? 'bg-brand-50 border-brand-600' : 'bg-paper-card border-paper-border'
+                className={`group relative flex flex-col items-center gap-2.5 py-4 px-2.5 rounded-2xl border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(30,25,15,0.08)] ${
+                  on ? 'bg-brand-50 border-brand-600' : 'bg-paper-card border-paper-border hover:border-paper-muted'
                 }`}
               >
                 {on && (
@@ -61,7 +65,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                     ✓
                   </span>
                 )}
-                <span className="relative w-[58px] h-[58px] rounded-full overflow-hidden shrink-0">
+                <span className="relative w-[58px] h-[58px] rounded-full overflow-hidden shrink-0 transition-transform duration-300 group-hover:scale-105">
                   <CategoryImage slug={t.slug} name={t.name} />
                 </span>
                 <b className={`text-[15px] ${on ? 'font-bold text-brand-600' : 'font-medium text-paper-ink'}`}>
@@ -74,7 +78,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
         </div>
       </section>
 
-      <section className="pt-9 max-w-3xl">
+      <Reveal as="section" className="pt-9 max-w-3xl">
         {/* 首頁的 h1 是 Hero 那句標語，這裡改成 h2 — 一頁只能有一個 h1 */}
         <h2 className="font-serif text-[28px] font-bold tracking-tight leading-snug text-paper-ink text-balance">
           spaceA 推薦文：彙整網路真實聲量的選物指南
@@ -82,7 +86,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
         <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">
           精選推薦文章，幫你找到最值得的選擇。每篇推薦都標明資料來源與更新日期。
         </p>
-      </section>
+      </Reveal>
 
       {selected.length > 0 && (
         <div className="flex items-center gap-3.5 pt-8 text-[13px] text-paper-secondary">
@@ -100,11 +104,11 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
           const [feature, ...rest] = block.posts
           if (!feature) return null
           return (
-            <section key={block.slug}>
+            <Reveal as="section" key={block.slug}>
               <div className="flex items-center gap-3.5 pt-10 pb-5">
                 <span className="w-2 h-2 rounded-full bg-brand-600 shrink-0" />
                 <h2 className="font-serif text-[22px] font-bold whitespace-nowrap">{block.name}</h2>
-                <span className="flex-1 h-px bg-paper-border" />
+                <span className="grow-line flex-1 h-px bg-paper-border" />
                 <Link
                   href={`/${block.slug}`}
                   className="bg-brand-50 text-brand-600 text-[13px] font-bold px-4 py-1.5 rounded-full whitespace-nowrap hover:bg-brand-100 transition-colors"
@@ -113,7 +117,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                 </Link>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-9">
-                <Link href={`/${block.slug}/${feature.slug}`} className="block">
+                <Link href={`/${block.slug}/${feature.slug}`} className="group block">
                   <div className="relative w-full aspect-[16/10] rounded-[14px] overflow-hidden bg-paper-surface">
                     {feature.featuredImage?.node && (
                       <Image
@@ -121,7 +125,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                         alt={feature.featuredImage.node.altText || feature.title}
                         fill
                         sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     )}
                   </div>
@@ -132,7 +136,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                     />
                     <span className="text-paper-muted">{formatDate(feature.date)}</span>
                   </div>
-                  <h3 className="text-2xl font-bold leading-relaxed tracking-tight mt-2.5 text-paper-ink">
+                  <h3 className="text-2xl font-bold leading-relaxed tracking-tight mt-2.5 text-paper-ink transition-colors group-hover:text-brand-600">
                     {feature.title}
                   </h3>
                   {resolveSummary(feature.excerpt) && (
@@ -148,11 +152,16 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                 </Link>
                 <div>
                   <ul>
-                    {rest.slice(0, 4).map((post) => (
-                      <li key={post.slug} className="grid grid-cols-[104px_1fr] gap-4 py-4 border-b border-paper-border">
+                    {rest.slice(0, 4).map((post, i) => (
+                      <Reveal
+                        as="li"
+                        key={post.slug}
+                        delay={120 + i * 90}
+                        className="grid grid-cols-[104px_1fr] gap-4 py-4 border-b border-paper-border"
+                      >
                         <Link
                           href={`/${block.slug}/${post.slug}`}
-                          className="relative w-full h-[72px] rounded-[10px] overflow-hidden bg-paper-surface"
+                          className="group relative w-full h-[72px] rounded-[10px] overflow-hidden bg-paper-surface"
                         >
                           {post.featuredImage?.node && (
                             <Image
@@ -160,7 +169,7 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                               alt={post.featuredImage.node.altText || post.title}
                               fill
                               sizes="104px"
-                              className="object-cover"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           )}
                         </Link>
@@ -187,18 +196,18 @@ export default function HomeClient({ blocks, topics }: HomeClientProps) {
                             </div>
                           )}
                         </div>
-                      </li>
+                      </Reveal>
                     ))}
                   </ul>
                   <Link
                     href={`/${block.slug}`}
-                    className="block text-center mt-5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3.5 rounded-lg transition-colors"
+                    className="block text-center mt-5 bg-brand-600 hover:bg-brand-700 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(2,132,199,0.25)] text-white font-bold text-sm py-3.5 rounded-lg transition-all duration-200"
                   >
                     看更多{block.name}
                   </Link>
                 </div>
               </div>
-            </section>
+            </Reveal>
           )
         })
       )}

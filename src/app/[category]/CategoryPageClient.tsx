@@ -11,6 +11,7 @@ import { formatDate, resolveSummary } from '@/lib/format'
 import ArticleTypeBadge from '@/components/article/ArticleTypeBadge'
 import TagChips from '@/components/article/TagChips'
 import Pagination from '@/components/ui/Pagination'
+import Reveal from '@/components/ui/Reveal'
 
 interface CategoryPageClientProps {
   categoryName: string
@@ -38,7 +39,10 @@ export default function CategoryPageClient({
     if (!pageInfo.hasNextPage || loadingMore) return
     setLoadingMore(true)
     try {
-      const params = new URLSearchParams({ slug: categoryName, after: pageInfo.endCursor })
+      const params = new URLSearchParams({
+        slug: categoryName,
+        after: pageInfo.endCursor,
+      })
       const res = await fetch(`/api/category-posts?${params.toString()}`)
       if (!res.ok) throw new Error(`load more failed with ${res.status}`)
       const data = await res.json()
@@ -72,7 +76,11 @@ export default function CategoryPageClient({
         counts.set(t.slug, { name: t.name, count: (entry?.count ?? 0) + 1 })
       })
     })
-    return Array.from(counts.entries()).map(([slug, v]) => ({ slug, name: v.name, count: v.count }))
+    return Array.from(counts.entries()).map(([slug, v]) => ({
+      slug,
+      name: v.name,
+      count: v.count,
+    }))
   }, [byType])
 
   // 切換類型後，若目前選的 tag 在新類型底下已經沒有文章，一併清掉篩選
@@ -175,10 +183,13 @@ export default function CategoryPageClient({
       ) : (
         <>
           {feature && (
-            <section className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 items-center pt-8 pb-9 border-b border-paper-border">
+            <Reveal
+              as="section"
+              className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 items-center pt-8 pb-9 border-b border-paper-border"
+            >
               <Link
                 href={`/${feature.categories.nodes[0]?.slug ?? categoryName}/${feature.slug}`}
-                className="block relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-paper-surface"
+                className="group block relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-paper-surface"
               >
                 {feature.featuredImage?.node && (
                   <Image
@@ -186,7 +197,7 @@ export default function CategoryPageClient({
                     alt={feature.featuredImage.node.altText || feature.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                 )}
               </Link>
@@ -215,49 +226,49 @@ export default function CategoryPageClient({
                   </div>
                 )}
               </div>
-            </section>
+            </Reveal>
           )}
 
           {rest.length > 0 && (
             <section className="pt-9">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 gap-x-8">
-                {rest.map((post) => {
+                {rest.map((post, i) => {
                   const category = post.categories.nodes[0]
                   const href = category ? `/${category.slug}/${post.slug}` : `/${categoryName}/${post.slug}`
+                  // key 帶篩選狀態：切換類型／主題時卡片重新掛載，進場動畫會再跑一次
                   return (
-                    <Link key={post.slug} href={href} className="block group">
-                      <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-paper-surface">
-                        {post.featuredImage?.node && (
-                          <Image
-                            src={post.featuredImage.node.sourceUrl}
-                            alt={post.featuredImage.node.altText || post.title}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2.5 text-xs mt-3.5 flex-wrap">
-                        <ArticleTypeBadge
-                          category={category}
-                          type={resolveArticleType(post.articleTypes)}
-                        />
-                        <span className="text-paper-muted">{formatDate(post.date)}</span>
-                      </div>
-                      <h3 className="text-lg font-medium leading-relaxed mt-2 group-hover:text-brand-600 transition-colors">
-                        {post.title}
-                      </h3>
-                      {resolveSummary(post.excerpt) && (
-                        <p className="text-sm leading-loose text-paper-secondary mt-2.5 line-clamp-2">
-                          {resolveSummary(post.excerpt)}
-                        </p>
-                      )}
-                      {post.tags.nodes.length > 0 && (
-                        <div className="mt-2.5">
-                          <TagChips tags={post.tags.nodes} max={3} />
+                    <Reveal key={`${type ?? 'all'}-${effectiveTag ?? 'all'}-${post.slug}`} delay={(i % 3) * 90}>
+                      <Link href={href} className="block group">
+                        <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-paper-surface transition-shadow duration-300 group-hover:shadow-[0_14px_32px_rgba(30,25,15,0.12)]">
+                          {post.featuredImage?.node && (
+                            <Image
+                              src={post.featuredImage.node.sourceUrl}
+                              alt={post.featuredImage.node.altText || post.title}
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          )}
                         </div>
-                      )}
-                    </Link>
+                        <div className="flex items-center gap-2.5 text-xs mt-3.5 flex-wrap">
+                          <ArticleTypeBadge category={category} type={resolveArticleType(post.articleTypes)} />
+                          <span className="text-paper-muted">{formatDate(post.date)}</span>
+                        </div>
+                        <h3 className="text-lg font-medium leading-relaxed mt-2 group-hover:text-brand-600 transition-colors">
+                          {post.title}
+                        </h3>
+                        {resolveSummary(post.excerpt) && (
+                          <p className="text-sm leading-loose text-paper-secondary mt-2.5 line-clamp-2">
+                            {resolveSummary(post.excerpt)}
+                          </p>
+                        )}
+                        {post.tags.nodes.length > 0 && (
+                          <div className="mt-2.5">
+                            <TagChips tags={post.tags.nodes} max={3} />
+                          </div>
+                        )}
+                      </Link>
+                    </Reveal>
                   )
                 })}
               </div>

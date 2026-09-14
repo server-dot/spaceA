@@ -53,6 +53,12 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] `npm run lint` 修好了 — eslint 9 + eslint-config-next 16 只吃 flat config，舊的 `.eslintrc.json` 會噴 `Converting circular structure to JSON`。改成 `eslint.config.mjs`（只 spread `eslint-config-next/core-web-vitals`，它已含 next 與 next/typescript）、script 改 `eslint .`、忽略 `design-handoff/`。順手修掉：站內 `<a>` 改 `<Link>`（about／contact／privacy／standards／terms）、`PopularRankingClient` 的 `Date.now()` 改成 `useState` lazy initializer（react-hooks/purity）
 
 ### 設計優化
+- [x] 首頁與配角頁加動態（2026-09-14，文章頁不動）— 使用者說「網站豐富度很低」。全部 CSS＋一個 IntersectionObserver，`prefers-reduced-motion` 時整套關掉：
+  - `components/ui/Reveal.tsx`：捲進視窗才淡入上浮的容器（`delay` 做交錯），樣式在 `globals.css` 的 `.reveal`；只有 `html.js` 時才先隱藏（`layout.tsx` 用 `next/script beforeInteractive` 加 class，`<html>` 要 `suppressHydrationWarning`），沒 JS 與爬蟲看到原樣
+  - 首頁：Hero 標題／副標／標籤／按鈕逐行進場、手繪金線描邊（`.hero-in`／`.hero-line`）；主題按鈕 hover 浮起；各分類區塊 Reveal、標題旁分隔線從左長出來（`.grow-line`）、右欄四筆交錯進場、封面 hover 微放大
+  - 分類頁：精選區塊 Reveal，卡片依欄位交錯進場，key 帶篩選狀態所以切類型／主題會重跑一次；卡片 hover 陰影
+  - 關於我們四個區塊＋時間軸逐筆、熱門排行逐列、聯絡我們「怎麼處理來信」區塊
+  - 注意：本機 `npm run build` 會把正在跑的 `npm run dev` 的 `.next` 蓋掉，dev 會噴 `Cannot find module './611.js'`，重開 dev 就好
 - [x] 文章頁「先看結論」改成白底細框卡 ＋ 騎在上緣的藍色掛耳標籤，重點條列改 ✓ ＋ 分隔線（`src/app/[category]/[slug]/page.tsx`）
 - [x] 文章頁「編者介紹」區塊 — 放在封面圖之後、本篇目錄之前，資料吃 `EDITOR_NAME`／`EDITOR_ROLE`／`EDITOR_BIO`／`EDITOR_AVATAR_URL` 常數，不吃 WordPress 內文（StackTool 自帶那塊人設常跟主題無關，已在 `stripUpstreamAuthorBlock` 挑掉）
 - [x] 修掉 StackTool 內文 `<style>` 的 `.ai-article-body h2/h3` 跟站上 `.prose h2/h3` 權重打架（深藍字壓在藍底上）— `stripUpstreamHeadingStyles`

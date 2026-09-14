@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Noto_Sans_TC, Noto_Serif_TC } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script'
 import './globals.css'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, GA_ID, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Header from '@/components/layout/Header'
@@ -63,9 +64,12 @@ export default async function RootLayout({
     (c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug)
   )
 
+  // suppressHydrationWarning：js-flag 會在 hydration 前把 class="js" 加到 <html>，React 比對時會差這一個 class
   return (
-    <html lang="zh-TW" className={`${notoSansTC.variable} ${notoSerifTC.variable}`}>
+    <html lang="zh-TW" className={`${notoSansTC.variable} ${notoSerifTC.variable}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-paper text-paper-ink">
+        {/* 標記 JS 可用，globals.css 的進場動畫（.reveal／.hero-in）只在有 JS 時才先把元素藏起來 */}
+        <Script id="js-flag" strategy="beforeInteractive">{`document.documentElement.classList.add('js')`}</Script>
         <WebsiteJsonLd />
         <OrganizationJsonLd />
         <Header />
