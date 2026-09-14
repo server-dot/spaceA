@@ -11,7 +11,11 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - 三大面向用實際數字（每克 2.7 到 10.2 元、台灣可可只有 TC 與 Rebirth 兩款）；規格雷區、FAQ Q1/Q3/Q4/Q5、總結全重寫（總結不點名品牌、無簽名）
 - h2「品牌推薦」→「精選10款台灣黑巧克力禮盒推薦」（含目錄）
 - 參考資料 10 條：食藥署兩條＋ n8n execution 16706 的 `brandDetails[].reference_links`（Dcard／PIXNET／PTT）
-- 封面：AI 畫的禮盒（media 314）被打槍「太明顯 AI，不會有商品長這樣」，副標「片狀、生巧、夾心一次比完」也聽不懂 → 改成 **真實商品圖拼貼版**（media 316，`scripts/build_cover_collage.py`）：10 張卡片商品圖 5×2 當底、左 40% 米白面板疊 PingFang 文字、徽章與便利貼從 AI 版型圖用色彩遮罩裁下來重用；副標改「價格、克數、苦度一次看懂」。商品類封面以後都走這套，AI 實景照只給旅遊／飯店／景點
+- 封面來回三版：AI 畫的禮盒（media 314）被打槍「太明顯 AI，不會有商品長這樣」；拼貼版（media 316）不是使用者要的（他要的是情境照，只是商品要真的）→ 定案 **B 案：AI 空景 + 真實商品去背合成**（media 317，`scripts/build_cover_scene.py`）
+  - 空景用 `gen_scene308.py` 那段提示詞生：淺橡木桌 65 度俯拍、道具只放右三分之一、左三分之二空桌面、不准出現任何巧克力／盒子／文字
+  - 去背用 macOS Vision（`scripts/rmbg.swift`，`swiftc -O rmbg.swift -o rmbg`，不用裝 rembg）；挑沒有商標的商品照：Joyce 25 顆生巧盒（蓋子用線遮罩切掉）、18度C 生巧托盤。妮娜、CHOCOARTS、多儂、TC 包裝上都有 logo 或品牌字，不能上封面
+  - 徽章與便利貼從 AI 版型圖用色彩遮罩裁下來重用；副標改「價格、克數、苦度一次看懂」（原本「片狀、生巧、夾心一次比完」聽不懂）
+  - 商品照角度要跟空景一致（這次都是俯拍），斜角度的包裝照貼上去會穿幫
 - 十張小編點評開頭句型已刻意錯開（第一版十張全是「…就看這盒」）
 
 **還沒做**：前台要等 ISR 一小時自動更新（本機沒有 `REVALIDATE_SECRET`），更新後再送 GSC 索引。
@@ -71,7 +75,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 
 ### 推薦文交件檢查清單
 - [ ] StackTool 生成器的預估時間要改（`/Users/kc/stacktools/app/recommendation/page.tsx`）— UI 寫「研究 1～3 分鐘」「生成 3～5 分鐘」，實測研究 5～7 分鐘、完整生成 10～16 分鐘（8～10 家）。**改好先不要 push，使用者說等他決定再觸發部署**
-- [x] 商品類文章的封面改用真實商品圖拼底圖（mybest 做法）— 2026-09-14 post 308 定案，`scripts/build_cover_collage.py`。n8n 的 `封面圖提示詞` 還是 AI 畫，商品類跑完要手動換；要不要把拼貼寫進 n8n 之後再說
+- [x] 商品類文章的封面：2026-09-14 post 308 定案走「AI 空景 + 真實商品去背合成」（`scripts/build_cover_scene.py` + `scripts/rmbg.swift`），不是拼貼（`build_cover_collage.py` 留著備用）。n8n 的 `封面圖提示詞` 還是 AI 畫整張，商品類跑完要手動換
 - [ ] n8n 參考資料要改 — WF2 只搜關鍵字、只留摘要，抓到隱私政策這種無關頁；`格式化參考資料` 應改成列研究階段 `brandDetails[].reference_links`（社群討論串）＋有關的官方來源，不列官方產品頁。目前每篇靠手動補（見檢查清單 2b）
 - [x] post 112、187 的總結已回頭改成不點名品牌、不掛 CTA（2026-09-11）
 - [x] `docs/推薦文交件檢查清單.md` — 生成後的健檢流程（比較表價格、文案殘句與 B2B 殘留、卡片圖與連結、封面、SEO 前台檢查），附「推薦對象怎麼選」與「已經寫進 n8n 不用逐條人工檢」的對照表。範本文章：post 224 新店飯店
