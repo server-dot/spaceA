@@ -368,7 +368,7 @@ export default async function ArticlePage({ params }: Props) {
                           </span>
                           <span className="flex-1">{f.question}</span>
                         </summary>
-                        <p className="pb-6 pl-7 text-[15px] leading-loose text-paper-secondary">{f.answer}</p>
+                        <p className="pb-6 pl-7 text-base leading-loose text-paper-ink/85">{f.answer}</p>
                       </details>
                     ))}
                   </div>
