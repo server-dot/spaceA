@@ -40,7 +40,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
   - [ ] 料理包
   - [ ] 醫美
   - [x] 澳洲一日遊 — post 283 `/travel/australia-day-tours-guide/`（客戶老墨旅遊，8 家墨爾本／雪梨在地華語一日團；已送 GSC 索引；2026-09-11 完稿。第一版「澳洲旅遊團」比例不對已刪）
-  - [x] 巧克力 — post 308 `/food/taiwan-dark-chocolate-guide/`（10 款台灣黑巧克力禮盒，客戶妮娜；2026-09-14 校完，待送 GSC）
+  - [x] 巧克力 — post 308 `/food/taiwan-dark-chocolate-guide/`（10 款台灣黑巧克力禮盒，客戶妮娜；2026-09-14 校完並重送 GSC 索引）
   - [ ] 南投景點
   - [ ] 膠原蛋白
 
