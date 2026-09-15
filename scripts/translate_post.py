@@ -381,7 +381,7 @@ def translate_leftovers(html: str) -> str:
     targets = sorted(t for t in nodes | attrs if t and _cjk_outside_parens(t))
     if not targets:
         return html
-    prompt = (
+    prompt_head = (
         f'These are leftover fragments from a Chinese→{LANG_LABEL[LANG]} translation of a Taiwanese product-recommendation article. '
         f'Translate each fragment into natural {LANG_LABEL[LANG]}. '
         'If a fragment is already correct in the target language, return it unchanged — Japanese words written only in '
@@ -392,16 +392,23 @@ def translate_leftovers(html: str) -> str:
         'an ordinary Chinese phrase in parentheses (e.g. 用現有手機) must be translated like the rest. '
         'For a brand or product name with no known name in the target language, transliterate it and add the Chinese in parentheses once. '
         f'Use these fixed section names: {HEADINGS[LANG]}. '
-        'Return ONLY a JSON object mapping each original fragment to its translation.\n\n' + json.dumps(targets, ensure_ascii=False)
+        'Return ONLY a JSON object mapping each original fragment to its translation.\n\n'
     )
-    out = strip_fences(llm([{'role': 'user', 'content': prompt}], max_tokens=6000))
-    out = re.sub(r'^```(?:json)?\s*|\s*```$', '', out)
-    try:
-        mapping = {k: str(v) for k, v in json.loads(out).items() if v}
-    except (json.JSONDecodeError, AttributeError):
-        print('  ⚠ 補翻結果不是合法 JSON，殘留中文先不動', file=sys.stderr)
+    # 一次全送會爆 max_tokens（10 家品牌的文章可能有上百個片段），分批送
+    mapping: dict[str, str] = {}
+    for i in range(0, len(targets), 40):
+        batch = targets[i:i + 40]
+        out = strip_fences(llm(
+            [{'role': 'user', 'content': prompt_head + json.dumps(batch, ensure_ascii=False)}],
+            max_tokens=12000))
+        m = re.search(r'\{[\s\S]*\}', out)
+        try:
+            mapping.update({k: str(v) for k, v in json.loads(m.group(0) if m else out).items() if v})
+        except (json.JSONDecodeError, AttributeError):
+            print(f'  ⚠ 第 {i // 40 + 1} 批補翻結果不是合法 JSON，這批維持原文', file=sys.stderr)
+    if not mapping:
         return html
-    print(f'  補翻 {len(mapping)} 個漏翻片段')
+    print(f'  補翻 {len(mapping)} 個漏翻片段（共 {len(targets)} 個候選）')
 
     def fix_node(m: re.Match) -> str:
         text = m.group(1)
@@ -636,8 +643,20 @@ def main() -> None:
     if not WP or not ENV.get('WORDPRESS_APP_PASSWORD'):
         die('.env.local 缺 NEXT_PUBLIC_WORDPRESS_URL 或 WORDPRESS_APP_USER/PASSWORD')
 
+    failed = []
     for post_id in args.post_ids:
-        translate_post(post_id, force=args.force or args.retranslate, dry_run=args.dry_run, status=args.status, retranslate=args.retranslate)
+        # 一篇掛掉不要拖垮整批，記下來最後一起報
+        try:
+            translate_post(post_id, force=args.force or args.retranslate, dry_run=args.dry_run,
+                           status=args.status, retranslate=args.retranslate)
+        except SystemExit as e:
+            print(f'✗ post {post_id} 失敗，跳過繼續下一篇（{e}）', file=sys.stderr)
+            failed.append(post_id)
+        except Exception as e:  # noqa: BLE001 — 這裡就是要攔下所有例外
+            print(f'✗ post {post_id} 失敗，跳過繼續下一篇（{type(e).__name__}: {e}）', file=sys.stderr)
+            failed.append(post_id)
+    if failed:
+        print(f'\n⚠ 這些沒翻成功，補跑：{" ".join(map(str, failed))}', file=sys.stderr)
 
 
 if __name__ == '__main__':

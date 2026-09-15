@@ -18,7 +18,9 @@ export default function Hero({ lang }: { lang: Lang }) {
   const tags = TAG_ICONS.map((icon, i) => ({ icon, label: t.heroTags[i] }))
   return (
     <section className="relative w-full overflow-hidden bg-[#cad3dc]">
-      <div className="relative w-full aspect-[16/10] sm:aspect-[2.4/1] max-h-[680px]">
+      {/* 手機不用固定長寬比：兩行標題＋副標＋標籤＋按鈕約 330px，塞進 16/10 的 234px 會上下被切；
+          讓內容撐出高度，底部多留 pb-24 給下面 -mt-12 疊上來的主題框。sm 以上維持橫幅比例 */}
+      <div className="relative w-full sm:aspect-[2.4/1] max-h-[680px]">
         {/* 動態背景：靜音自動循環，不吃互動；使用者開啟「減少動態」時整段換成靜態圖 */}
         <video
           className="absolute inset-0 w-full h-full object-cover object-[center_32%] motion-reduce:hidden"
@@ -49,7 +51,7 @@ export default function Hero({ lang }: { lang: Lang }) {
         {/* 左側柔化，讓文字在任何一幀上都讀得到 */}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(202,211,220,0.78)_0%,rgba(202,211,220,0.66)_30%,rgba(202,211,220,0.32)_52%,rgba(202,211,220,0)_74%)]" />
 
-        <div className="relative h-full max-w-6xl mx-auto px-6 sm:px-8 flex flex-col justify-center pb-14 sm:pb-16">
+        <div className="relative sm:h-full max-w-6xl mx-auto px-6 sm:px-8 flex flex-col justify-center pt-12 pb-24 sm:pt-0 sm:pb-16">
           <h1 className="hero-in font-serif font-bold text-paper-ink text-[32px] sm:text-[46px] lg:text-[56px] leading-[1.2] tracking-tight">
             {line1}
             <br />
