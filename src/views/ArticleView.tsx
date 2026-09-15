@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { GET_ARTICLE, GET_ALL_POST_SLUGS, GET_POST_EXISTS } from '@/lib/graphql/queries/article'
+import { GET_ARTICLE, GET_ALL_POST_SLUGS, GET_POST_TRANSLATIONS } from '@/lib/graphql/queries/article'
 import { GET_CATEGORY } from '@/lib/graphql/queries/category'
 import { GET_ALL_CATEGORIES } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
@@ -19,6 +19,7 @@ import { SITE_NAME, EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_AVATAR_URL 
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import {
+  LANGS,
   LANG_TAG,
   OG_LOCALE,
   articleHref,
@@ -37,7 +38,7 @@ import {
   HOWTO_SECTION_ID,
   FAQ_SECTION_ID,
 } from '@/lib/content-parsers'
-import { formatDate, resolveSummary, isAutoExcerpt, stripWpSiteSuffix } from '@/lib/format'
+import { countWords, formatDate, isSpaceSeparated, resolveSummary, isAutoExcerpt, stripWpSiteSuffix } from '@/lib/format'
 
 export interface ArticleRouteProps {
   params: Promise<{ category: string; slug: string }>
@@ -47,8 +48,10 @@ interface ArticleData {
   post: WPPost | null
 }
 
-interface PostExistsData {
-  post: { slug: string } | null
+interface PostTranslationsData {
+  en: { slug: string } | null
+  ja: { slug: string } | null
+  ko: { slug: string } | null
 }
 
 interface AllSlugsData {
@@ -66,11 +69,10 @@ interface CategoryPostsData {
   } | null
 }
 
-// 中文照字元數估、英文照字數估
+// 中日照字元數估、英韓照單字數估（見 format.ts 的 countWords）
 function readingMinutes(html: string, lang: Lang) {
-  const text = html.replace(/<[^>]*>/g, '')
-  if (lang === 'en') return Math.max(1, Math.round(text.split(/\s+/).filter(Boolean).length / 200))
-  return Math.max(1, Math.round(text.length / 400))
+  const n = countWords(html, lang)
+  return Math.max(1, Math.round(n / (isSpaceSeparated(lang) ? 200 : 400)))
 }
 
 /**
@@ -90,13 +92,16 @@ export async function articleStaticParams(lang: Lang) {
 }
 
 /**
- * 另一個語言的對照頁存不存在。中文版查 `slug-en`；英文版一定是從中文翻的，直接認定存在。
- * 有對照才輸出 hreflang，沒翻的文章不能指向一個 404。
+ * 這篇文章有哪些語言版本。中文是來源一定有，其餘三個語言查 WordPress 有沒有對應 slug。
+ * 有對照才輸出 hreflang，沒翻的語言不能指向一個 404。
  */
-async function counterpartExists(lang: Lang, routeSlug: string) {
-  if (lang === 'en') return true
-  const data = await fetchQuery<PostExistsData>(GET_POST_EXISTS, { slug: toWpSlug('en', routeSlug) })
-  return Boolean(data?.post)
+async function availableLangs(routeSlug: string): Promise<Lang[]> {
+  const data = await fetchQuery<PostTranslationsData>(GET_POST_TRANSLATIONS, {
+    en: toWpSlug('en', routeSlug),
+    ja: toWpSlug('ja', routeSlug),
+    ko: toWpSlug('ko', routeSlug),
+  })
+  return LANGS.filter((l) => l === 'zh' || Boolean(data?.[l as 'en' | 'ja' | 'ko']))
 }
 
 export async function generateArticleMetadata(lang: Lang, { params }: ArticleRouteProps): Promise<Metadata> {
@@ -108,9 +113,8 @@ export async function generateArticleMetadata(lang: Lang, { params }: ArticleRou
 
   const categorySlug = post.categories.nodes[0]?.slug ?? ''
   const path = articleHref(lang, categorySlug, post.slug)
-  const hasCounterpart = await counterpartExists(lang, slug)
+  const langs = await availableLangs(slug)
   const zhPath = articleHref('zh', categorySlug, post.slug)
-  const enPath = articleHref('en', categorySlug, post.slug)
   // Yoast 沒填描述時退回 excerpt（自動截斷的目錄殘骸會被 resolveSummary 判掉），
   // 兩者都空就從內文第一段生一句 — StackTool 生成的推薦文兩個欄位都是空的，
   // 不補這一層的話整頁連 <meta name="description"> 都不會輸出
@@ -126,8 +130,13 @@ export async function generateArticleMetadata(lang: Lang, { params }: ArticleRou
     description,
     alternates: {
       canonical: path,
-      // 兩種語言都有才互指；x-default 給中文（主站）
-      ...(hasCounterpart && { languages: { [LANG_TAG.zh]: zhPath, [LANG_TAG.en]: enPath, 'x-default': zhPath } }),
+      // 只列出真的翻好的語言；x-default 給中文（主站）
+      ...(langs.length > 1 && {
+        languages: {
+          ...Object.fromEntries(langs.map((l) => [LANG_TAG[l], articleHref(l, categorySlug, post.slug)])),
+          'x-default': zhPath,
+        },
+      }),
     },
     openGraph: {
       // 子頁的 openGraph 會整組蓋掉 layout 的，siteName/locale/url 要自己帶

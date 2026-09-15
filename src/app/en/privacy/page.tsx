@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
@@ -26,10 +27,7 @@ const TOC_ITEMS = [
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/en/privacy',
-    languages: { 'zh-TW': '/privacy', en: '/en/privacy', 'x-default': '/privacy' },
-  },
+  alternates: staticAlternates('en', '/privacy'),
   openGraph: {
     type: 'website',
     locale: 'en_US',

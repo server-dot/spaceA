@@ -1,49 +1,53 @@
 /**
- * 雙語（中文／英文）的共用規則。
+ * 多語系（中文／英文／日文／韓文）的共用規則。
  *
- * 英文版沒有另裝 Polylang：英文文章就是 WordPress 裡另一篇文章，靠 slug 命名規則對應——
- *   - 英文分類 slug = 中文分類 slug + `-en`（例：travel → travel-en），名稱與描述直接在 WP 填英文
- *   - 英文文章 slug = 中文文章 slug + `-en`
- * 前台網址不露出 `-en`：`/en/travel/nantou-attractions-guide` 對應 WP 的 `travel-en` / `nantou-attractions-guide-en`。
- * 中文列表一律排除 `-en` 分類，英文列表只取 `-en` 分類，靠這條規則就能算出彼此的對照頁。
- * 建英文版用 `scripts/translate_post.py`。
+ * 沒有裝 Polylang：各語言版本就是 WordPress 裡另一篇文章，靠 slug 命名規則對應——
+ *   - 分類 slug = 中文分類 slug + 語言後綴（travel → travel-en／travel-ja／travel-ko），名稱與描述直接在 WP 填該語言
+ *   - 文章 slug = 中文 slug + 同一組後綴
+ * 前台網址不露出後綴：`/ja/travel/nantou-attractions-guide` 對應 WP 的 `travel-ja` / `nantou-attractions-guide-ja`。
+ * 中文列表只取沒有後綴的分類，其他語言只取自己後綴的分類，靠這條規則就能算出彼此的對照頁。
+ * 建各語言版本用 `scripts/translate_post.py --lang ja`。
  */
-export type Lang = 'zh' | 'en'
+export type Lang = 'zh' | 'en' | 'ja' | 'ko'
 
-export const LANGS: Lang[] = ['zh', 'en']
-export const EN_SUFFIX = '-en'
+/** 中文是主站（沒有後綴、沒有網址前綴），其餘語言照這個順序排在語言選單裡 */
+export const LANGS: Lang[] = ['zh', 'en', 'ja', 'ko']
+
+/** WordPress slug 的語言後綴。中文是空字串＝沒有後綴 */
+export const LANG_SUFFIX: Record<Lang, string> = { zh: '', en: '-en', ja: '-ja', ko: '-ko' }
 
 /** HTML lang／hreflang 用的語言標籤 */
-export const LANG_TAG: Record<Lang, string> = { zh: 'zh-TW', en: 'en' }
+export const LANG_TAG: Record<Lang, string> = { zh: 'zh-TW', en: 'en', ja: 'ja', ko: 'ko' }
+
 /** Open Graph locale */
-export const OG_LOCALE: Record<Lang, string> = { zh: 'zh_TW', en: 'en_US' }
+export const OG_LOCALE: Record<Lang, string> = { zh: 'zh_TW', en: 'en_US', ja: 'ja_JP', ko: 'ko_KR' }
 
-export function isEnSlug(slug: string) {
-  return slug.endsWith(EN_SUFFIX)
-}
+/** 除了中文以外的語言後綴，比對時用（長度都一樣，順序無所謂） */
+const SUFFIXES = LANGS.filter((l) => l !== 'zh').map((l) => LANG_SUFFIX[l])
 
-/** 把 WordPress slug 換成前台網址用的 slug（英文版去掉 -en） */
+/** 把 WordPress slug 換成前台網址用的 slug（去掉語言後綴） */
 export function toRouteSlug(slug: string) {
-  return isEnSlug(slug) ? slug.slice(0, -EN_SUFFIX.length) : slug
+  const hit = SUFFIXES.find((s) => slug.endsWith(s))
+  return hit ? slug.slice(0, -hit.length) : slug
 }
 
 /** 把前台網址的 slug 換成該語言在 WordPress 的 slug */
 export function toWpSlug(lang: Lang, routeSlug: string) {
-  return lang === 'en' ? `${routeSlug}${EN_SUFFIX}` : routeSlug
+  return `${routeSlug}${LANG_SUFFIX[lang]}`
 }
 
 /** 這個 WordPress 分類 slug 屬於哪個語言 */
 export function langOfCategorySlug(slug: string): Lang {
-  return isEnSlug(slug) ? 'en' : 'zh'
+  return LANGS.find((l) => l !== 'zh' && slug.endsWith(LANG_SUFFIX[l])) ?? 'zh'
 }
 
-/** 網址前綴：中文沒有、英文是 /en */
+/** 網址前綴：中文沒有，其餘是 /en、/ja、/ko */
 export function langPrefix(lang: Lang) {
-  return lang === 'en' ? '/en' : ''
+  return lang === 'zh' ? '' : `/${lang}`
 }
 
 export function homeHref(lang: Lang) {
-  return lang === 'en' ? '/en' : '/'
+  return lang === 'zh' ? '/' : `/${lang}`
 }
 
 export function categoryHref(lang: Lang, categorySlug: string) {
@@ -56,18 +60,28 @@ export function articleHref(lang: Lang, categorySlug: string, postSlug: string) 
 
 /** 從網址路徑判斷語言（client 端 usePathname 用） */
 export function langFromPathname(pathname: string | null): Lang {
-  return pathname === '/en' || pathname?.startsWith('/en/') ? 'en' : 'zh'
+  const path = pathname ?? '/'
+  return LANGS.find((l) => l !== 'zh' && (path === `/${l}` || path.startsWith(`/${l}/`))) ?? 'zh'
 }
 
 /**
- * 語言切換的目標網址：同一條路徑加上或拿掉 /en。
- * 文章頁的英文版還沒翻時會落到英文站的 404（那頁會說明英文版尚未提供）。
+ * 語言切換的目標網址：同一條路徑換掉語言前綴。
+ * 該篇還沒翻成目標語言時會落到那個語言的 404（那頁會說明此語言版本尚未提供）。
  */
 export function switchLangHref(pathname: string | null, to: Lang): string {
   const current = langFromPathname(pathname)
-  const bare = current === 'en' ? (pathname ?? '/en').replace(/^\/en/, '') || '/' : pathname ?? '/'
+  const prefix = langPrefix(current)
+  const bare = prefix ? (pathname ?? prefix).slice(prefix.length) || '/' : pathname ?? '/'
   if (bare === '/') return homeHref(to)
   return `${langPrefix(to)}${bare}`
+}
+
+/** 各語言在語言選單裡顯示的自稱 */
+export const LANG_NAME: Record<Lang, string> = {
+  zh: '中文',
+  en: 'English',
+  ja: '日本語',
+  ko: '한국어',
 }
 
 /** 站上介面用字。內文本身來自 WordPress，這裡只管版面上的固定字串 */
@@ -76,8 +90,7 @@ const zh = {
   siteTagline: '推薦文與選購指南，比完再決定',
   siteDescription:
     'spaceA 彙整網路真實聲量的推薦文與選購指南，涵蓋旅遊住宿、美妝保養、行銷服務等主題，每篇都標明資料來源與更新日期，幫你比完再決定買什麼、找誰。',
-  switchLang: 'EN',
-  switchLangTitle: 'Switch to English',
+  langMenu: '語言',
   mainNav: '主選單',
   breadcrumbs: '麵包屑',
   published: '發布',
@@ -231,8 +244,7 @@ const en: UIStrings = {
   siteTagline: 'Recommendations & buying guides, compared before you decide',
   siteDescription:
     'spaceA turns real online word-of-mouth into recommendation articles and buying guides across travel, beauty, food and more. Every article lists its sources and last update, so you can compare before you buy.',
-  switchLang: '中文',
-  switchLangTitle: '切換到中文',
+  langMenu: 'Language',
   mainNav: 'Main menu',
   breadcrumbs: 'Breadcrumb',
   published: 'Published',
@@ -380,7 +392,313 @@ const en: UIStrings = {
   noArticles: 'No articles yet.',
 }
 
-export const UI: Record<Lang, UIStrings> = { zh, en }
+const ja: UIStrings = {
+  home: 'ホーム',
+  siteTagline: '比べてから決める、おすすめ記事と選び方ガイド',
+  siteDescription:
+    'spaceA はネット上の実際の口コミをまとめ、旅行・宿泊、美容、グルメなどのおすすめ記事と選び方ガイドをお届けします。すべての記事に出典と更新日を明記しているので、買う前に比べられます。',
+  langMenu: '言語',
+  mainNav: 'メインメニュー',
+  breadcrumbs: 'パンくずリスト',
+  published: '公開',
+  updated: '更新',
+  readingTime: (min: number) => `約 ${min} 分で読めます`,
+  disclosure:
+    'この記事はネット上の公開された議論、EC・予約サイトのレビュー、ブランド公式情報をまとめ、編集部が確認したうえで執筆しています。一部アフィリエイトリンクを含みますが、掲載内容には影響しません。価格と在庫は各販売ページをご確認ください。',
+  conclusionFirst: '結論から',
+  editorIntro: '編集者について',
+  toc: '目次',
+  faq: 'よくある質問',
+  provenance: 'この記事の作り方',
+  knowledgeDisclosure:
+    'この記事はナレッジ記事で、広告やアフィリエイトリンクを含みません。今後追加する場合は記事の冒頭で明記します。',
+  editorialPolicy: '編集方針',
+  readMore: '関連記事',
+  editorFooter:
+    'ネット上の公開された議論とレビューをまとめ、裏取りをしたうえでおすすめを書き、情報ごとに出典と更新日を明記しています。内容の誤りを見つけたら',
+  contactUs: 'ご連絡ください',
+  aboutKnowledge: 'ナレッジ記事について',
+  aboutKnowledgeBody:
+    'ナレッジ記事は選び方や手入れの考え方を扱い、特定の商品を指定しません。まとまったおすすめを見たい方はおすすめ記事へどうぞ。',
+  seeRecommendations: 'おすすめ記事を見る',
+  sameCategory: '同じカテゴリの記事',
+  seeMoreOf: (name: string) => `${name}をもっと見る`,
+  otherTopics: '他のテーマを見る',
+  otherCategories: '他のカテゴリ',
+  postCount: (n: number) => `全 ${n} 件`,
+  postCountShort: (n: number) => `${n} 件`,
+  categoryMetaDesc: (name: string) =>
+    `spaceA の${name}のおすすめ記事と選び方ガイド。すべての記事に出典と更新日を明記しているので、比べてから決められます。`,
+  categoryCollection: (name: string) => `${name}のおすすめ記事`,
+  categoryCollectionDesc: (name: string) => `spaceA の${name}カテゴリのおすすめ記事一覧`,
+  categoryList: (name: string) => `${name}の記事一覧`,
+  articleTypeLabel: '記事タイプ',
+  all: 'すべて',
+  typeSummary: (parts: string) => `このカテゴリの内訳は${parts}`,
+  typeCount: (n: number, label: string) => `${label} ${n} 件`,
+  tagFilter: 'テーマで絞り込む',
+  filtering: (n: number) => `絞り込み中、全 ${n} 件`,
+  clearFilter: '絞り込みを解除',
+  noPosts: '該当する記事がありません。他のテーマをお試しください。',
+  editorsPick: '編集部のおすすめ',
+  loadMore: 'もっと見る',
+  loading: '読み込み中...',
+  heroTitle: ['選ぶのを、かんたんに。', '', 'いいもの', 'だけを見つける。'],
+  heroSub: '話題の商品から暮らしのヒントまで、本当に買う価値のある選択肢をすばやく見つけられます。',
+  heroTags: ['厳選おすすめ', 'じっくり比較', '出典を明記'],
+  heroCta: '人気記事を見る',
+  heroExplore: 'カテゴリを見る',
+  pickTopics: '気になるテーマは？',
+  pickTopicsHint: '複数選べます。下のセクションがすぐに絞り込まれます',
+  homeH2: 'spaceA のおすすめ記事：ネットの実際の口コミからつくる選び方ガイド',
+  homeH2Sub:
+    '厳選したおすすめ記事で、本当に価値のある選択肢を見つけてください。すべての記事に出典と更新日を明記しています。',
+  filteringCategories: (n: number) => `絞り込み中、${n} カテゴリを表示`,
+  noCategories: '該当するカテゴリがありません。他のテーマをお試しください。',
+  viewAll: 'すべて見る',
+  howWePick: '選び方のルール',
+  howWePickTitle: 'ネット上のいちばん率直な声を集め、編集部が裏取りする',
+  howWePickBody:
+    'すべてを自分で使ったふりはしません。spaceA は掲示板、SNS、EC のレビュー、専門家のテストなど公開された議論を集め、繰り返し挙がる長所と短所を洗い出し、公式や販売店の情報と突き合わせたうえで、情報ごとに出典を明記します。',
+  steps: [
+    { n: '01', title: '声を集める', body: '掲示板、SNS、EC のレビューをまとめ、どの型番が何回言及され、評価がどう分かれたかを記録します。' },
+    { n: '02', title: '突き合わせる', body: 'スペックと価格は必ず公式ページと販売店で確認し、ひとつの情報源だけでは採用しません。' },
+    { n: '03', title: '出典を書く', body: '実測なのか、利用者の声なのか、メーカー提供なのかを本文に明記し、最終更新日を添えます。' },
+  ],
+  popular: '人気記事',
+  fullRanking: 'ランキング全体',
+  featuredTopic: '編集部特集',
+  moreOf: (name: string) => `${name}のおすすめをもっと`,
+  featuredBody: (name: string) =>
+    `選び方から比べ方まで、${name}のおすすめ記事を一本の流れに整理しました。読み終える頃には、どれを選ぶべきか分かります。`,
+  readTopic: '特集を読む',
+  categoryListName: 'spaceA のカテゴリ',
+  footerDisclaimer:
+    'spaceA は選ぶための情報を届け、読者により多くの選択肢を提供します。当サイトの一部の情報は提携ブランドや関連団体と協力し、商品情報や第三者リンクの提供を受けています。ご利用の際は内容を十分にご検討ください。掲載情報は参考用です。',
+  browse: 'spaceA を見る',
+  footerNav: 'フッターリンク',
+  privacy: 'プライバシーポリシー',
+  terms: '利用規約',
+  operatedBy: (company: string, reg: string) => `運営会社：${company}（統一番号 ${reg}）`,
+  notFoundTitle: 'ページが見つかりません',
+  notFoundBody: 'このページは削除されたか、日本語版がまだ用意されていない可能性があります。',
+  backHome: 'ホームへ戻る',
+  searchPlaceholder: '記事を検索...',
+  editorName: 'カン',
+  editorRole: 'コンテンツ編集',
+  editorBio:
+    '現在は AI ワークフロー開発エンジニア。以前は Instagram のライター、ジュエリー会社のマーケティングコピー編集を担当していました。注文する前にまず AI に聞き、タブを五つ六つ開いて一項目ずつ比べるタイプ。Threads で実際の利用者のレビューを読むのが好きです。',
+  articleTypes: { recommendation: 'おすすめ', knowledge: 'ガイド' },
+  nav: [
+    { label: '人気記事', href: '/ja/popular' },
+    { label: 'spaceA について', href: '/ja/about' },
+    { label: '選定基準', href: '/ja/standards' },
+    { label: 'お問い合わせ', href: '/ja/contact' },
+  ],
+  footerColumns: [
+    {
+      title: 'spaceA について',
+      links: [
+        { label: 'spaceA について', href: '/ja/about' },
+        { label: '選定基準', href: '/ja/standards' },
+        { label: '編集部の体制', href: '/ja/about#team' },
+        { label: 'お問い合わせ', href: '/ja/contact' },
+      ],
+    },
+    {
+      title: 'お取引',
+      links: [
+        { label: '協業のご相談', href: '/ja/contact#form' },
+        { label: '広告掲載', href: '/ja/contact#form' },
+        { label: 'コンテンツ利用許諾', href: '/ja/contact#form' },
+      ],
+    },
+    {
+      title: '規約とポリシー',
+      links: [
+        { label: '提携・アフィリエイトの開示', href: '/ja/standards#disclosure' },
+        { label: '訂正ポリシー', href: '/ja/standards#corrections' },
+        { label: 'レビューの原則', href: '/ja/standards#limits' },
+        { label: 'プライバシーポリシー', href: '/ja/privacy' },
+        { label: '利用規約', href: '/ja/terms' },
+      ],
+    },
+  ],
+  onThisPage: 'このページの内容',
+  popularTitle: '人気記事',
+  popularIntro:
+    '現在は公開日順に並べているので、最新のおすすめ記事とガイドが先に出てきます。実際の閲覧データを接続したあとは、読者の行動にもとづくランキングに切り替えます。',
+  popularDescription:
+    'spaceA の最新のおすすめ記事とナレッジ記事を公開日順に掲載しています。閲覧データを接続したあとは人気順のランキングに切り替わります。',
+  popularPeriod: '集計期間：',
+  popularAllTime: '全期間',
+  ranges: { week: '今週', month: '今月', all: '全期間' },
+  category: 'カテゴリ',
+  popularEmpty: 'この期間にはまだ記事がありません',
+  otherTopicsHint: 'カテゴリを開くと、そのテーマの記事をすべて見られます。',
+  uncategorized: '未分類',
+  search: '検索',
+  searchResultsFor: (q: string) => `「${q}」の検索結果`,
+  searchCount: (n: number) => `${n} 件の記事が見つかりました`,
+  searchPrompt: 'キーワードを入力して検索してください',
+  searchEmpty: '該当する記事がありません。他のキーワードをお試しください。',
+  noArticles: 'まだ記事がありません。',
+}
+
+const ko: UIStrings = {
+  home: '홈',
+  siteTagline: '비교하고 결정하는 추천 글과 구매 가이드',
+  siteDescription:
+    'spaceA는 온라인의 실제 후기를 모아 여행·숙박, 뷰티, 맛집 등의 추천 글과 구매 가이드를 전합니다. 모든 글에 출처와 업데이트 날짜를 밝혀, 사기 전에 비교할 수 있습니다.',
+  langMenu: '언어',
+  mainNav: '주 메뉴',
+  breadcrumbs: '탐색 경로',
+  published: '발행',
+  updated: '수정',
+  readingTime: (min: number) => `약 ${min}분 분량`,
+  disclosure:
+    '이 글은 온라인에 공개된 게시물, 쇼핑몰과 예약 사이트 후기, 브랜드 공식 정보를 정리하고 편집부가 확인한 뒤 작성했습니다. 일부 링크는 제휴 링크이며 추천 내용에는 영향을 주지 않습니다. 가격과 재고는 판매 페이지를 기준으로 확인해 주세요.',
+  conclusionFirst: '핵심 결론',
+  editorIntro: '편집자 소개',
+  toc: '목차',
+  faq: '자주 묻는 질문',
+  provenance: '이 글을 쓴 방법',
+  knowledgeDisclosure:
+    '이 글은 정보성 콘텐츠로 광고나 제휴 링크를 포함하지 않습니다. 앞으로 포함하게 되면 글 첫머리에 밝히겠습니다.',
+  editorialPolicy: '편집 방침',
+  readMore: '함께 읽기',
+  editorFooter:
+    '온라인에 공개된 논의와 후기를 모아 교차 확인한 뒤 추천을 쓰고, 정보마다 출처와 업데이트 날짜를 밝힙니다. 잘못된 내용을 발견하셨다면',
+  contactUs: '알려주세요',
+  aboutKnowledge: '정보성 콘텐츠 안내',
+  aboutKnowledgeBody:
+    '정보성 콘텐츠는 판단 기준과 관리 방법을 다루며 특정 제품을 지정하지 않습니다. 정리된 추천을 보시려면 추천 글을 확인하세요.',
+  seeRecommendations: '추천 글 보기',
+  sameCategory: '같은 카테고리 글',
+  seeMoreOf: (name: string) => `${name} 더 보기`,
+  otherTopics: '다른 주제 보기',
+  otherCategories: '다른 카테고리',
+  postCount: (n: number) => `총 ${n}건`,
+  postCountShort: (n: number) => `${n}건`,
+  categoryMetaDesc: (name: string) =>
+    `spaceA의 ${name} 추천 글과 구매 가이드. 모든 글에 출처와 업데이트 날짜를 밝혀 비교하고 결정할 수 있습니다.`,
+  categoryCollection: (name: string) => `${name} 추천 글`,
+  categoryCollectionDesc: (name: string) => `spaceA ${name} 카테고리의 추천 글 목록`,
+  categoryList: (name: string) => `${name} 글 목록`,
+  articleTypeLabel: '글 유형',
+  all: '전체',
+  typeSummary: (parts: string) => `이 카테고리 구성은 ${parts}`,
+  typeCount: (n: number, label: string) => `${label} ${n}건`,
+  tagFilter: '주제로 좁히기',
+  filtering: (n: number) => `필터 적용 중, 총 ${n}건`,
+  clearFilter: '필터 해제',
+  noPosts: '조건에 맞는 글이 없습니다. 다른 주제를 눌러보세요.',
+  editorsPick: '편집자 추천',
+  loadMore: '더 보기',
+  loading: '불러오는 중...',
+  heroTitle: ['선택을 간단하게,', '', '좋은 물건', '만 골라드립니다.'],
+  heroSub: '인기 상품부터 생활 아이디어까지, 정말 살 만한 선택지를 빠르게 찾아드립니다.',
+  heroTags: ['엄선 추천', '꼼꼼한 비교', '출처 표기'],
+  heroCta: '인기 글 보기',
+  heroExplore: '카테고리 둘러보기',
+  pickTopics: '어떤 주제가 궁금하세요?',
+  pickTopicsHint: '여러 개 고를 수 있고, 아래 섹션이 바로 걸러집니다',
+  homeH2: 'spaceA 추천 글: 온라인의 실제 후기로 만드는 구매 가이드',
+  homeH2Sub:
+    '엄선한 추천 글로 값어치 있는 선택지를 찾아보세요. 모든 글에 출처와 업데이트 날짜를 밝힙니다.',
+  filteringCategories: (n: number) => `필터 적용 중, ${n}개 카테고리 표시`,
+  noCategories: '조건에 맞는 카테고리가 없습니다. 다른 주제를 눌러보세요.',
+  viewAll: '전체 보기',
+  howWePick: '고르는 방법',
+  howWePickTitle: '온라인의 솔직한 목소리를 모아 편집부가 확인합니다',
+  howWePickBody:
+    '모든 제품을 직접 써봤다고 말하지 않습니다. spaceA는 커뮤니티, SNS, 쇼핑몰 후기, 전문 리뷰 같은 공개된 논의를 모아 반복해서 언급되는 장단점을 찾고, 공식과 판매처 정보와 대조한 뒤 정보마다 출처를 밝힙니다.',
+  steps: [
+    { n: '01', title: '후기 수집', body: '커뮤니티, SNS, 쇼핑몰 후기를 모아 각 모델이 몇 번 언급되고 평가가 어떻게 갈리는지 기록합니다.' },
+    { n: '02', title: '교차 확인', body: '사양과 가격은 반드시 공식 페이지와 판매처에서 확인하며, 한 곳의 정보만으로는 싣지 않습니다.' },
+    { n: '03', title: '출처 표기', body: '직접 테스트인지, 사용자 후기인지, 제조사 제공인지 본문에 밝히고 최종 업데이트 날짜를 함께 적습니다.' },
+  ],
+  popular: '인기 글',
+  fullRanking: '전체 순위',
+  featuredTopic: '편집부 특집',
+  moreOf: (name: string) => `${name} 추천 더 보기`,
+  featuredBody: (name: string) =>
+    `고르는 법부터 비교하는 법까지, ${name} 관련 추천 글을 하나의 흐름으로 정리했습니다. 다 읽고 나면 무엇을 골라야 할지 알 수 있습니다.`,
+  readTopic: '특집 읽기',
+  categoryListName: 'spaceA 카테고리',
+  footerDisclaimer:
+    'spaceA는 고르는 데 필요한 정보를 제공해 독자에게 더 많은 선택지를 드립니다. 이 사이트의 일부 정보는 제휴 브랜드나 관련 기관과 협력해 제품 정보나 제3자 링크를 제공받습니다. 이용하실 때 충분히 검토해 주시고, 모든 정보는 참고용입니다.',
+  browse: 'spaceA 둘러보기',
+  footerNav: '푸터 링크',
+  privacy: '개인정보처리방침',
+  terms: '이용약관',
+  operatedBy: (company: string, reg: string) => `운영사: ${company}(사업자번호 ${reg})`,
+  notFoundTitle: '페이지를 찾을 수 없습니다',
+  notFoundBody: '이 페이지는 삭제되었거나, 한국어판이 아직 준비되지 않았을 수 있습니다.',
+  backHome: '홈으로',
+  searchPlaceholder: '글 검색...',
+  editorName: '캉',
+  editorRole: '콘텐츠 에디터',
+  editorBio:
+    '현재 AI 워크플로 개발 엔지니어이고, 이전에는 인스타그램 글 작성자와 주얼리 회사 마케팅 카피 에디터로 일했습니다. 주문하기 전에 먼저 AI에게 물어보고, 탭을 대여섯 개 열어 항목별로 비교하는 편입니다. Threads에서 실제 사용자 후기를 읽는 걸 좋아합니다.',
+  articleTypes: { recommendation: '추천 글', knowledge: '가이드' },
+  nav: [
+    { label: '인기 글', href: '/ko/popular' },
+    { label: 'spaceA 소개', href: '/ko/about' },
+    { label: '선정 기준', href: '/ko/standards' },
+    { label: '문의하기', href: '/ko/contact' },
+  ],
+  footerColumns: [
+    {
+      title: 'spaceA 소개',
+      links: [
+        { label: 'spaceA 소개', href: '/ko/about' },
+        { label: '선정 기준', href: '/ko/standards' },
+        { label: '편집부 구성', href: '/ko/about#team' },
+        { label: '문의하기', href: '/ko/contact' },
+      ],
+    },
+    {
+      title: '제휴와 협업',
+      links: [
+        { label: '제휴 문의', href: '/ko/contact#form' },
+        { label: '광고 게재', href: '/ko/contact#form' },
+        { label: '콘텐츠 이용 허락', href: '/ko/contact#form' },
+      ],
+    },
+    {
+      title: '약관과 정책',
+      links: [
+        { label: '제휴·어필리에이트 고지', href: '/ko/standards#disclosure' },
+        { label: '정정 정책', href: '/ko/standards#corrections' },
+        { label: '리뷰 원칙', href: '/ko/standards#limits' },
+        { label: '개인정보처리방침', href: '/ko/privacy' },
+        { label: '이용약관', href: '/ko/terms' },
+      ],
+    },
+  ],
+  onThisPage: '이 페이지 목차',
+  popularTitle: '인기 글',
+  popularIntro:
+    '지금은 발행일순으로 정렬해 최신 추천 글과 가이드를 먼저 보여드립니다. 실제 조회 데이터를 연결한 뒤에는 독자 행동을 반영한 순위로 바꿀 예정입니다.',
+  popularDescription:
+    'spaceA의 최신 추천 글과 가이드를 발행일순으로 정리했습니다. 조회 데이터가 연결되면 인기순 순위로 바뀝니다.',
+  popularPeriod: '집계 기간: ',
+  popularAllTime: '전체 기간',
+  ranges: { week: '이번 주', month: '이번 달', all: '전체 기간' },
+  category: '카테고리',
+  popularEmpty: '이 기간에는 아직 글이 없습니다',
+  otherTopicsHint: '카테고리를 열면 해당 주제의 모든 글을 볼 수 있습니다.',
+  uncategorized: '미분류',
+  search: '검색',
+  searchResultsFor: (q: string) => `'${q}' 검색 결과`,
+  searchCount: (n: number) => `${n}건을 찾았습니다`,
+  searchPrompt: '검색어를 입력해 주세요',
+  searchEmpty: '일치하는 글이 없습니다. 다른 검색어를 시도해 보세요.',
+  noArticles: '아직 글이 없습니다.',
+}
+
+export const UI: Record<Lang, UIStrings> = { zh, en, ja, ko }
 
 export function ui(lang: Lang): UIStrings {
   return UI[lang]
@@ -389,4 +707,19 @@ export function ui(lang: Lang): UIStrings {
 /** 文章類型（推薦文／知識分享）的顯示名稱：中文吃 WP taxonomy 的名字，英文換成字典裡的 */
 export function articleTypeLabel(lang: Lang, type: { name: string; slug: string }) {
   return UI[lang].articleTypes[type.slug] ?? type.name
+}
+
+/**
+ * 固定頁面（關於我們、推薦標準…）的 canonical 與 hreflang。
+ * 這些頁每個語言都有，所以四個語言互指，x-default 給中文（主站）。
+ * 文章頁與分類頁不能用這個：那些要先確認對照頁存在才輸出 hreflang。
+ */
+export function staticAlternates(lang: Lang, path: string) {
+  // 首頁的路徑是 '/'，直接接前綴會變成 '/en/'，跟中文的 '/' 不一致
+  const hrefOf = (l: Lang) => (path === '/' ? homeHref(l) : `${langPrefix(l)}${path}`)
+  const languages = Object.fromEntries(LANGS.map((l) => [LANG_TAG[l], hrefOf(l)])) as Record<string, string>
+  return {
+    canonical: hrefOf(lang),
+    languages: { ...languages, 'x-default': hrefOf('zh') },
+  }
 }

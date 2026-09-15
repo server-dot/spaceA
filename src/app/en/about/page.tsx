@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
@@ -67,10 +68,7 @@ const FAQ_ITEMS = [
 export const metadata: Metadata = {
   title: 'About',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/en/about',
-    languages: { 'zh-TW': '/about', en: '/en/about', 'x-default': '/about' },
-  },
+  alternates: staticAlternates('en', '/about'),
   openGraph: {
     type: 'website',
     locale: 'en_US',

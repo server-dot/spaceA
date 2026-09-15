@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { GET_CATEGORY, GET_ALL_CATEGORIES, GET_CATEGORY_EXISTS } from '@/lib/graphql/queries/category'
+import { GET_CATEGORY, GET_ALL_CATEGORIES, GET_CATEGORY_TRANSLATIONS } from '@/lib/graphql/queries/category'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, POSTS_PER_PAGE, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
@@ -16,6 +16,7 @@ import { WPSeo } from '@/types/seo'
 import { decodeRouteParam } from '@/lib/route-params'
 import { stripWpSiteSuffix } from '@/lib/format'
 import {
+  LANGS,
   LANG_TAG,
   OG_LOCALE,
   categoryHref,
@@ -49,8 +50,10 @@ interface AllCategoriesData {
   categories: { nodes: WPCategory[] }
 }
 
-interface CategoryExistsData {
-  category: { slug: string } | null
+interface CategoryTranslationsData {
+  en: { slug: string } | null
+  ja: { slug: string } | null
+  ko: { slug: string } | null
 }
 
 /**
@@ -64,11 +67,14 @@ export async function categoryStaticParams(lang: Lang) {
     .map((cat) => ({ category: toRouteSlug(cat.slug) }))
 }
 
-// 另一語言有沒有這個分類（英文版一定是從中文來的，直接認定有）
-async function counterpartExists(lang: Lang, routeSlug: string) {
-  if (lang === 'en') return true
-  const data = await fetchQuery<CategoryExistsData>(GET_CATEGORY_EXISTS, { slug: toWpSlug('en', routeSlug) })
-  return Boolean(data?.category)
+// 這個分類有哪些語言版本（中文是來源一定有，其餘查 WordPress 有沒有建）
+async function availableLangs(routeSlug: string): Promise<Lang[]> {
+  const data = await fetchQuery<CategoryTranslationsData>(GET_CATEGORY_TRANSLATIONS, {
+    en: toWpSlug('en', routeSlug),
+    ja: toWpSlug('ja', routeSlug),
+    ko: toWpSlug('ko', routeSlug),
+  })
+  return LANGS.filter((l) => l === 'zh' || Boolean(data?.[l as 'en' | 'ja' | 'ko']))
 }
 
 export async function generateCategoryMetadata(lang: Lang, { params }: CategoryRouteProps): Promise<Metadata> {
@@ -81,7 +87,7 @@ export async function generateCategoryMetadata(lang: Lang, { params }: CategoryR
   const cat = data?.category
   if (!cat) return {}
   const path = categoryHref(lang, cat.slug)
-  const hasCounterpart = await counterpartExists(lang, slug)
+  const langs = await availableLangs(slug)
 
   // 還沒有文章的分類頁是空列表，首頁的主題格子又直接連過去，放給 Google 索引等於自己送一批
   // thin content 進去。等這個分類有第一篇文章就會自動恢復索引（follow 保留，才不會擋住內部連結）
@@ -95,10 +101,9 @@ export async function generateCategoryMetadata(lang: Lang, { params }: CategoryR
     description,
     alternates: {
       canonical: path,
-      ...(hasCounterpart && {
+      ...(langs.length > 1 && {
         languages: {
-          [LANG_TAG.zh]: categoryHref('zh', slug),
-          [LANG_TAG.en]: categoryHref('en', slug),
+          ...Object.fromEntries(langs.map((l) => [LANG_TAG[l], categoryHref(l, slug)])),
           'x-default': categoryHref('zh', slug),
         },
       }),

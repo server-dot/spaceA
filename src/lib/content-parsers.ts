@@ -97,7 +97,10 @@ function stripUpstreamHeadingStyles(html: string): string {
  */
 function stripUpstreamAuthorBlock(html: string): string {
   return html
-    .replace(/<p[^>]*>\s*(?:編者介紹|About the (?:Editor|Author))\s*<\/p>\s*/gi, '')
+    .replace(
+      /<p[^>]*>\s*(?:編者介紹|About the (?:Editor|Author)|編集者について|편집자 소개)\s*<\/p>\s*/gi,
+      ''
+    )
     .replace(/<div[^>]*\bclass="author-block"[^>]*>[\s\S]*?<\/div>\s*/gi, '')
 }
 
@@ -114,7 +117,7 @@ function cutSection(html: string, heading: string): { block: string; rest: strin
  * 結論區塊的 h2 標題寫法：選購指南寫「結論」，StackTool 推薦文寫「總結」而且放在文末。
  * 兩種都認，把結論前置到「先看結論」框裡（對 GEO 有利，讀者也不用捲到最後）。
  */
-const CONCLUSION_HEADING_PATTERN = '(?:結論|總結|Conclusion|Summary|Final Thoughts|Key Takeaways)'
+const CONCLUSION_HEADING_PATTERN = '(?:結論|總結|Conclusion|Summary|Final Thoughts|Key Takeaways|まとめ|정리)'
 
 function extractConclusion(html: string): { conclusion: ParsedArticleContent['conclusion']; rest: string } {
   const cut = cutSection(html, CONCLUSION_HEADING_PATTERN)
@@ -134,7 +137,7 @@ function extractConclusion(html: string): { conclusion: ParsedArticleContent['co
 }
 
 /** FAQ 區塊的 h2 標題寫法：選購指南用「常見問題」，StackTool 推薦文用「FAQ」 */
-const FAQ_HEADING_PATTERN = '(?:常見問題|常見問答|FAQs?|Frequently Asked Questions)'
+const FAQ_HEADING_PATTERN = '(?:常見問題|常見問答|FAQs?|Frequently Asked Questions|よくある質問|자주 묻는 질문)'
 
 function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
   const cut = cutSection(html, FAQ_HEADING_PATTERN)
@@ -162,7 +165,7 @@ function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
 }
 
 function extractProvenance(html: string): { provenance: string[] | null; rest: string } {
-  const cut = cutSection(html, '(?:這篇怎麼寫出來的|How This Article Was Written)')
+  const cut = cutSection(html, '(?:這篇怎麼寫出來的|How This Article Was Written|この記事の作り方|이 글을 쓴 방법)')
   if (!cut) return { provenance: null, rest: html }
 
   const paragraphs = [...cut.block.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => stripTags(m[1]))
@@ -286,7 +289,7 @@ export function parseArticleContent(
   const { html: fullBodyHtml, toc } = injectTocAnchors(afterHowTo)
 
   // 常見問題要排在總結前面，所以把「總結」以後的內容切出來，頁面在中間插入 FAQ
-  const summaryMatch = /<h2[^>]*>\s*(?:總結|結語|Conclusion|Summary|Final Thoughts)\s*<\/h2>/i.exec(fullBodyHtml)
+  const summaryMatch = /<h2[^>]*>\s*(?:總結|結語|Conclusion|Summary|Final Thoughts|まとめ|정리)\s*<\/h2>/i.exec(fullBodyHtml)
   const splitAt = summaryMatch ? summaryMatch.index : fullBodyHtml.length
   const { bodyHtml, bodyTailHtml } = splitHtmlAt(fullBodyHtml, splitAt)
 
@@ -295,7 +298,7 @@ export function parseArticleContent(
   }
   if (faq) {
     // 目錄也要跟著實際順序：常見問題插在總結那一項之前
-    const summaryIndex = toc.findIndex((item) => /^(總結|結語|Conclusion|Summary|Final Thoughts)/i.test(item.label))
+    const summaryIndex = toc.findIndex((item) => /^(總結|結語|Conclusion|Summary|Final Thoughts|まとめ|정리)/i.test(item.label))
     const entry = { id: FAQ_SECTION_ID, label: faqLabel }
     if (summaryIndex >= 0) toc.splice(summaryIndex, 0, entry)
     else toc.push(entry)
@@ -317,7 +320,7 @@ export function deriveMetaDescription(html: string, maxLength = 150): string {
 
   const paragraphs = Array.from(cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
     .map((m) => stripHtml(m[1]).replace(/\s+/g, ' ').trim())
-    .filter((text) => text.length >= 30 && !/^(目錄|Table of Contents|Contents)/i.test(text))
+    .filter((text) => text.length >= 30 && !/^(目錄|目次|Table of Contents|Contents|목차)/i.test(text))
 
   const source = paragraphs[0]
   if (!source) return ''

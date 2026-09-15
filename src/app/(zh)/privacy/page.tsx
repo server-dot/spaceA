@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
@@ -25,10 +26,7 @@ const TOC_ITEMS = [
 export const metadata: Metadata = {
   title: '隱私權政策',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/privacy',
-    languages: { 'zh-TW': '/privacy', en: '/en/privacy', 'x-default': '/privacy' },
-  },
+  alternates: staticAlternates('zh', '/privacy'),
   // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
     type: 'website',

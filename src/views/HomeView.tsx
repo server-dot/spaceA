@@ -17,6 +17,7 @@ import {
   homeHref,
   langOfCategorySlug,
   ui,
+  staticAlternates,
   type Lang,
 } from '@/lib/i18n'
 
@@ -31,10 +32,7 @@ export function homeMetadata(lang: Lang): Metadata {
       absolute: `${SITE_NAME}${sep}${t.siteTagline}`,
     },
     description: t.siteDescription,
-    alternates: {
-      canonical: homeHref(lang),
-      languages: { [LANG_TAG.zh]: '/', [LANG_TAG.en]: '/en', 'x-default': '/' },
-    },
+    alternates: staticAlternates(lang, '/'),
     // openGraph 在子頁面是整組覆蓋掉 layout 的，所以 image/type/siteName 要一起帶
     openGraph: {
       type: 'website',

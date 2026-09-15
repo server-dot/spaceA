@@ -9,7 +9,7 @@ import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { formatDate, resolveSummary } from '@/lib/format'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
-import { LANG_TAG, OG_LOCALE, articleHref, homeHref, langOfCategorySlug, langPrefix, ui, type Lang } from '@/lib/i18n'
+import { LANG_TAG, OG_LOCALE, articleHref, homeHref, langOfCategorySlug, langPrefix, ui, type Lang, staticAlternates } from '@/lib/i18n'
 
 interface LatestPostsData {
   posts: { nodes: WPPostCard[] }
@@ -26,10 +26,7 @@ export function popularMetadata(lang: Lang): Metadata {
   return {
     title: t.popularTitle,
     description: t.popularDescription,
-    alternates: {
-      canonical: path,
-      languages: { [LANG_TAG.zh]: '/popular', [LANG_TAG.en]: '/en/popular', 'x-default': '/popular' },
-    },
+    alternates: staticAlternates(lang, '/popular'),
     // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
     openGraph: {
       type: 'website',

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
@@ -16,10 +17,7 @@ const BREADCRUMBS = [
 export const metadata: Metadata = {
   title: '聯絡我們',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/contact',
-    languages: { 'zh-TW': '/contact', en: '/en/contact', 'x-default': '/contact' },
-  },
+  alternates: staticAlternates('zh', '/contact'),
   // 子頁的 openGraph 會整組蓋掉 layout 的，圖片與 siteName 要自己帶，不然分享出去沒有預覽圖
   openGraph: {
     type: 'website',

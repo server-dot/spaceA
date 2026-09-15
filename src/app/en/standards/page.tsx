@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import PageToc from '@/components/layout/PageToc'
@@ -25,10 +26,7 @@ const TOC_ITEMS = [
 export const metadata: Metadata = {
   title: 'Our Standards',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/en/standards',
-    languages: { 'zh-TW': '/standards', en: '/en/standards', 'x-default': '/standards' },
-  },
+  alternates: staticAlternates('en', '/standards'),
   openGraph: {
     type: 'website',
     locale: 'en_US',

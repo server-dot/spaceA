@@ -1,9 +1,26 @@
-export function formatDate(dateString: string, lang: 'zh' | 'en' = 'zh') {
-  return new Date(dateString).toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-TW', {
+import { LANG_TAG, type Lang } from '@/lib/i18n'
+
+export function formatDate(dateString: string, lang: Lang = 'zh') {
+  return new Date(dateString).toLocaleDateString(LANG_TAG[lang], {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   })
+}
+
+/**
+ * 這個語言是不是用空白斷詞。中文與日文沒有空白，字數要數字元；英文與韓文數單字。
+ * 字數統計（wordCount）與閱讀時間都吃這個判斷。
+ */
+export function isSpaceSeparated(lang: Lang) {
+  return lang === 'en' || lang === 'ko'
+}
+
+/** 內文純文字的長度，中日數字元、英韓數單字 */
+export function countWords(html: string, lang: Lang) {
+  const text = html.replace(/<[^>]*>/g, '')
+  if (isSpaceSeparated(lang)) return text.split(/\s+/).filter(Boolean).length
+  return text.replace(/\s+/g, '').length
 }
 
 export function stripHtml(html: string) {

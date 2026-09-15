@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { staticAlternates } from '@/lib/i18n'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
@@ -18,10 +19,7 @@ const BREADCRUMBS = [
 export const metadata: Metadata = {
   title: 'Contact',
   description: DESCRIPTION,
-  alternates: {
-    canonical: '/en/contact',
-    languages: { 'zh-TW': '/contact', en: '/en/contact', 'x-default': '/contact' },
-  },
+  alternates: staticAlternates('en', '/contact'),
   openGraph: {
     type: 'website',
     locale: 'en_US',

@@ -6,7 +6,8 @@
 前台網址 /en/travel/xxx 對應 WP 的 travel-en / xxx-en。這支腳本負責把這些東西建出來。
 
 用法：
-  python3 scripts/translate_post.py 326            # 翻 post 326，建英文版（已有英文版就跳過）
+  python3 scripts/translate_post.py 326            # 翻 post 326，建英文版（已有就跳過）
+  python3 scripts/translate_post.py 326 --lang ja  # 建日文版（--lang en/ja/ko）
   python3 scripts/translate_post.py 326 308 283    # 一次多篇
   python3 scripts/translate_post.py 326 --force    # 英文版已存在也覆蓋（用快取，不重翻）
   python3 scripts/translate_post.py 326 --retranslate  # 重新呼叫模型翻（會再燒一次額度）
@@ -35,51 +36,86 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = ROOT / 'scripts' / '.translate-cache'
-EN_SUFFIX = '-en'
+# 語言後綴要跟前台的 src/lib/i18n.ts 對齊
+LANG_SUFFIX = {'en': '-en', 'ja': '-ja', 'ko': '-ko'}
+LANG_LABEL = {'en': 'English', 'ja': 'Japanese', 'ko': 'Korean'}
+LANG = 'en'          # --lang 指定，預設英文
+CJK_RE = '[\u4e00-\u9fff]'   # 漢字區段，中日共用
+KANA_RE = '[\u3040-\u30ff]'  # 平假名＋片假名，用來分辨日文與漏翻的中文
+SUFFIX = '-en'       # 跟著 LANG 走，main() 裡設定
+
+# 各語言的固定章節譯名。生成器產出的結構固定，這些名字前台的 content-parsers 也要認得
+HEADINGS = {
+    'en': '前言 → "Introduction"; 總結 / 結語 / 結論 → "Conclusion"; 常見問題 / FAQ → "FAQ"; 參考資料 → "References"; '
+          '小編點評 → "Editor\'s Take"; 官方資訊 → "Official Information"; 官方網站 → "Official website"; '
+          '官方產品頁 → "Official product page"; 編者介紹 → "About the Editor"; 目錄 → "Contents"; '
+          '一次解答 → "Quick Answer"; 判斷依據 → "How We Judged"; 網友評價 → "What Users Say"; 適合誰 → "Best For"; '
+          '價格 → "Price"; 地址 → "Address"; 電話 → "Tel"',
+    'ja': '前言 → 「はじめに」; 總結 / 結語 / 結論 → 「まとめ」; 常見問題 / FAQ → 「よくある質問」; 參考資料 → 「参考資料」; '
+          '小編點評 → 「編集部のひとこと」; 官方資訊 → 「公式情報」; 官方網站 → 「公式サイト」; 官方產品頁 → 「公式商品ページ」; '
+          '編者介紹 → 「編集者について」; 目錄 → 「目次」; 一次解答 → 「まとめて回答」; 判斷依據 → 「判断のポイント」; '
+          '網友評價 → 「利用者の声」; 適合誰 → 「こんな人に」; 價格 → 「価格」; 地址 → 「住所」; 電話 → 「電話」',
+    'ko': '前言 → “들어가며”; 總結 / 結語 / 結論 → “정리”; 常見問題 / FAQ → “자주 묻는 질문”; 參考資料 → “참고 자료”; '
+          '小編點評 → “에디터 코멘트”; 官方資訊 → “공식 정보”; 官方網站 → “공식 사이트”; 官方產品頁 → “공식 제품 페이지”; '
+          '編者介紹 → “편집자 소개”; 目錄 → “목차”; 一次解答 → “한눈에 보기”; 判斷依據 → “판단 기준”; '
+          '網友評價 → “사용자 후기”; 適合誰 → “이런 분께”; 價格 → “가격”; 地址 → “주소”; 電話 → “전화”',
+}
+
+# 標點：日文沿用全形句讀，英韓改成西式
+PUNCT_RULE = {
+    'en': '%(punct)s',
+    'ja': 'Use Japanese punctuation: 。 for periods, 、 for commas, 「」 for quotes. Do not use ASCII commas or periods in running text.',
+    'ko': 'Use Korean punctuation: periods and commas in the Western style, “ ” for quotes, and the middle dot · only where Korean normally uses it.',
+}
 DEFAULT_MODEL = 'openai/gpt-5-mini'
 # 每一段送給模型的原文上限（字元）。太長輸出會被截、太短上下文不夠，8k 左右一段大約是兩三章
 CHUNK_CHARS = 8000
 
 # 分類名稱：WP 的中文分類 → 英文站要顯示的名稱（找不到的交給模型翻）
 CATEGORY_NAMES = {
-    '3C數位': 'Tech & Gadgets',
-    '健康醫療': 'Health & Medical',
-    '寵物': 'Pets',
-    '影音器材': 'Creator Gear',
-    '教育學習': 'Education',
-    '旅遊住宿': 'Travel & Stays',
-    '汽車機車': 'Cars & Motorcycles',
-    '法律服務': 'Legal Services',
-    '生活居家': 'Home & Living',
-    '美妝保養': 'Beauty & Skincare',
-    '美食': 'Food',
-    '行銷': 'Marketing',
-    '運動健身': 'Fitness',
-    '金融理財': 'Finance',
+    'en': {
+        '3C數位': 'Tech & Gadgets', '健康醫療': 'Health & Medical', '寵物': 'Pets', '影音器材': 'Creator Gear',
+        '教育學習': 'Education', '旅遊住宿': 'Travel & Stays', '汽車機車': 'Cars & Motorcycles',
+        '法律服務': 'Legal Services', '生活居家': 'Home & Living', '美妝保養': 'Beauty & Skincare',
+        '美食': 'Food', '行銷': 'Marketing', '運動健身': 'Fitness', '金融理財': 'Finance',
+    },
+    'ja': {
+        '3C數位': 'デジタル・家電', '健康醫療': '健康・医療', '寵物': 'ペット', '影音器材': '撮影機材',
+        '教育學習': '教育・学習', '旅遊住宿': '旅行・宿泊', '汽車機車': '車・バイク',
+        '法律服務': '法律サービス', '生活居家': '暮らし・インテリア', '美妝保養': 'コスメ・スキンケア',
+        '美食': 'グルメ', '行銷': 'マーケティング', '運動健身': 'スポーツ・フィットネス', '金融理財': '金融・資産運用',
+    },
+    'ko': {
+        '3C數位': '디지털·가전', '健康醫療': '건강·의료', '寵物': '반려동물', '影音器材': '촬영 장비',
+        '教育學習': '교육·학습', '旅遊住宿': '여행·숙박', '汽車機車': '자동차·오토바이',
+        '法律服務': '법률 서비스', '生活居家': '생활·인테리어', '美妝保養': '뷰티·스킨케어',
+        '美食': '맛집·푸드', '行銷': '마케팅', '運動健身': '운동·피트니스', '金融理財': '금융·재테크',
+    },
 }
 
-SYSTEM_PROMPT = """You are a professional Traditional Chinese → English translator for a Taiwanese consumer-recommendation website (spaceA). You translate WordPress post HTML.
+SYSTEM_PROMPT = """You are a professional Traditional Chinese → %(lang)s translator for a Taiwanese consumer-recommendation website (spaceA). You translate WordPress post HTML.
 
 Rules:
+0. Translate into %(lang)s.
 1. Output ONLY the translated HTML fragment. No markdown fences, no commentary, no <html>/<body> wrappers.
 2. Preserve the HTML structure exactly: every tag, attribute, class, id, href, src, alt order, <style> block, <svg>, <table>, <details>, inline styles. Translate only human-readable text (text nodes, alt text, title attributes, and text inside <svg><text>). Never add, drop, merge or reorder elements. Keep the same number of <h2>, <h3>, <p>, <li>, <img>, <a>, <table>, <tr>.
 3. Do not translate or alter URLs, email addresses, phone numbers, prices (keep "NT$" and the numbers as written), model numbers, or the contents of <style> blocks.
-4. Section headings follow fixed English names: 前言 → "Introduction"; 總結 / 結語 → "Conclusion"; 結論 → "Conclusion"; 常見問題 / FAQ → "FAQ"; 參考資料 → "References"; 小編點評 → "Editor's Take"; 官方資訊 → "Official Information"; 官方網站 → "Official website"; 官方產品頁 → "Official product page"; 編者介紹 → "About the Editor"; 目錄 → "Contents"; 一次解答 → "Quick Answer"; 判斷依據 → "How We Judged"; 網友評價 → "What Users Say"; 適合誰 → "Best For"; 價格 → "Price"; 地址 → "Address"; 電話 → "Tel". Other headings: translate naturally, keep them as complete sentences or clear noun phrases.
-5. Brand, place and product names: use the official English name when one exists (e.g. 日月潭 → Sun Moon Lake, 清境農場 → Cingjing Farm, 妮娜巧克力 → Cona's Chocolate). If there is no known English name, romanize it (Hanyu Pinyin for mainland, common Taiwan spelling for Taiwanese places) and add the Chinese in parentheses on first mention only, e.g. "Huisun Forest (惠蓀林場)". Never leave Chinese characters in running text otherwise.
-6. Tone: natural, idiomatic American English for an international reader planning to buy or visit in Taiwan. Prefer complete sentences. Convert Chinese punctuation (，。、：「」) to English punctuation; use "Q:"/"A:" for FAQ prefixes. Keep the meaning and every fact; do not summarize, embellish, or add disclaimers.
+4. Section headings follow these fixed names: %(headings)s. Other headings: translate naturally, keep them as complete sentences or clear noun phrases.
+5. Brand, place and product names: use the official %(lang)s name when one exists (e.g. 日月潭 → Sun Moon Lake, 清境農場 → Cingjing Farm, 妮娜巧克力 → Cona's Chocolate). If there is no known name in the target language, transliterate it (Hanyu Pinyin for mainland, common Taiwan spelling for Taiwanese places) and add the Chinese in parentheses on first mention only, e.g. "Huisun Forest (惠蓀林場)". Never leave Chinese characters in running text otherwise.
+6. Tone: natural, idiomatic %(lang)s for a reader in that language who is planning to buy or visit in Taiwan. Prefer complete sentences. Convert Chinese punctuation (，。、：「」) to English punctuation; use "Q:"/"A:" for FAQ prefixes. Keep the meaning and every fact; do not summarize, embellish, or add disclaimers.
 7. Currency and units stay as in the source (NT$, km, minutes). Dates stay as written.
 """
 
-META_PROMPT = """Translate this Taiwanese recommendation article's title into English and write an English meta description.
+META_PROMPT = """Translate this Taiwanese recommendation article's title into %(lang)s and write a meta description in %(lang)s.
 
 Return ONLY a JSON object: {"title": "...", "excerpt": "..."}
-- title: natural English, keep the meaning, numbers and year if present, under 70 characters, no trailing site name. Use the official English names of places/brands.
+- title: natural %(lang)s, keep the meaning, numbers and year if present, under 70 characters, no trailing site name. Use the official %(lang)s names of places/brands.
 - excerpt: 120–155 characters, one or two sentences summarizing what the article compares and what the reader gets. No Chinese characters.
 
-Chinese title: %s
+Chinese title: %(title)s
 
 First paragraphs of the article (plain text):
-%s
+%(intro)s
 """
 
 
@@ -240,16 +276,42 @@ def structure_diff(src: str, out: str) -> list[str]:
     return [f'{tag}: {a[tag]}→{b[tag]}' for tag in TAG_CHECK if a[tag] != b[tag]]
 
 
+def _cjk_outside_parens(text: str) -> bool:
+    # 括號裡保留原名是允許的，所以英韓只看括號外。
+    # 日文不能這樣切：「NT$ 0（用現有手機）」整段只有括號裡是中文，切掉就抓不到了
+    if LANG == 'ja':
+        return looks_untranslated(text)
+    return looks_untranslated(re.sub(r'[（(][^()（）]*[)）]', '', text))
+
+
+def looks_untranslated(text: str) -> bool:
+    """這段文字看起來是漏翻的中文嗎。
+
+    日文的漢字跟中文同一個 Unicode 區段，不能單看有沒有漢字，否則整篇日文都會被誤判。
+    改看「連續 6 個以上漢字、整段又沒有半個假名」——正常日文幾乎不會這樣寫。
+    英文與韓文沒這個問題，出現兩個以上漢字就是漏翻。
+    """
+    if LANG == 'ja':
+        # 日文句子幾乎一定有假名。有漢字卻一個假名都沒有，多半是整段沒翻到的中文。
+        # 「価格」「住所」這種純漢字的日文詞也會被掃進來，但補翻那步會原樣退回，不會改壞
+        return bool(re.search(CJK_RE, text)) and not re.search(KANA_RE, text)
+    return bool(re.search(CJK_RE + '{2,}', text))
+
+
 def has_cjk(text: str) -> bool:
     # 括號裡保留的中文原名（首次出現）是允許的，這裡只看括號外
-    stripped = re.sub(r'[（(][^()（）]*[)）]', '', re.sub(r'<style[\s\S]*?</style>', '', text))
-    stripped = re.sub(r'<[^>]+>', '', stripped)
-    return bool(re.search(r'[一-鿿]{2,}', stripped))
+    body = re.sub(r'<style[\s\S]*?</style>', '', text)
+    # 日文要逐個文字節點看：整篇串在一起一定有假名，那樣永遠判成正常
+    if LANG == 'ja':
+        return any(_cjk_outside_parens(m.group(1).strip()) for m in re.finditer(r'>([^<]+)<', body))
+    stripped = re.sub(r'[（(][^()（）]*[)）]', '', body)
+    return looks_untranslated(re.sub(r'<[^>]+>', '', stripped))
 
 
 def translate_chunk(chunk: str, index: int, total: int) -> str:
     messages = [
-        {'role': 'system', 'content': SYSTEM_PROMPT},
+        {'role': 'system', 'content': SYSTEM_PROMPT % {
+            'lang': LANG_LABEL[LANG], 'headings': HEADINGS[LANG], 'punct': PUNCT_RULE[LANG]}},
         {'role': 'user', 'content': f'Translate part {index + 1} of {total} of the article. Output the translated HTML only.\n\n{chunk}'},
     ]
     for attempt in range(2):
@@ -281,14 +343,17 @@ def translate_svg_texts(html: str) -> str:
     for m in svgs:
         for t in SVG_TEXT_RE.finditer(m.group(0)):
             text = t.group(2).strip()
+            # 日文 SVG 標籤本來就有漢字，只挑「沒有假名」的重翻
+            if LANG == 'ja' and re.search(KANA_RE, text):
+                continue
             if text and text not in labels:
                 labels.append(text)
     if not labels:
         return html
     prompt = (
-        'Translate these labels from a travel itinerary diagram into very short English. Each translation must be at most '
+        f'Translate these labels from a travel itinerary diagram into very short {LANG_LABEL[LANG]}. Each translation must be at most '
         'twice as many characters as the Chinese label (count characters), abbreviate if needed (e.g. "min", "hr", "Day 1"). '
-        'Use official English place names. Return ONLY a JSON object mapping each label to its translation.\n\n'
+        'Use official place names in that language. Return ONLY a JSON object mapping each label to its translation.\n\n'
         + json.dumps(labels, ensure_ascii=False)
     )
     out = strip_fences(llm([{'role': 'user', 'content': prompt}], max_tokens=4000))
@@ -306,10 +371,6 @@ def translate_svg_texts(html: str) -> str:
     return re.sub(r'<svg[\s\S]*?</svg>', fix_svg, html, flags=re.I)
 
 
-def _cjk_outside_parens(text: str) -> bool:
-    return bool(re.search(r'[\u4e00-\u9fff]', re.sub(r'[（(][^()（）]*[)）]', '', text)))
-
-
 def translate_leftovers(html: str) -> str:
     """模型偶爾整段漏翻（常見是卡片裡的 <dt> 標籤、產品名、alt）。把括號外還有中文的文字節點與 alt/title
     抓出來批次補翻，再原位換回去。括號裡保留的中文原名不算漏翻。"""
@@ -320,13 +381,16 @@ def translate_leftovers(html: str) -> str:
     if not targets:
         return html
     prompt = (
-        'These are leftover fragments from a Chinese→English translation of a Taiwanese product-recommendation article. '
-        'Translate each fragment into natural English. Keep any English already there, keep brand/product names that are '
-        'already romanised, keep prices and numbers, and keep Chinese that is inside parentheses as-is (it is the original name). '
-        'For a brand or product name with no known English name, romanise it and add the Chinese in parentheses once. '
-        'Fixed terms: 官方產品頁 → "Official product page", 官方網站 → "Official website", 產品定位 → "Positioning", '
-        '產品價格 → "Price", 核心成分 → "Key ingredients", 劑型 → "Format", 包裝份量 → "Size", 複方成分 → "Supporting ingredients", '
-        '適合誰 → "Best for", 小編點評 → "Editor\'s Take". '
+        f'These are leftover fragments from a Chinese→{LANG_LABEL[LANG]} translation of a Taiwanese product-recommendation article. '
+        f'Translate each fragment into natural {LANG_LABEL[LANG]}. '
+        'If a fragment is already correct in the target language, return it unchanged — Japanese words written only in '
+        'kanji (価格, 住所, 編集部) are already correct, do not touch them. '
+        'Keep brand/product names that are '
+        'already romanised, and keep prices and numbers. '
+        'Chinese inside parentheses only stays as-is when it is a brand, place or product name kept as a gloss; '
+        'an ordinary Chinese phrase in parentheses (e.g. 用現有手機) must be translated like the rest. '
+        'For a brand or product name with no known name in the target language, transliterate it and add the Chinese in parentheses once. '
+        f'Use these fixed section names: {HEADINGS[LANG]}. '
         'Return ONLY a JSON object mapping each original fragment to its translation.\n\n' + json.dumps(targets, ensure_ascii=False)
     )
     out = strip_fences(llm([{'role': 'user', 'content': prompt}], max_tokens=6000))
@@ -360,7 +424,12 @@ CJK_PUNCT_RE = re.compile('[' + ''.join(re.escape(k) for k in CJK_PUNCT) + ']')
 
 
 def normalize_punct(html: str) -> str:
-    """模型翻完常留下全形冒號、頓號（「Address：」「Aqua、Glycerin」）。只動文字節點，不碰標籤與 <style>。"""
+    """模型翻完常留下全形冒號、頓號（「Address：」「Aqua、Glycerin」）。只動文字節點，不碰標籤與 <style>。
+
+    日文本來就用 。、「」，這一步整個跳過，不然會把正常日文改壞。
+    """
+    if LANG == 'ja':
+        return html
     def fix_text(m: re.Match) -> str:
         text = CJK_PUNCT_RE.sub(lambda p: CJK_PUNCT[p.group(0)], m.group(1))
         return '>' + re.sub(r'[ \t]{2,}', ' ', text) + '<'
@@ -373,7 +442,8 @@ def translate_meta(title: str, html: str) -> dict:
     text = re.sub(r'<nav[\s\S]*?</nav>|<style[\s\S]*?</style>', '', html)
     paragraphs = [re.sub(r'<[^>]+>', '', p).strip() for p in re.findall(r'<p[^>]*>([\s\S]*?)</p>', text)]
     intro = '\n'.join(p for p in paragraphs if len(p) > 30)[:1500]
-    out = strip_fences(llm([{'role': 'user', 'content': META_PROMPT % (title, intro)}], max_tokens=2000))
+    out = strip_fences(llm([{'role': 'user', 'content': META_PROMPT % {
+        'lang': LANG_LABEL[LANG], 'title': title, 'intro': intro}}], max_tokens=2000))
     out = re.sub(r'^```(?:json)?\s*|\s*```$', '', out)
     try:
         data = json.loads(out)
@@ -389,8 +459,9 @@ def translate_names(names: list[str], kind: str) -> dict[str, str]:
     if not names:
         return {}
     prompt = (
-        f'Translate these Taiwanese website {kind} names into short English labels (Title Case, 1–4 words each). '
-        'Return ONLY a JSON object mapping each original name to its English label.\n\n' + json.dumps(names, ensure_ascii=False)
+        f'Translate these Taiwanese website {kind} names into short {LANG_LABEL[LANG]} labels (1–4 words each). '
+        'Return ONLY a JSON object mapping each original name to its label in that language.\n\n'
+        + json.dumps(names, ensure_ascii=False)
     )
     out = strip_fences(llm([{'role': 'user', 'content': prompt}], max_tokens=2000))
     out = re.sub(r'^```(?:json)?\s*|\s*```$', '', out)
@@ -408,7 +479,7 @@ def slugify(name: str) -> str:
     return slug or 'tag'
 
 
-def ensure_en_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
+def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
     """每個中文 term 找或建對應的 -en term，回傳英文 term 的 id 列表"""
     if not ids:
         return []
@@ -417,18 +488,19 @@ def ensure_en_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
     # 已經建過的先找出來：ascii slug 直接用 slug-en 查；中文 slug（WP 存成 %e5%8d… 百分比編碼）
     # 的英文版 slug 是從英文名稱轉的，每次翻名字結果可能不同，所以建的時候把中文原名寫進 description，查的時候靠它對回來
     existing_by_name: dict[str, dict] = {}
-    en_terms: list[dict] | None = None  # WP 的 search 只比對 name/slug 不比對 description，所以整批抓回來自己比
+    target_terms: list[dict] | None = None  # WP 的 search 只比對 name/slug 不比對 description，所以整批抓回來自己比
     for src in sources:
         if re.fullmatch(r'[a-z0-9-]+', src['slug']):
-            found = find_term(taxonomy, src['slug'] + EN_SUFFIX)
+            found = find_term(taxonomy, src['slug'] + SUFFIX)
         else:
-            if en_terms is None:
-                en_terms = wp('GET', taxonomy, params={'search': EN_SUFFIX, 'per_page': 100})
-            found = next((r for r in en_terms if r['slug'].endswith(EN_SUFFIX) and r.get('description') == src['name']), None)
+            if target_terms is None:
+                target_terms = wp('GET', taxonomy, params={'search': SUFFIX, 'per_page': 100})
+            found = next((r for r in target_terms if r['slug'].endswith(SUFFIX) and r.get('description') == src['name']), None)
         if found:
             existing_by_name[src['name']] = found
 
-    names = {src['name']: CATEGORY_NAMES.get(src['name']) for src in sources if src['name'] not in existing_by_name}
+    table = CATEGORY_NAMES[LANG]
+    names = {src['name']: table.get(src['name']) for src in sources if src['name'] not in existing_by_name}
     need_llm = [n for n, v in names.items() if not v]
     if need_llm:
         names.update(translate_names(need_llm, kind))
@@ -440,13 +512,13 @@ def ensure_en_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
             continue
         ascii_slug = bool(re.fullmatch(r'[a-z0-9-]+', src['slug']))
         base = src['slug'] if ascii_slug else slugify(names[src['name']] or src['name'])
-        body = {'name': names[src['name']], 'slug': base + EN_SUFFIX}
+        body = {'name': names[src['name']], 'slug': base + SUFFIX}
         if not ascii_slug:
             body['description'] = src['name']
         if src.get('description'):
             # 分類描述在前台分類頁會顯示，也翻成英文
             body['description'] = strip_fences(llm([
-                {'role': 'user', 'content': 'Translate this category description into natural English. Output only the text.\n\n' + src['description']}
+                {'role': 'user', 'content': f'Translate this category description into natural {LANG_LABEL[LANG]}. Output only the text.\n\n' + src['description']}
             ], max_tokens=1000))
         created = wp('POST', taxonomy, body)
         print(f'  ＋ 建立 {kind} {created["slug"]}（{created["name"]}）')
@@ -459,20 +531,20 @@ def ensure_en_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
 def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retranslate: bool = False) -> None:
     post = get_post(post_id)
     slug = post['slug']
-    if slug.endswith(EN_SUFFIX):
-        die(f'post {post_id}（{slug}）本身就是英文版')
-    en_slug = slug + EN_SUFFIX
+    if any(slug.endswith(x) for x in LANG_SUFFIX.values()):
+        die(f'post {post_id}（{slug}）本身就是翻譯版，不能再翻')
+    target_slug = slug + SUFFIX
     title = post['title']['raw']
     content = post['content']['raw']
     print(f'▶ post {post_id} {title}')
 
-    existing = find_post_by_slug(en_slug)
+    existing = find_post_by_slug(target_slug)
     if existing and not force:
-        print(f'  已有英文版 post {existing["id"]}（{en_slug}），要重翻請加 --force')
+        print(f'  已有{LANG_LABEL[LANG]}版 post {existing["id"]}（{target_slug}），要重翻請加 --force')
         return
 
     CACHE_DIR.mkdir(exist_ok=True)
-    cache_file = CACHE_DIR / f'{post_id}.json'
+    cache_file = CACHE_DIR / f'{post_id}.{LANG}.json'
     cached = json.loads(cache_file.read_text()) if cache_file.exists() and not retranslate else None
     if cached and cached.get('source_modified') == post['modified']:
         print('  使用快取的翻譯（來源沒改過）')
@@ -504,7 +576,7 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
     if has_cjk(translated['content']):
         cleaned = re.sub(r'[（(][^()（）]*[)）]', '', re.sub(r'<style[\s\S]*?</style>', '', translated['content']))
-        leftovers = re.findall(r'[\u4e00-\u9fff][^<]{0,24}', cleaned)
+        leftovers = [m for m in re.findall(r'[\u4e00-\u9fff][^<]{0,24}', cleaned) if looks_untranslated(m)]
         print(f'  ⚠ 內文括號外還有中文字，交件前要看一下：{"、".join(leftovers[:8])}', file=sys.stderr)
     diff = structure_diff(content, translated['content'])
     if diff:
@@ -518,11 +590,11 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         print(f'  --dry-run：HTML 存在 {out_html.relative_to(ROOT)}，沒寫 WordPress')
         return
 
-    category_ids = ensure_en_terms('categories', post.get('categories', []), 'category')
-    tag_ids = ensure_en_terms('tags', post.get('tags', []), 'tag')
+    category_ids = ensure_target_terms('categories', post.get('categories', []), 'category')
+    tag_ids = ensure_target_terms('tags', post.get('tags', []), 'tag')
     body = {
         'title': translated['title'],
-        'slug': en_slug,
+        'slug': target_slug,
         'content': translated['content'],
         'excerpt': translated['excerpt'],
         'status': status,
@@ -535,17 +607,17 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
 
     if existing:
         saved = wp('POST', f'posts/{existing["id"]}', body)
-        print(f'  ✓ 更新英文版 post {saved["id"]}：{saved["link"]}')
+        print(f'  ✓ 更新譯文 post {saved["id"]}：{saved["link"]}')
     else:
         saved = wp('POST', 'posts', body)
-        print(f'  ✓ 建立英文版 post {saved["id"]}：{saved["link"]}')
+        print(f'  ✓ 建立譯文 post {saved["id"]}：{saved["link"]}')
     cat_slug = wp('GET', f'categories/{category_ids[0]}')['slug'] if category_ids else ''
-    route_cat = cat_slug[: -len(EN_SUFFIX)] if cat_slug.endswith(EN_SUFFIX) else cat_slug
-    print(f'  前台：{ENV.get("NEXT_PUBLIC_SITE_URL", "")}/en/{route_cat}/{slug}（ISR 最多一小時後換新）')
+    route_cat = cat_slug[: -len(SUFFIX)] if cat_slug.endswith(SUFFIX) else cat_slug
+    print(f'  前台：{ENV.get("NEXT_PUBLIC_SITE_URL", "")}/{LANG}/{route_cat}/{slug}（ISR 最多一小時後換新）')
 
 
 def main() -> None:
-    global MODEL
+    global MODEL, LANG, SUFFIX
     parser = argparse.ArgumentParser(description='把 WordPress 中文文章翻成英文版')
     parser.add_argument('post_ids', nargs='+', type=int)
     parser.add_argument('--force', action='store_true', help='英文版已存在也覆蓋（翻譯有快取就直接用）')
@@ -553,10 +625,13 @@ def main() -> None:
     parser.add_argument('--dry-run', action='store_true', help='只翻譯存快取，不寫 WordPress')
     parser.add_argument('--status', default='publish', choices=['publish', 'draft'])
     parser.add_argument('--model', help=f'OpenRouter 模型（預設 {MODEL}）')
+    parser.add_argument('--lang', default='en', choices=sorted(LANG_SUFFIX), help='目標語言（預設 en）')
     args = parser.parse_args()
 
     if args.model:
         MODEL = args.model
+    LANG = args.lang
+    SUFFIX = LANG_SUFFIX[LANG]
     if not WP or not ENV.get('WORDPRESS_APP_PASSWORD'):
         die('.env.local 缺 NEXT_PUBLIC_WORDPRESS_URL 或 WORDPRESS_APP_USER/PASSWORD')
 

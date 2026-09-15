@@ -43,10 +43,17 @@ export const GET_ALL_POST_SLUGS = gql`
   }
 `
 
-// 只確認某個 slug 的文章存不存在（文章頁拿來判斷另一語言的對照頁有沒有翻）
-export const GET_POST_EXISTS = gql`
-  query GetPostExists($slug: ID!) {
-    post(id: $slug, idType: SLUG) {
+// 一次確認三個非中文語言的對照文章在不在（中文是來源，一定有）。
+// 用別名一次查完，免得一篇文章要多打三次 GraphQL
+export const GET_POST_TRANSLATIONS = gql`
+  query GetPostTranslations($en: ID!, $ja: ID!, $ko: ID!) {
+    en: post(id: $en, idType: SLUG) {
+      slug
+    }
+    ja: post(id: $ja, idType: SLUG) {
+      slug
+    }
+    ko: post(id: $ko, idType: SLUG) {
       slug
     }
   }

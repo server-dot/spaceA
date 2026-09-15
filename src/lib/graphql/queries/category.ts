@@ -38,10 +38,16 @@ export const GET_ALL_CATEGORIES = gql`
   }
 `
 
-// 只確認分類存不存在（分類頁拿來判斷另一語言的對照分類有沒有建）
-export const GET_CATEGORY_EXISTS = gql`
-  query GetCategoryExists($slug: ID!) {
-    category(id: $slug, idType: SLUG) {
+// 一次確認三個非中文語言的對照分類在不在（中文是來源，一定有）
+export const GET_CATEGORY_TRANSLATIONS = gql`
+  query GetCategoryTranslations($en: ID!, $ja: ID!, $ko: ID!) {
+    en: category(id: $en, idType: SLUG) {
+      slug
+    }
+    ja: category(id: $ja, idType: SLUG) {
+      slug
+    }
+    ko: category(id: $ko, idType: SLUG) {
       slug
     }
   }

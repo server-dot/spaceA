@@ -1,19 +1,12 @@
 import { SITE_NAME, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, ui } from '@/lib/i18n'
-import { resolveSummary } from '@/lib/format'
+import { countWords, resolveSummary } from '@/lib/format'
 import { deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
 
 interface ArticleJsonLdProps {
   post: WPPost
-}
-
-// 中文沒有空白斷詞，字數用「去標籤後的字元數」估算，比照多數中文 CMS 的 wordCount 慣例；英文照空白數詞
-function estimateWordCount(html: string, lang: 'zh' | 'en'): number {
-  const text = html.replace(/<[^>]*>/g, '')
-  if (lang === 'en') return text.split(/\s+/).filter(Boolean).length
-  return text.replace(/\s+/g, '').length
 }
 
 export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
@@ -37,7 +30,7 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
     inLanguage: LANG_TAG[lang],
     datePublished: post.date,
     dateModified: post.modified,
-    wordCount: estimateWordCount(post.content, lang),
+    wordCount: countWords(post.content, lang),
     image: image?.sourceUrl
       ? imageWidth && imageHeight
         ? { '@type': 'ImageObject', url: image.sourceUrl, width: imageWidth, height: imageHeight }
