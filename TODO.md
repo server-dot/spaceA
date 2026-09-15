@@ -1,5 +1,19 @@
 # spaceA 開發進度
 
+## 行動版頁首（2026-09-15 修好）
+
+使用者說「RWD 沒做好，大跑版」。頁首把 logo ＋ 4 個選單 ＋ 搜尋框 ＋ 語言鈕排在同一個不換行的 flex，
+390px 手機上最少要 680px 寬，一定橫向溢出（Google 行動裝置可用性會報「內容寬度超過螢幕」，
+mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常駐、又加了語言鈕之後更嚴重。
+
+- 新增 `components/layout/MobileMenu.tsx`：md 以下頁首只留 logo ＋ 語言鈕 ＋ 漢堡，
+  面板裡放整列寬的搜尋框與直排選單，Esc 或點連結收起。md 以上維持原樣
+- `SearchBar` 加 `fullWidth` 與 `onSubmitted`
+- 地雷：面板要對頁首絕對定位，一度在 `sticky` 上又加 `relative`，兩個都設 position，
+  誰贏看 Tailwind 產生的 CSS 順序，sticky 頁首可能失效。sticky 本身就是定位元素，不用加 relative
+- **這個環境的瀏覽器無法真的縮到手機寬度**（resize 後 innerWidth 還是 1920），
+  是靠量元素寬度推算的，實機或 DevTools 要再看一次
+
 ## 雙語（英文版）— 2026-09-15 前端、其他頁面、8 篇翻譯都完成，尚未 commit／部署
 
 目標：中英文兩套關鍵字都吃得到。做法**不裝 Polylang**，英文版就是同一個 WP 裡另一篇文章，靠 slug 規則對照（規則寫在 `src/lib/i18n.ts` 檔頭）：

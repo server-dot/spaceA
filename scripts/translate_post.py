@@ -194,11 +194,12 @@ def find_term(taxonomy: str, slug: str) -> dict | None:
 
 # ---------- OpenRouter ----------
 
-def llm(messages: list[dict], max_tokens: int = 24000) -> str:
+def llm(messages: list[dict], max_tokens: int = 24000, model: str | None = None) -> str:
+    """呼叫 OpenRouter。model 留空就用全域的 MODEL；審稿工具會指定另一顆模型。"""
     if not OPENROUTER_KEY:
         die('.env.local 缺 OPENROUTER_API_KEY')
     body = {
-        'model': MODEL,
+        'model': model or MODEL,
         'messages': messages,
         'max_tokens': max_tokens,
         # gpt-5 系列會先推理再輸出，翻譯不需要想太久
@@ -231,7 +232,7 @@ def llm(messages: list[dict], max_tokens: int = 24000) -> str:
 
 def strip_fences(text: str) -> str:
     text = text.strip()
-    text = re.sub(r'^```(?:html)?\s*', '', text)
+    text = re.sub(r'^```[a-zA-Z]*\s*', '', text)   # ```html、```json 都要剝掉
     text = re.sub(r'\s*```$', '', text)
     return text.strip()
 
