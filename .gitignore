@@ -33,3 +33,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 翻譯腳本的快取（scripts/translate_post.py）
+scripts/.translate-cache/

@@ -1,70 +1,50 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { langPrefix, ui, type Lang } from '@/lib/i18n'
 
-export default function SearchBar() {
-  const [open, setOpen] = useState(false)
+// 搜尋框常駐展開（2026-09-15 使用者要求），不再是點放大鏡才打開；× 只清空字串
+export default function SearchBar({ lang }: { lang: Lang }) {
   const [query, setQuery] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-
-  function handleOpen() {
-    setOpen(true)
-    setTimeout(() => inputRef.current?.focus(), 50)
-  }
-
-  function handleClose() {
-    setOpen(false)
-    setQuery('')
-  }
+  const t = ui(lang)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!query.trim()) return
-    router.push(`/search?q=${encodeURIComponent(query.trim())}`)
-    handleClose()
-  }
-
-  if (open) {
-    return (
-      <form onSubmit={handleSubmit} className="flex items-center gap-1.5">
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onBlur={() => { if (!query.trim()) handleClose() }}
-          placeholder="搜尋文章..."
-          className="w-44 sm:w-60 px-3 py-1.5 text-sm border border-paper-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
-        />
-        <button
-          type="submit"
-          className="p-1.5 text-paper-secondary hover:text-brand-600 transition-colors"
-          aria-label="搜尋"
-        >
-          <SearchIcon />
-        </button>
-        <button
-          type="button"
-          onClick={handleClose}
-          className="p-1.5 text-paper-muted hover:text-paper-ink transition-colors"
-          aria-label="關閉搜尋"
-        >
-          <CloseIcon />
-        </button>
-      </form>
-    )
+    router.push(`${langPrefix(lang)}/search?q=${encodeURIComponent(query.trim())}`)
+    setQuery('')
   }
 
   return (
-    <button
-      onClick={handleOpen}
-      className="p-2 text-paper-secondary hover:text-paper-ink hover:bg-paper-surface rounded-md transition-colors"
-      aria-label="搜尋"
-    >
-      <SearchIcon />
-    </button>
+    <form onSubmit={handleSubmit} role="search" className="flex items-center gap-1">
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={t.searchPlaceholder}
+        aria-label={t.search}
+        className="w-32 sm:w-52 px-3 py-1.5 text-sm bg-paper-card border border-paper-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all [&::-webkit-search-cancel-button]:hidden"
+      />
+      <button
+        type="submit"
+        className="p-1.5 text-paper-secondary hover:text-brand-600 transition-colors"
+        aria-label={t.search}
+      >
+        <SearchIcon />
+      </button>
+      {query && (
+        <button
+          type="button"
+          onClick={() => setQuery('')}
+          className="p-1.5 text-paper-muted hover:text-paper-ink transition-colors"
+          aria-label={t.clearFilter}
+        >
+          <CloseIcon />
+        </button>
+      )}
+    </form>
   )
 }
 

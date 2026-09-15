@@ -7,14 +7,17 @@ import TagChips from '@/components/article/TagChips'
 import { resolveArticleType } from '@/lib/article-type'
 import { formatDate, resolveSummary } from '@/lib/format'
 import ArticleImageFallback from '@/components/article/ArticleImageFallback'
+import { articleHref, articleTypeLabel, categoryHref, type Lang } from '@/lib/i18n'
 
 interface ArticleCardProps {
+  lang?: Lang
   post: WPPostCard
 }
 
-export default function ArticleCard({ post }: ArticleCardProps) {
+export default function ArticleCard({ lang = 'zh', post }: ArticleCardProps) {
   const category = post.categories.nodes[0]
-  const href = category ? `/${category.slug}/${post.slug}` : `/${post.slug}`
+  const href = articleHref(lang, category?.slug ?? '', post.slug)
+  const type = resolveArticleType(post.articleTypes)
 
   return (
     <article className="group flex flex-col bg-paper-card rounded-xl overflow-hidden border border-gray-100 hover:shadow-md transition-all duration-200">
@@ -36,8 +39,8 @@ export default function ArticleCard({ post }: ArticleCardProps) {
       {/* Content */}
       <div className="flex flex-col flex-1 p-5 gap-2">
         <div className="flex items-center gap-2 flex-wrap">
-          {category && <Badge label={category.name} href={`/${category.slug}`} />}
-          <ArticleTypeBadge type={resolveArticleType(post.articleTypes)} size="sm" />
+          {category && <Badge label={category.name} href={categoryHref(lang, category.slug)} />}
+          <ArticleTypeBadge type={{ ...type, name: articleTypeLabel(lang, type) }} size="sm" />
         </div>
 
         <Link href={href} className="flex-1">
@@ -53,7 +56,7 @@ export default function ArticleCard({ post }: ArticleCardProps) {
         )}
 
         <time dateTime={post.date} className="text-xs text-gray-400 mt-1">
-          {formatDate(post.date)}
+          {formatDate(post.date, lang)}
         </time>
 
         {post.tags.nodes.length > 0 && <TagChips tags={post.tags.nodes} max={3} />}

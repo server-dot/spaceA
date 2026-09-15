@@ -1,18 +1,17 @@
 import { SITE_NAME, SITE_URL } from '@/lib/constants'
-import { RankedArticle } from '@/app/popular/data'
+import { RankedArticle } from '@/views/popular-data'
+import { LANG_TAG, langPrefix, ui, type Lang } from '@/lib/i18n'
 
 interface PopularRankingJsonLdProps {
+  lang: Lang
   items: RankedArticle[]
   description: string
   dateModified: string
 }
 
-export default function PopularRankingJsonLd({
-  items,
-  description,
-  dateModified,
-}: PopularRankingJsonLdProps) {
-  const url = `${SITE_URL}/popular`
+export default function PopularRankingJsonLd({ lang, items, description, dateModified }: PopularRankingJsonLdProps) {
+  const url = `${SITE_URL}${langPrefix(lang)}/popular`
+  const name = ui(lang).popularTitle
 
   const schema = {
     '@context': 'https://schema.org',
@@ -20,15 +19,15 @@ export default function PopularRankingJsonLd({
       {
         '@type': 'CollectionPage',
         '@id': url,
-        name: '本週熱門排行',
+        name,
         description,
-        inLanguage: 'zh-TW',
+        inLanguage: LANG_TAG[lang],
         dateModified,
         isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
       },
       {
         '@type': 'ItemList',
-        name: '本週熱門排行',
+        name,
         itemListOrder: 'https://schema.org/ItemListOrderAscending',
         numberOfItems: items.length,
         itemListElement: items.map((item, index) => ({

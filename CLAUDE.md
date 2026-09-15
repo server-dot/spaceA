@@ -41,7 +41,8 @@ npm run type-check   # TypeScript 型別檢查
 /                        首頁（精選 + 最新文章）
 /[category]              分類列表頁
 /[category]/[slug]       文章詳情頁
-/sitemap.xml             自動生成 sitemap
+/en, /en/[category], /en/[category]/[slug]   英文版（WP 裡 slug 加 -en 的分類與文章，規則見 src/lib/i18n.ts）
+/sitemap.xml             自動生成 sitemap（含 /en 與 hreflang）
 /robots.txt              自動生成 robots
 /api/revalidate          ISR on-demand webhook（POST）
 ```

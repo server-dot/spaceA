@@ -17,13 +17,6 @@ export const ARTICLE_TYPE_LABELS: Record<string, string> = {
   knowledge: '知識分享',
 }
 
-export const NAV_ITEMS = [
-  { label: '熱門排行', href: '/popular' },
-  { label: '關於我們', href: '/about' },
-  { label: '推薦標準', href: '/standards' },
-  { label: '聯絡我們', href: '/contact' },
-]
-
 export const COMPANY_NAME = '積木媒體行銷股份有限公司'
 export const COMPANY_REG_NO = '00206766'
 export const COMPANY_PHONE = '02-2745-7601'

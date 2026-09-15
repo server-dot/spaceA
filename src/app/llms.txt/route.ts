@@ -1,6 +1,7 @@
 import { fetchQuery } from '@/lib/graphql/client'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
+import { categoryHref, langOfCategorySlug, ui } from '@/lib/i18n'
 
 export const revalidate = 3600
 
@@ -12,13 +13,14 @@ interface NavigationData {
 
 export async function GET() {
   const data = await fetchQuery<NavigationData>(GET_NAVIGATION)
-  const categories = (data?.categories?.nodes ?? []).filter(
-    (cat) => !EXCLUDED_CATEGORY_SLUGS.includes(cat.slug)
-  )
+  const allCategories = (data?.categories?.nodes ?? []).filter((cat) => !EXCLUDED_CATEGORY_SLUGS.includes(cat.slug))
+  const categories = allCategories.filter((cat) => langOfCategorySlug(cat.slug) === 'zh')
+  const enCategories = allCategories.filter((cat) => langOfCategorySlug(cat.slug) === 'en')
 
   const categoryLines = categories.length
-    ? categories.map((cat) => `- [${cat.name}](${SITE_URL}/${cat.slug})`).join('\n')
+    ? categories.map((cat) => `- [${cat.name}](${SITE_URL}${categoryHref('zh', cat.slug)})`).join('\n')
     : '- （分類資料暫時無法取得）'
+  const enCategoryLines = enCategories.map((cat) => `- [${cat.name}](${SITE_URL}${categoryHref('en', cat.slug)})`).join('\n')
 
   const body = `# ${SITE_NAME}
 
@@ -40,7 +42,18 @@ ${categoryLines}
 - [聯絡我們](${SITE_URL}/contact)
 - [隱私權政策](${SITE_URL}/privacy)
 - [使用條款](${SITE_URL}/terms)
+${
+  enCategories.length
+    ? `
+## English
+
+> ${ui('en').siteDescription}
+
+- [English home](${SITE_URL}/en)
+${enCategoryLines}
 `
+    : ''
+}`
 
   return new Response(body, {
     headers: {

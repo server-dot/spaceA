@@ -29,24 +29,26 @@ export async function POST(request: NextRequest) {
   const topics = Array.isArray(body.topics)
     ? body.topics.filter((t): t is string => typeof t === 'string').map((t) => sanitizeLine(t, 30))
     : []
+  // 英文站送來的表單，Slack 通知標一下來源
+  const lang = body.lang === 'en' ? 'en' : 'zh'
 
   if (!message) {
-    return NextResponse.json({ message: '請填寫詢問內容' }, { status: 400 })
+    return NextResponse.json({ message: lang === 'en' ? 'Please enter your message' : '請填寫詢問內容' }, { status: 400 })
   }
   if (email && !EMAIL_RE.test(email)) {
-    return NextResponse.json({ message: '信箱格式不正確' }, { status: 400 })
+    return NextResponse.json({ message: lang === 'en' ? 'Invalid email address' : '信箱格式不正確' }, { status: 400 })
   }
 
   try {
     const res = await fetch(N8N_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, org, email, phone, articleUrl, budget, message, topics }),
+      body: JSON.stringify({ name, org, email, phone, articleUrl, budget, message, topics, lang }),
     })
     if (!res.ok) throw new Error(`n8n webhook responded ${res.status}`)
   } catch (err) {
     console.error('[contact] 轉發到 n8n 失敗', err)
-    return NextResponse.json({ message: '送出失敗，請稍後再試' }, { status: 502 })
+    return NextResponse.json({ message: lang === 'en' ? 'Failed to send. Please try again later.' : '送出失敗，請稍後再試' }, { status: 502 })
   }
 
   return NextResponse.json({ ok: true })

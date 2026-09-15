@@ -1,13 +1,14 @@
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { LANG_TAG, ui, type Lang } from '@/lib/i18n'
 
-export default function WebsiteJsonLd() {
+export default function WebsiteJsonLd({ lang }: { lang: Lang }) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_NAME,
-    description: SITE_DESCRIPTION,
+    description: ui(lang).siteDescription,
     url: SITE_URL,
-    inLanguage: 'zh-TW',
+    inLanguage: LANG_TAG[lang],
     potentialAction: {
       '@type': 'SearchAction',
       target: {

@@ -42,3 +42,12 @@ export const GET_ALL_POST_SLUGS = gql`
     }
   }
 `
+
+// 只確認某個 slug 的文章存不存在（文章頁拿來判斷另一語言的對照頁有沒有翻）
+export const GET_POST_EXISTS = gql`
+  query GetPostExists($slug: ID!) {
+    post(id: $slug, idType: SLUG) {
+      slug
+    }
+  }
+`

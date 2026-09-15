@@ -2,15 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { NAV_ITEMS } from '@/lib/constants'
+import { ui, type Lang } from '@/lib/i18n'
 
-export default function Navigation() {
+export default function Navigation({ lang }: { lang: Lang }) {
   const pathname = usePathname()
+  const t = ui(lang)
 
   return (
-    <nav aria-label="主選單">
+    <nav aria-label={t.mainNav}>
       <ul className="flex items-center gap-1 flex-wrap h-16">
-        {NAV_ITEMS.map((item) => {
+        {t.nav.map((item) => {
           const active = pathname === item.href || pathname?.startsWith(`${item.href}/`)
           return (
             <li key={item.href} className="h-full">

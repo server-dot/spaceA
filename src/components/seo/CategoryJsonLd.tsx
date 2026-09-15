@@ -1,15 +1,19 @@
 import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { LANG_TAG, articleHref, categoryHref, ui, type Lang } from '@/lib/i18n'
 import { WPPostCard } from '@/types/wordpress'
 
 interface CategoryJsonLdProps {
+  lang: Lang
   name: string
+  /** WordPress 分類 slug（英文版帶 -en） */
   slug: string
   description?: string
   posts: WPPostCard[]
 }
 
-export default function CategoryJsonLd({ name, slug, description, posts }: CategoryJsonLdProps) {
-  const url = `${SITE_URL}/${slug}`
+export default function CategoryJsonLd({ lang, name, slug, description, posts }: CategoryJsonLdProps) {
+  const t = ui(lang)
+  const url = `${SITE_URL}${categoryHref(lang, slug)}`
 
   const schema = {
     '@context': 'https://schema.org',
@@ -17,15 +21,15 @@ export default function CategoryJsonLd({ name, slug, description, posts }: Categ
       {
         '@type': 'CollectionPage',
         '@id': url,
-        name: `${name}推薦文章`,
-        description: description || `${SITE_NAME} ${name}分類的推薦文章列表`,
-        inLanguage: 'zh-TW',
+        name: t.categoryCollection(name),
+        description: description || t.categoryCollectionDesc(name),
+        inLanguage: LANG_TAG[lang],
         isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
         publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
       },
       {
         '@type': 'ItemList',
-        name: `${name}文章列表`,
+        name: t.categoryList(name),
         itemListOrder: 'https://schema.org/ItemListOrderDescending',
         numberOfItems: posts.length,
         itemListElement: posts.map((post, index) => {
@@ -33,7 +37,7 @@ export default function CategoryJsonLd({ name, slug, description, posts }: Categ
           return {
             '@type': 'ListItem',
             position: index + 1,
-            url: `${SITE_URL}/${categorySlug}/${post.slug}`,
+            url: `${SITE_URL}${articleHref(lang, categorySlug, post.slug)}`,
             name: post.title,
           }
         }),

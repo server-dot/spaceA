@@ -1,5 +1,33 @@
 # spaceA 開發進度
 
+## 雙語（英文版）— 2026-09-15 前端、其他頁面、8 篇翻譯都完成，尚未 commit／部署
+
+目標：中英文兩套關鍵字都吃得到。做法**不裝 Polylang**，英文版就是同一個 WP 裡另一篇文章，靠 slug 規則對照（規則寫在 `src/lib/i18n.ts` 檔頭）：
+- 英文分類 slug = 中文分類 slug + `-en`（travel → travel-en），名稱／描述在 WP 填英文；英文文章 slug = 中文 slug + `-en`
+- 前台網址不露 `-en`：`/en/travel/nantou-attractions-guide` ↔ WP `travel-en` / `nantou-attractions-guide-en`
+- 中文列表一律排除 `-en` 分類，英文列表只取 `-en` 分類（首頁、分類頁、sitemap、llms.txt、頁尾都照這條）
+
+前端：
+- `app/(zh)/` 與 `app/en/` 各自是一個 root layout（共用 `components/layout/RootShell.tsx`），`<html lang>` 在伺服器端就正確
+- 首頁／分類頁／文章頁的本體搬到 `src/views/`（HomeView、CategoryView、ArticleView），兩邊的 page.tsx 只是薄殼傳 `lang`
+- 介面字串全部在 `src/lib/i18n.ts` 的 `UI` 字典；文章類型「推薦文／知識分享」英文顯示 Recommendation／Guide
+- Header 加「EN／中文」切換（`LangSwitch`，用網址推算對照頁；沒翻的文章會落到英文 404，那頁會說英文版還沒提供）
+- hreflang：文章頁與分類頁只有在英文對照頁**存在**時才輸出（`GET_POST_EXISTS`／`GET_CATEGORY_EXISTS`），首頁固定互指；sitemap 每個網址帶 alternates；JSON-LD `inLanguage` 跟著語言
+- content-parsers 認英文標題：Conclusion／Summary／FAQ／References／How This Article Was Written；英文站的關於我們、熱門排行、搜尋還沒有，頁首頁尾先不放
+- 順便發現：整站 404 都回 HTTP 200（soft 404，線上 `spacea.com.tw/nonexistent-cat` 也是），原因是 `loading.tsx` 讓頁面用串流輸出、狀態碼先送出去了。跟雙語無關，要修就把 `(zh)/loading.tsx`、`[category]/loading.tsx`、`[slug]/loading.tsx`（含 en 那份）拿掉
+
+翻譯：`scripts/translate_post.py <post id>`（OpenRouter，預設 `openai/gpt-5-mini` 跟 n8n 同一顆；`--dry-run` 只翻不寫、`--force` 覆蓋重翻、`--status draft`）。照 `<h2>` 切段翻、比對標籤數不合會重翻一次、翻完快取在 `scripts/.translate-cache/`。標題與 meta description 另外生（英文版沒 Yoast，前台吃 excerpt 當描述）。分類／標籤的 `-en` 版沒有會自動建（分類名對照表在腳本的 `CATEGORY_NAMES`）。
+- [x] 8 篇全翻完（2026-09-15，八篇合計不到 US$1）：161→359、326→360、308→362、283→363、224→364、214→365、187→366、112→367。英文分類建了 marketing-en／travel-en／food-en／beauty-en
+  - 腳本踩過的坑都補進去了：Cloudflare 對大 payload 偶爾回 520（已加重試）、回應 JSON 前面有雜訊（從第一個 `{` 開始解）、中文 slug 的標籤在 WP 是百分比編碼（英文標籤改用英文名轉 slug，`description` 存中文原名當對照鍵）、模型會漏翻 SVG `<text>` 與卡片的 `<dt>` 標籤（加了 `translate_svg_texts`／`translate_leftovers` 兩道補翻）
+  - `--force` 只覆蓋文章、翻譯吃快取；真的要重翻用 `--retranslate`
+- [ ] 逐篇肉眼看英文版：行程時間軸 SVG 有幾個標籤重疊（Lugao Coffee Estate／Stay near Shuishe Pier）、品牌英文名對不對（Cona's Chocolate、18度C 這種）、比較表欄位
+- [ ] 英文版送 GSC（sitemap 會自動帶 /en 網址）
+- [x] 其他頁面英文版（2026-09-15）：`/en/about`、`/en/standards`、`/en/contact`（表單字串在 `views/ContactForm.tsx`，Slack 通知帶 `lang`）、`/en/privacy`、`/en/terms`、`/en/popular`、`/en/search`。頁首頁籤與頁尾欄位改吃 `i18n` 的 `nav`／`footerColumns`，語言切換每頁對同一頁。文案是照中文版翻的，**兩邊改文案要一起改**（每個 en 檔頭有註明）
+  - 「熱門排行」英文定 **Popular**（使用者選的，不是 Trending）
+  - 順手修：中文熱門排行與搜尋原本會混進英文文章，已依分類 `-en` 過濾
+  - 搬檔案到 `src/views/` 後 Tailwind 掃不到，版型整個跑掉 → `tailwind.config.ts` 的 `content` 加了 `./src/views/**`
+- [ ] 之後：n8n 推薦文生成完自動接翻譯；英文站的分類只有翻到才建，首頁主題格目前 4 格
+
 ## post 326 南投景點 校稿（2026-09-14 已完成）
 
 生成 execution 17203（10 個景點 20 分鐘）。標題改成「南投景點怎麼排？10 個必去景點、門票與車程一次看」（使用者說每篇都「怎麼選？2026 精選 N 家」太單調，年份留一半、句型輪著用）。修的：

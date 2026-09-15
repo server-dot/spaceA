@@ -9,11 +9,12 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[]
+  label?: string
 }
 
-export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, label = '麵包屑' }: BreadcrumbsProps) {
   return (
-    <nav aria-label="麵包屑" className="text-sm text-gray-500">
+    <nav aria-label={label} className="text-sm text-gray-500">
       <ol className="flex items-center flex-wrap gap-1">
         {items.map((item, index) => {
           const isLast = index === items.length - 1

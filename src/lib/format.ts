@@ -1,5 +1,5 @@
-export function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('zh-TW', {
+export function formatDate(dateString: string, lang: 'zh' | 'en' = 'zh') {
+  return new Date(dateString).toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-TW', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -16,6 +16,9 @@ export function stripHtml(html: string) {
     .replace(/&#8211;/g, '–')
     .replace(/&#8212;/g, '—')
     .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;|&rsquo;/g, '’')
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
     .replace(/&amp;/g, '&')
 }
 
@@ -28,7 +31,7 @@ export function isAutoExcerpt(excerpt: string) {
   // 自動摘要一定以 WordPress 的截斷符號收尾（[…] / [&hellip;] / …）
   if (/(\[\s*(…|\.\.\.)\s*\]|\[&hellip;\])\s*$/.test(text)) return true
   // 開頭就是目錄區塊的殘留
-  if (/^目錄[\s　]/.test(text)) return true
+  if (/^(目錄|Table of Contents|Contents)[\s　]/i.test(text)) return true
   return false
 }
 

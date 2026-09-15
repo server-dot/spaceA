@@ -25,6 +25,8 @@ export interface ParseArticleContentOptions {
    * 讀者看到的文章就會少一段（2026-09-10 實際發生過）。
    */
   extractConclusion?: boolean
+  /** 目錄裡「常見問題」那一項的顯示文字（英文版傳 FAQ） */
+  faqLabel?: string
 }
 
 export interface ParsedArticleContent {
@@ -50,6 +52,15 @@ function stripTags(html: string) {
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;|&rsquo;/g, '’')
+    .replace(/&lsquo;/g, '‘')
+    .replace(/&[lr]dquo;/g, '"')
+    .replace(/&ndash;/g, '–')
+    .replace(/&mdash;/g, '—')
+    // 數字實體（&#8217; 這種，英文版的撇號常這樣寫）一律解回字元，不然 React 會再跳脫一次變成 &amp;#8217;
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
     // 內容裡的換行與縮排在純文字欄位（結論、FAQ）會變成多餘空白，統一收成單一空格
     .replace(/\s+/g, ' ')
     .trim()
@@ -86,7 +97,7 @@ function stripUpstreamHeadingStyles(html: string): string {
  */
 function stripUpstreamAuthorBlock(html: string): string {
   return html
-    .replace(/<p[^>]*>\s*編者介紹\s*<\/p>\s*/gi, '')
+    .replace(/<p[^>]*>\s*(?:編者介紹|About the (?:Editor|Author))\s*<\/p>\s*/gi, '')
     .replace(/<div[^>]*\bclass="author-block"[^>]*>[\s\S]*?<\/div>\s*/gi, '')
 }
 
@@ -103,7 +114,7 @@ function cutSection(html: string, heading: string): { block: string; rest: strin
  * 結論區塊的 h2 標題寫法：選購指南寫「結論」，StackTool 推薦文寫「總結」而且放在文末。
  * 兩種都認，把結論前置到「先看結論」框裡（對 GEO 有利，讀者也不用捲到最後）。
  */
-const CONCLUSION_HEADING_PATTERN = '(?:結論|總結)'
+const CONCLUSION_HEADING_PATTERN = '(?:結論|總結|Conclusion|Summary|Final Thoughts|Key Takeaways)'
 
 function extractConclusion(html: string): { conclusion: ParsedArticleContent['conclusion']; rest: string } {
   const cut = cutSection(html, CONCLUSION_HEADING_PATTERN)
@@ -123,7 +134,7 @@ function extractConclusion(html: string): { conclusion: ParsedArticleContent['co
 }
 
 /** FAQ 區塊的 h2 標題寫法：選購指南用「常見問題」，StackTool 推薦文用「FAQ」 */
-const FAQ_HEADING_PATTERN = '(?:常見問題|常見問答|FAQ)'
+const FAQ_HEADING_PATTERN = '(?:常見問題|常見問答|FAQs?|Frequently Asked Questions)'
 
 function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
   const cut = cutSection(html, FAQ_HEADING_PATTERN)
@@ -151,7 +162,7 @@ function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
 }
 
 function extractProvenance(html: string): { provenance: string[] | null; rest: string } {
-  const cut = cutSection(html, '這篇怎麼寫出來的')
+  const cut = cutSection(html, '(?:這篇怎麼寫出來的|How This Article Was Written)')
   if (!cut) return { provenance: null, rest: html }
 
   const paragraphs = [...cut.block.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)].map((m) => stripTags(m[1]))
@@ -258,6 +269,7 @@ export function parseArticleContent(
     extractHowTo: shouldExtractHowTo = true,
     extractProvenance: shouldExtractProvenance = true,
     extractConclusion: shouldExtractConclusion = true,
+    faqLabel = '常見問題',
   } = options
 
   const cleaned = stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
@@ -274,7 +286,7 @@ export function parseArticleContent(
   const { html: fullBodyHtml, toc } = injectTocAnchors(afterHowTo)
 
   // 常見問題要排在總結前面，所以把「總結」以後的內容切出來，頁面在中間插入 FAQ
-  const summaryMatch = /<h2[^>]*>\s*(?:總結|結語)\s*<\/h2>/.exec(fullBodyHtml)
+  const summaryMatch = /<h2[^>]*>\s*(?:總結|結語|Conclusion|Summary|Final Thoughts)\s*<\/h2>/i.exec(fullBodyHtml)
   const splitAt = summaryMatch ? summaryMatch.index : fullBodyHtml.length
   const { bodyHtml, bodyTailHtml } = splitHtmlAt(fullBodyHtml, splitAt)
 
@@ -283,8 +295,8 @@ export function parseArticleContent(
   }
   if (faq) {
     // 目錄也要跟著實際順序：常見問題插在總結那一項之前
-    const summaryIndex = toc.findIndex((item) => /^(總結|結語)/.test(item.label))
-    const entry = { id: FAQ_SECTION_ID, label: '常見問題' }
+    const summaryIndex = toc.findIndex((item) => /^(總結|結語|Conclusion|Summary|Final Thoughts)/i.test(item.label))
+    const entry = { id: FAQ_SECTION_ID, label: faqLabel }
     if (summaryIndex >= 0) toc.splice(summaryIndex, 0, entry)
     else toc.push(entry)
   }
@@ -305,7 +317,7 @@ export function deriveMetaDescription(html: string, maxLength = 150): string {
 
   const paragraphs = Array.from(cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi))
     .map((m) => stripHtml(m[1]).replace(/\s+/g, ' ').trim())
-    .filter((text) => text.length >= 30 && !/^目錄/.test(text))
+    .filter((text) => text.length >= 30 && !/^(目錄|Table of Contents|Contents)/i.test(text))
 
   const source = paragraphs[0]
   if (!source) return ''
@@ -313,7 +325,12 @@ export function deriveMetaDescription(html: string, maxLength = 150): string {
 
   // 盡量切在句號／分號，切不到再硬切，結尾補刪節號
   const window = source.slice(0, maxLength)
-  const lastStop = Math.max(window.lastIndexOf('。'), window.lastIndexOf('；'), window.lastIndexOf('！'))
+  const lastStop = Math.max(
+    window.lastIndexOf('。'),
+    window.lastIndexOf('；'),
+    window.lastIndexOf('！'),
+    window.lastIndexOf('. ')
+  )
   if (lastStop >= maxLength * 0.5) return window.slice(0, lastStop + 1)
   return window.trim() + '…'
 }
