@@ -61,6 +61,23 @@ HEADINGS = {
           '網友評價 → “사용자 후기”; 適合誰 → “이런 분께”; 價格 → “가격”; 地址 → “주소”; 電話 → “전화”',
 }
 
+# 專有名詞：英文用官方英文名或拼音；日文讀者直接讀漢字，不要塞英文；韓文用韓文音譯＋括號漢字
+NAME_RULE = {
+    'en': 'use the official English name when one exists (e.g. 日月潭 → Sun Moon Lake, 清境農場 → Cingjing Farm, '
+          '妮娜巧克力 → Cona\'s Chocolate). If there is no known English name, transliterate it (Hanyu Pinyin for mainland, '
+          'common Taiwan spelling for Taiwanese places) and add the Chinese in parentheses on first mention only, '
+          'e.g. "Huisun Forest (惠蓀林場)". Never leave Chinese characters in running text otherwise.',
+    'ja': 'Japanese readers read kanji directly. Keep Taiwanese place, brand and product names in their original kanji '
+          '(日月潭, 清境農場, 妮娜巧克力, 九族文化村) — do NOT replace them with English or pinyin, and do not add an '
+          'English name in parentheses. Western brand names (Nobel Biocare, Straumann, Osstem, BioHorizons, Neobiotech) '
+          'stay in Latin letters exactly as written — NEVER invent a katakana reading for a brand. '
+          'A well-known Japanese name for a place may be used (e.g. 台北 stays 台北).',
+    'ko': 'Write Taiwanese place, brand and product names in hangul transliteration, and add the original Chinese in '
+          'parentheses on first mention only (e.g. 청징 농장(清境農場), 르웨탄(日月潭)). Do not use English or pinyin in '
+          'running text. Western brand names (Nobel Biocare, Straumann, Osstem) stay in Latin letters as written — '
+          'do not invent a hangul spelling for a brand.',
+}
+
 # 標點：日文沿用全形句讀，英韓改成西式
 PUNCT_RULE = {
     'en': '%(punct)s',
@@ -101,9 +118,10 @@ Rules:
 2. Preserve the HTML structure exactly: every tag, attribute, class, id, href, src, alt order, <style> block, <svg>, <table>, <details>, inline styles. Translate only human-readable text (text nodes, alt text, title attributes, and text inside <svg><text>). Never add, drop, merge or reorder elements. Keep the same number of <h2>, <h3>, <p>, <li>, <img>, <a>, <table>, <tr>.
 3. Do not translate or alter URLs, email addresses, phone numbers, prices (keep "NT$" and the numbers as written), model numbers, or the contents of <style> blocks.
 4. Section headings follow these fixed names: %(headings)s. Other headings: translate naturally, keep them as complete sentences or clear noun phrases.
-5. Brand, place and product names: use the official %(lang)s name when one exists (e.g. 日月潭 → Sun Moon Lake, 清境農場 → Cingjing Farm, 妮娜巧克力 → Cona's Chocolate). If there is no known name in the target language, transliterate it (Hanyu Pinyin for mainland, common Taiwan spelling for Taiwanese places) and add the Chinese in parentheses on first mention only, e.g. "Huisun Forest (惠蓀林場)". Never leave Chinese characters in running text otherwise.
+5. Brand, place and product names: %(names)s
 6. Tone: natural, idiomatic %(lang)s for a reader in that language who is planning to buy or visit in Taiwan. Prefer complete sentences. Convert Chinese punctuation (，。、：「」) to English punctuation; use "Q:"/"A:" for FAQ prefixes. Keep the meaning and every fact; do not summarize, embellish, or add disclaimers.
-7. Currency and units stay as in the source (NT$, km, minutes). Dates stay as written.
+7. Domain terminology must be the standard term of the target language, not a character-by-character copy of the Chinese term. Dental examples — Japanese: 單顆 → 1本, 全口重建 → 全顎再建（フルマウス）, 植體 → インプラント体, 補骨 → 骨造成, 舒眠 → 静脈内鎮静; Korean: 單顆 → 1개, 全口重建 → 전악 재건, 植體 → 임플란트 픽스처, 補骨 → 골이식, 舒眠 → 수면마취. Apply the same principle to every field (travel, skincare, marketing).
+8. Currency: every Taiwan dollar amount gets the NT$ prefix and keeps the source's magnitude exactly (三萬八 → NT$38,000 or NT$3.8万; 6 到 10 萬 → NT$6〜10万; 300 萬元 → NT$300万). A bare 元/万元/円/원 will be read as the reader's own currency, and 萬 must never turn into 円. Units stay as in the source (km, minutes); 公尺 becomes m or the target language's word for metre. Dates stay as written.
 """
 
 META_PROMPT = """Translate this Taiwanese recommendation article's title into %(lang)s and write a meta description in %(lang)s.
@@ -161,8 +179,10 @@ def wp(method: str, path: str, body: dict | None = None, params: dict | None = N
             break
         except urllib.error.HTTPError as e:
             detail = e.read().decode(errors='replace')[:500]
-            # Cloudflare 對大 payload 偶爾回 520／524，等一下重送
-            if e.code >= 500 and attempt < 2:
+            # Cloudflare 對大 payload 偶爾回 520／524，等一下重送。
+            # 但「建立文章」不能重送——WP 可能已經建好了，重送會多一篇；那條路由交給呼叫端用 slug 補救
+            is_create = method == 'POST' and path == 'posts'
+            if e.code >= 500 and attempt < 2 and not is_create:
                 print(f'  ⚠ WordPress {method} {path} → HTTP {e.code}，{5 * (attempt + 1)} 秒後重試', file=sys.stderr)
                 time.sleep(5 * (attempt + 1))
                 continue
@@ -312,7 +332,7 @@ def has_cjk(text: str) -> bool:
 def translate_chunk(chunk: str, index: int, total: int) -> str:
     messages = [
         {'role': 'system', 'content': SYSTEM_PROMPT % {
-            'lang': LANG_LABEL[LANG], 'headings': HEADINGS[LANG], 'punct': PUNCT_RULE[LANG]}},
+            'lang': LANG_LABEL[LANG], 'headings': HEADINGS[LANG], 'punct': PUNCT_RULE[LANG], 'names': NAME_RULE[LANG]}},
         {'role': 'user', 'content': f'Translate part {index + 1} of {total} of the article. Output the translated HTML only.\n\n{chunk}'},
     ]
     for attempt in range(2):
@@ -617,7 +637,16 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         saved = wp('POST', f'posts/{existing["id"]}', body)
         print(f'  ✓ 更新譯文 post {saved["id"]}：{saved["link"]}')
     else:
-        saved = wp('POST', 'posts', body)
+        # Cloudflare 對大 payload 偶爾回 520，但 WordPress 其實已經建好了；直接重送會建出第二篇
+        # （slug 變成 -ko-2）。所以建立失敗先用 slug 找一次，找到就改成更新
+        try:
+            saved = wp('POST', 'posts', body)
+        except SystemExit:
+            dup = find_post_by_slug(target_slug)
+            if not dup:
+                raise
+            print(f'  ⚠ 建立時回錯但文章已存在（post {dup["id"]}），改成更新', file=sys.stderr)
+            saved = wp('POST', f'posts/{dup["id"]}', body)
         print(f'  ✓ 建立譯文 post {saved["id"]}：{saved["link"]}')
     cat_slug = wp('GET', f'categories/{category_ids[0]}')['slug'] if category_ids else ''
     route_cat = cat_slug[: -len(SUFFIX)] if cat_slug.endswith(SUFFIX) else cat_slug
