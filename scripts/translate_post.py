@@ -170,6 +170,22 @@ def die(msg: str) -> None:
 
 # ---------- WordPress REST ----------
 
+def _looks_complete_json(raw: str) -> bool:
+    start = min((i for i in (raw.find('{'), raw.find('[')) if i >= 0), default=-1)
+    if start < 0:
+        return False
+    try:
+        json.loads(raw[start:])
+        return True
+    except json.JSONDecodeError:
+        end = max(raw.rfind('}'), raw.rfind(']'))
+        try:
+            json.loads(raw[start:end + 1])
+            return True
+        except json.JSONDecodeError:
+            return False
+
+
 def wp(method: str, path: str, body: dict | None = None, params: dict | None = None):
     url = f'{WP}/wp-json/wp/v2/{path}'
     if params:
@@ -184,6 +200,11 @@ def wp(method: str, path: str, body: dict | None = None, params: dict | None = N
         try:
             with urllib.request.urlopen(req, timeout=180) as res:
                 raw = res.read().decode()
+            # 回應偶爾被截斷（Cloudflare 中途斷線），解不出 JSON 就當它沒回，重抓一次；建立文章除外
+            if method == 'GET' and not _looks_complete_json(raw) and attempt < 2:
+                print(f'  ⚠ WordPress {method} {path} 回應不完整，重抓', file=sys.stderr)
+                time.sleep(3)
+                continue
             break
         except urllib.error.HTTPError as e:
             detail = e.read().decode(errors='replace')[:500]
@@ -313,6 +334,14 @@ def _cjk_outside_parens(text: str) -> bool:
     return looks_untranslated(re.sub(r'[（(][^()（）]*[)）]', '', text))
 
 
+# 台灣繁體用、現代日文不用（日文用新字體或根本沒這個字）的字。日文段落裡出現這些字，幾乎就是中文沒翻到
+TRAD_ONLY_RE = re.compile('[這們說於與從個兩內訊網價產發點樂藝會學對關應數實處廠廣齒醫觀纖顆嚴寶靈繼續讓體麼嗎呢吧嘛沒隻餘裡裏覺臺灣擁團國圖劃劑圓區歲單邊幫證讚驗鹽鐵錄雙雜顏驅髮鬆麵黃齊經來當將條總樣顯戶擇據險傳盡舊帶聯壓讀鑽濟變營緣號狀輕徵譯齡靜聲賣賴賺賽轉辦釋鏈閱參圍壘寫覽詢氣鍊隨]')
+
+
+# 每個字日文都有、但組起來是中文詞的（服務、收費、品牌…），也當漏翻
+ZH_WORD_RE = re.compile('服務|收費|情境|官方|品牌|療程|諮詢|洽詢|評價|網友|優惠|適合|價格|價位|方案|說明|查詢|預約|營業|地址|門票|住宿|飯店|景點|建議|總結|前言|常見|參考資料|小編|點評|對象|主打|資訊|需求|模式')
+
+
 def looks_untranslated(text: str) -> bool:
     """這段文字看起來是漏翻的中文嗎。
 
@@ -321,9 +350,9 @@ def looks_untranslated(text: str) -> bool:
     英文與韓文沒這個問題，出現兩個以上漢字就是漏翻。
     """
     if LANG == 'ja':
-        # 日文句子幾乎一定有假名。有漢字卻一個假名都沒有，多半是整段沒翻到的中文。
-        # 「価格」「住所」這種純漢字的日文詞也會被掃進來，但補翻那步會原樣退回，不會改壞
-        return bool(re.search(CJK_RE, text)) and not re.search(KANA_RE, text)
+        # 日文句子幾乎一定有假名。有漢字卻一個假名都沒有，再看裡面有沒有「現代日文不用的繁體字」
+        # （這、們、說、與、體…），有才算漏翻；不然「目次」「入場券」「公式情報」每次都被抓去補翻，白燒額度
+        return bool(re.search(CJK_RE, text)) and not re.search(KANA_RE, text) and bool(TRAD_ONLY_RE.search(text) or ZH_WORD_RE.search(text))
     return bool(re.search(CJK_RE + '{2,}', text))
 
 
@@ -419,8 +448,10 @@ def translate_leftovers(html: str) -> str:
         'already romanised, and keep prices and numbers. '
         'Chinese inside parentheses only stays as-is when it is a brand, place or product name kept as a gloss; '
         'an ordinary Chinese phrase in parentheses (e.g. 用現有手機) must be translated like the rest. '
-        'For a brand or product name with no known name in the target language, transliterate it and add the Chinese in parentheses once. '
-        f'Use these fixed section names: {HEADINGS[LANG]}. '
+        + ('Taiwanese place, brand, clinic and product names stay in their original kanji exactly as given (九日牙醫集團, 汐潔牙醫診所) — '
+           'do NOT transliterate them into katakana and do not add parentheses. ' if LANG == 'ja' else
+           'For a brand or product name with no known name in the target language, transliterate it and add the Chinese in parentheses once. ')
+        + f'Use these fixed section names: {HEADINGS[LANG]}. '
         'Return ONLY a JSON object mapping each original fragment to its translation.\n\n'
     )
     # 一次全送會爆 max_tokens（10 家品牌的文章可能有上百個片段），分批送
@@ -506,11 +537,14 @@ TERM_FIX: dict[str, list[tuple[str, str]]] = {
         (r'(?<![\u4e00-\u9fff])洽詢', '問い合わせ'),
         (r'主打する', '売りにする'),
         (r'(?<![\u4e00-\u9fff])主打', '主力'),
+        # 「1枚約27元」沒帶 NT$ 會被當人民幣或日圓
+        (r'(?<![NT$\d.,])(\d[\d,]*(?:\.\d+)?)\s*元(?![\u4e00-\u9fff])', r'NT$\1'),
         # 「8万〜12万」沒帶 NT$ 會被當日圓
         (r'(?<![NT$\d.])(\d+(?:\.\d+)?)万〜(\d+(?:\.\d+)?)万', r'NT$\1〜\2万'),
     ],
     'ko': [
         (r'需諮詢|需洽詢', '상담 필요'),
+
         (r'(?<![\u4e00-\u9fff])診所', '병원'),
         (r'欧仕美', '歐仕美'),
         (r'(?<![(（])今周刊(?![)）])', '금주간(今周刊)'),
@@ -537,6 +571,33 @@ KO_BARE_WAN_RE = re.compile(r'(?<![NT$\d.,])(\d+(?:\.\d+)?)만\s*[~〜]\s*(\d+(?
 DUP_PAREN_RE = re.compile(r'(\([^()（）]{1,20}\))\1+|(（[^()（）]{1,20}）)\2+')
 
 
+# 日文：模型愛把台灣店名音譯成片假名再括號附漢字（ジウリツ歯科グループ（九日牙醫集團）），每處讀音還不一樣。
+# 日本媒體寫台灣店名一律用漢字（鼎泰豐、誠品書店），所以收斂成漢字原名。
+# 條件：括號裡沒假名、這串字在中文原文出現過（是名字不是註解）、前面的片假名不是一般名詞。
+JA_GENERIC_KATAKANA = {'ゲイシャ', 'スナック', 'キャラクター', 'ツアー', 'ガイド', 'チケット', 'ビーチ', 'スポット', 'レビュー', 'イメージ',
+                       'レストラン', 'テーマルーム', 'アメニティ', 'エキストラベッド', 'ビジネスセンター', 'マッサージバスタブ',
+                       'エレガントダブルルーム', 'コミュニケーション', 'ペンギンコース', 'コトビガモ', 'エクソソーム', 'エキソソーム',
+                       'アルデヒド', 'フォルム', 'エッセンス', 'ツボクサ', 'ブランド', 'メディア', 'サービス', 'タイムライン',
+                       'カスタマーサポート', 'チーム', 'デジタルガイド', 'ジンバル', 'スマホ', 'プラットフォーム', 'サイクリングロード',
+                       'ダークチョコレート', 'オプション', 'パッケージ', 'リターン', 'サイト', 'サイトシステム', 'クリニック', 'ホテル',
+                       'グループ', 'モーテル', 'マーケティング'}
+JA_GENERIC_TAIL = r'(?:歯科|美学歯科|美學歯科|クリニック|ホテル|ビジネスホテル|モーテル|グループ|チョコレート|デジタル|テクノロジー|マーケティング|林場|荘園|山荘|園区|コーヒー荘園)'
+JA_KATAKANA_NAME_RE = re.compile(r'([ァ-ヶー・]+(?:\s*' + JA_GENERIC_TAIL + r')*[ァ-ヶー・]*)\s*[（(]([^()（）]+)[)）]')
+
+
+def collapse_ja_names(html: str, source_html: str) -> str:
+    """把「片假名音譯（漢字原名）」收斂成漢字原名；回傳改好的 HTML"""
+    def repl(m: re.Match) -> str:
+        kata, name = m.group(1).strip(), m.group(2).strip()
+        core = re.sub(r'\s*' + JA_GENERIC_TAIL + r'\s*', '', kata)
+        if re.search(r'[\u3040-\u30ff]', name) or core in JA_GENERIC_KATAKANA or kata in JA_GENERIC_KATAKANA or len(core) < 3:
+            return m.group(0)
+        return name if name in source_html else m.group(0)
+    out = JA_KATAKANA_NAME_RE.sub(repl, html)
+    # 收斂完可能變成「汐潔牙醫診所（汐潔牙醫診所）」
+    return re.sub(r'([\u4e00-\u9fff][^<>（()）]{1,20})\s*[（(]\1[)）]', r'\1', out)
+
+
 def fix_plain(text: str) -> str:
     """標題、摘要這種純文字也過一次術語表"""
     return fix_terms('>' + text + '<')[1:-1]
@@ -553,6 +614,9 @@ def fix_terms(html: str) -> str:
         if LANG == 'ko':  # 金額括號裡的也要換（「(NT$3.8 萬 入門プラン)」這種）
             text = KO_BARE_WAN_RE.sub(lambda b: f'NT${b.group(1)}만~{b.group(2)}만', text)
             text = KO_WAN_RE.sub(_wan_to_digits, text)
+            text = re.sub(r'(NT\$\s*\d[\d,]*(?:\.\d+)?)\s*원(?!래|인|칙)', r'\1', text)
+            # 光禿禿的「7,000원」會被當韓元
+            text = re.sub(r'(?<![NT$\d.,])(\d[\d,]*(?:\.\d+)?)\s*원(?!래|인|칙|천|장|료|자|고|본|가|형|리)', r'NT$\1', text)
         if LANG == 'en':  # 英文規則只有幣值，括號裡的也要換
             for rx, rep in rules:
                 text = rx.sub(rep, text)
@@ -701,24 +765,31 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
             print(f'  翻譯第 {i + 1}/{len(chunks)} 段（{len(chunk)} 字元）…')
             out_chunks.append(translate_chunk(chunk, i, len(chunks)))
         en_content = fix_terms(normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_chunks)))))
+        if LANG == 'ja':
+            en_content = collapse_ja_names(en_content, content)
         meta = translate_meta(title, content)
         translated = {
             'source_modified': post['modified'],
             'title': meta['title'],
             'excerpt': meta['excerpt'],
             'content': en_content,
+            'leftovers_done': True,
         }
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
         print(f'  翻譯完成，快取在 {cache_file.relative_to(ROOT)}')
 
-    # 舊快取也補跑 SVG 與漏翻檢查（新翻的在上面已經跑過，這裡查不到東西就直接回傳）
-    if SVG_TEXT_RE.search(translated['content']) or has_cjk(translated['content']):
+    # 舊快取也補跑 SVG 與漏翻檢查，但只跑一次：跑過就在快取記下來，之後 --force 重推不再送模型
+    # （手動修好的漢字店名會被再音譯一遍，而且每次都燒額度）
+    if not translated.get('leftovers_done') and (SVG_TEXT_RE.search(translated['content']) or has_cjk(translated['content'])):
         translated['content'] = translate_leftovers(translate_svg_texts(translated['content']))
-        cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
+    translated['leftovers_done'] = True
+    cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
     if CJK_PUNCT_RE.search(re.sub(r'<style[\s\S]*?</style>', '', translated['content'])):
         translated['content'] = normalize_punct(translated['content'])
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
     fixed = fix_terms(translated['content'])
+    if LANG == 'ja':
+        fixed = collapse_ja_names(fixed, content)
     if fixed != translated['content']:
         translated['content'] = fixed
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))

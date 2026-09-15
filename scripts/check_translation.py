@@ -257,10 +257,15 @@ def main() -> None:
     parts = [f'# 翻譯檢查報告（{LANG_LABEL[args.lang]}）\n']
     for pid in ids:
         print(f'▶ post {pid}')
-        parts.append(report_for(pid, args.lang, args.review, args.model))
+        try:
+            parts.append(report_for(pid, args.lang, args.review, args.model))
+        except (SystemExit, json.JSONDecodeError, KeyError) as e:  # 一篇掛掉不要把前面審好的一起丟掉
+            parts.append(f'## post {pid}\n\n✗ 檢查失敗：{e}\n')
+            print(f'✗ post {pid} 檢查失敗：{e}', file=sys.stderr)
+        if args.out:  # 每篇寫一次，中途斷掉也留得住
+            open(args.out, 'w').write('\n'.join(parts))
     text = '\n'.join(parts)
     if args.out:
-        open(args.out, 'w').write(text)
         print(f'✓ 報告寫到 {args.out}')
     else:
         print(text)
