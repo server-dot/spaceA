@@ -72,13 +72,21 @@ NAME_RULE = {
           'English name in parentheses. Western brand names (Nobel Biocare, Straumann, Osstem, BioHorizons, Neobiotech) '
           'stay in Latin letters exactly as written — NEVER invent a katakana reading for a brand. '
           'A well-known Japanese name for a place may be used (e.g. 台北 stays 台北).',
-    'ko': 'Write Taiwanese place, brand and product names in hangul transliteration, and add the original Chinese in '
-          'parentheses on first mention only (e.g. 청징 농장(清境農場), 르웨탄(日月潭)). Do not use English or pinyin in '
-          'running text. Western brand names (Nobel Biocare, Straumann, Osstem) stay in Latin letters as written — '
-          'do not invent a hangul spelling for a brand.',
+    'ko': 'Write Taiwanese place, brand and product names in hangul by their MANDARIN pronunciation following 외래어 표기법 '
+          '(九日 → 주르, 重心 → 중신, 佳誠 → 자청, 悅庭 → 위에팅, 日月潭 → 르웨탄, 清境農場 → 칭징 농장), never the Korean '
+          'hanja reading (not 구일, 중심, 가성, 월정), and never pinyin or an English rendering (not Long Island for 長島). '
+          'Pick ONE hangul form per name and use exactly that form everywhere in the article. Add the original Chinese '
+          'in parentheses on first mention only, e.g. 칭징 농장(清境農場). Western brand names (Nobel Biocare, Straumann, '
+          'Osstem) stay in Latin letters as written — do not invent a hangul spelling for a brand.',
 }
 
 # 標點：日文沿用全形句讀，英韓改成西式
+CURRENCY_RULE = {
+    'en': 'Write full digits: 三萬八 → NT$38,000; 6 到 10 萬 → NT$60,000–100,000; 300 萬元 → NT$3 million (NT$3,000,000).',
+    'ja': 'Japanese readers use 万: 三萬八 → NT$3.8万 or NT$38,000; 6 到 10 萬 → NT$6〜10万; 300 萬元 → NT$300万.',
+    'ko': 'Write full digits, never 万/萬 and never the Chinese 到: 三萬八 → NT$38,000; 6 到 10 萬 → NT$60,000~100,000; 300 萬元 → NT$3,000,000.',
+}
+
 PUNCT_RULE = {
     'en': '%(punct)s',
     'ja': 'Use Japanese punctuation: 。 for periods, 、 for commas, 「」 for quotes. Do not use ASCII commas or periods in running text.',
@@ -121,7 +129,7 @@ Rules:
 5. Brand, place and product names: %(names)s
 6. Tone: natural, idiomatic %(lang)s for a reader in that language who is planning to buy or visit in Taiwan. Prefer complete sentences. Convert Chinese punctuation (，。、：「」) to English punctuation; use "Q:"/"A:" for FAQ prefixes. Keep the meaning and every fact; do not summarize, embellish, or add disclaimers.
 7. Domain terminology must be the standard term of the target language, not a character-by-character copy of the Chinese term. Dental examples — Japanese: 單顆 → 1本, 全口重建 → 全顎再建（フルマウス）, 植體 → インプラント体, 補骨 → 骨造成, 舒眠 → 静脈内鎮静; Korean: 單顆 → 1개, 全口重建 → 전악 재건, 植體 → 임플란트 픽스처, 補骨 → 골이식, 舒眠 → 수면마취. Apply the same principle to every field (travel, skincare, marketing).
-8. Currency: every Taiwan dollar amount gets the NT$ prefix and keeps the source's magnitude exactly (三萬八 → NT$38,000 or NT$3.8万; 6 到 10 萬 → NT$6〜10万; 300 萬元 → NT$300万). A bare 元/万元/円/원 will be read as the reader's own currency, and 萬 must never turn into 円. Units stay as in the source (km, minutes); 公尺 becomes m or the target language's word for metre. Dates stay as written.
+8. Currency: every Taiwan dollar amount gets the NT$ prefix and keeps the source's magnitude exactly. %(currency)s A bare 元/万元/円/원 will be read as the reader's own currency, and 萬 must never turn into 円 or 원. Units stay as in the source (km, minutes); 公尺 becomes m or the target language's word for metre. Dates stay as written.
 """
 
 META_PROMPT = """Translate this Taiwanese recommendation article's title into %(lang)s and write a meta description in %(lang)s.
@@ -332,7 +340,8 @@ def has_cjk(text: str) -> bool:
 def translate_chunk(chunk: str, index: int, total: int) -> str:
     messages = [
         {'role': 'system', 'content': SYSTEM_PROMPT % {
-            'lang': LANG_LABEL[LANG], 'headings': HEADINGS[LANG], 'punct': PUNCT_RULE[LANG], 'names': NAME_RULE[LANG]}},
+            'lang': LANG_LABEL[LANG], 'headings': HEADINGS[LANG], 'punct': PUNCT_RULE[LANG], 'names': NAME_RULE[LANG],
+            'currency': CURRENCY_RULE[LANG]}},
         {'role': 'user', 'content': f'Translate part {index + 1} of {total} of the article. Output the translated HTML only.\n\n{chunk}'},
     ]
     for attempt in range(2):
@@ -466,6 +475,97 @@ def normalize_punct(html: str) -> str:
     return ''.join(part if part.startswith('<style') else re.sub(r'>([^<]*)<', fix_text, part) for part in parts)
 
 
+# 模型（gpt-5-mini）就算提示詞明講，還是會把中文術語原字搬進日文（単顆、全口、診所、微創…）。
+# 這些是確定性的錯，用對照表在文字節點裡直接換掉，比再叫一次模型便宜又穩。
+# 括號裡的內容（品牌原名 (汐潔牙醫診所)）不動；前面接著漢字的也不動（歐仕美牙醫診所 是店名）。
+# 中文原文用中文譯名寫西方植體品牌，日韓讀者看不懂，換回原文
+BRAND_FIX = [(r'諾保科', 'Nobel Biocare'), (r'百好', 'BioHorizons'), (r'鈕白特', 'Neobiotech'),
+             (r'士卓曼', 'Straumann'), (r'奧齒泰', 'Osstem'), (r'登騰', 'Dentium')]
+
+TERM_FIX: dict[str, list[tuple[str, str]]] = {
+    'ja': [
+        # 模型愛把 <dt> 標籤加上「」（「公式情報」），原文沒有
+        (r'^「(目次|公式情報|参考資料|はじめに|まとめ|よくある質問)」$', r'\1'),
+        (r'単顆インプラント', 'インプラント1本'),
+        (r'植体', 'インプラント体'),
+        (r'[単單]顆', '1本'),
+        (r'需諮詢', '要相談'),
+        (r'數位化', 'デジタル'),
+        (r'高齡評估', '高齢者評価'),
+        (r'治療療程', '治療コース'),
+        (r'全口', '全顎'),
+        (r'全瓷冠', 'オールセラミッククラウン'),
+        (r'微創', '低侵襲'),
+        (r'舒眠', '静脈内鎮静'),
+        (r'補骨', '骨造成'),
+        (r'(?<![\u4e00-\u9fff])診所', 'クリニック'),
+        (r'欧仕美', '歐仕美'),
+        (r'(?<![\u4e00-\u9fff])植牙', 'インプラント'),
+        (r'療程', '治療コース'),
+        (r'(?<![\u4e00-\u9fff])保固', '保証'),
+        (r'(?<![\u4e00-\u9fff])洽詢', '問い合わせ'),
+        (r'主打する', '売りにする'),
+        (r'(?<![\u4e00-\u9fff])主打', '主力'),
+        # 「8万〜12万」沒帶 NT$ 會被當日圓
+        (r'(?<![NT$\d.])(\d+(?:\.\d+)?)万〜(\d+(?:\.\d+)?)万', r'NT$\1〜\2万'),
+    ],
+    'ko': [
+        (r'需諮詢|需洽詢', '상담 필요'),
+        (r'(?<![\u4e00-\u9fff])診所', '병원'),
+        (r'欧仕美', '歐仕美'),
+        (r'(?<![(（])今周刊(?![)）])', '금주간(今周刊)'),
+    ],
+    'en': [
+        # 「60,000–100,000 NTD」「NTD 38,000」→ NT$ 前綴；沒帶幣別的千位數區間幾乎都是價格
+        (r'(?<![\d$])(\d{1,3}(?:,\d{3})+(?:\s*[–~-]\s*\d{1,3}(?:,\d{3})+)?)\s*NTD\b', r'NT$\1'),
+        (r'\bNTD\s*(\d)', r'NT$\1'),
+        (r'(?<![\d$,.])(\d{1,3}(?:,\d{3})+\s*[–~-]\s*\d{1,3}(?:,\d{3})+)', r'NT$\1'),
+    ],
+}
+
+
+def _wan_to_digits(m: re.Match) -> str:
+    def num(x: str) -> str:
+        return f'{int(round(float(x) * 10000)):,}'
+    lo, hi = m.group(1), m.group(2)
+    return f'NT${num(lo)}~{num(hi)}' if hi else f'NT${num(lo)}'
+
+
+# 韓文讀者不用「万」；模型會照中文寫成 NT$6〜10萬、NT$5 到 10 萬，一律換成全數字
+KO_WAN_RE = re.compile(r'NT\$\s*(\d+(?:\.\d+)?)\s*[万萬만]?(?:\s*(?:[〜~–\-]|到)\s*(\d+(?:\.\d+)?))?\s*[万萬만](?:\s*(?:元|원))?')
+KO_BARE_WAN_RE = re.compile(r'(?<![NT$\d.,])(\d+(?:\.\d+)?)만\s*[~〜]\s*(\d+(?:\.\d+)?)만(?:\s*원)?')
+DUP_PAREN_RE = re.compile(r'(\([^()（）]{1,20}\))\1+|(（[^()（）]{1,20}）)\2+')
+
+
+def fix_plain(text: str) -> str:
+    """標題、摘要這種純文字也過一次術語表"""
+    return fix_terms('>' + text + '<')[1:-1]
+
+
+def fix_terms(html: str) -> str:
+    rules = [(re.compile(pat), rep) for pat, rep in TERM_FIX.get(LANG, []) + BRAND_FIX]
+
+    def fix_text(m: re.Match) -> str:
+        text = DUP_PAREN_RE.sub(lambda d: d.group(1) or d.group(2), m.group(1))  # 주화(爵華)(爵華) → 주화(爵華)
+        # 韓文會寫成 백호(百好)、Nobel Biocare(諾保科)：整組換成原文品牌
+        for pat, brand in BRAND_FIX:
+            text = re.sub(r'(?:[가-힣]+|' + re.escape(brand) + r')?\s*[（(]' + pat + r'[)）]', brand, text)
+        if LANG == 'ko':  # 金額括號裡的也要換（「(NT$3.8 萬 入門プラン)」這種）
+            text = KO_BARE_WAN_RE.sub(lambda b: f'NT${b.group(1)}만~{b.group(2)}만', text)
+            text = KO_WAN_RE.sub(_wan_to_digits, text)
+        if LANG == 'en':  # 英文規則只有幣值，括號裡的也要換
+            for rx, rep in rules:
+                text = rx.sub(rep, text)
+        pieces = re.split(r'([（(][^()（）]*[)）])', text)
+        for i in range(0, len(pieces), 2):  # 偶數位是括號外的文字
+            for rx, rep in rules:
+                pieces[i] = rx.sub(rep, pieces[i])
+        return '>' + ''.join(pieces) + '<'
+
+    parts = re.split(r'(<style[\s\S]*?</style>)', html)
+    return ''.join(part if part.startswith('<style') else re.sub(r'>([^<]*)<', fix_text, part) for part in parts)
+
+
 def translate_meta(title: str, html: str) -> dict:
     text = re.sub(r'<nav[\s\S]*?</nav>|<style[\s\S]*?</style>', '', html)
     paragraphs = [re.sub(r'<[^>]+>', '', p).strip() for p in re.findall(r'<p[^>]*>([\s\S]*?)</p>', text)]
@@ -507,6 +607,10 @@ def slugify(name: str) -> str:
     return slug or 'tag'
 
 
+def has_suffix(slug: str) -> bool:
+    return re.search(re.escape(SUFFIX) + r'(-\d+)?$', slug) is not None
+
+
 def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
     """每個中文 term 找或建對應的 -en term，回傳英文 term 的 id 列表"""
     if not ids:
@@ -523,7 +627,8 @@ def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
         else:
             if target_terms is None:
                 target_terms = wp('GET', taxonomy, params={'search': SUFFIX, 'per_page': 100})
-            found = next((r for r in target_terms if r['slug'].endswith(SUFFIX) and r.get('description') == src['name']), None)
+            # 同名 slug 撞到時 WP 會加 -2、-3（tag-ja-27），所以不能只看 endswith
+            found = next((r for r in target_terms if has_suffix(r['slug']) and r.get('description') == src['name']), None)
         if found:
             existing_by_name[src['name']] = found
 
@@ -543,13 +648,24 @@ def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
         body = {'name': names[src['name']], 'slug': base + SUFFIX}
         if not ascii_slug:
             body['description'] = src['name']
-        if src.get('description'):
-            # 分類描述在前台分類頁會顯示，也翻成英文
+        if src.get('description') and taxonomy == 'categories':
+            # 分類描述在前台分類頁會顯示，也翻成英文（標籤的描述前台不顯示，留著當中文原名對照鍵）
             body['description'] = strip_fences(llm([
                 {'role': 'user', 'content': f'Translate this category description into natural {LANG_LABEL[LANG]}. Output only the text.\n\n' + src['description']}
             ], max_tokens=1000))
-        created = wp('POST', taxonomy, body)
-        print(f'  ＋ 建立 {kind} {created["slug"]}（{created["name"]}）')
+        try:
+            created = wp('POST', taxonomy, body)
+        except SystemExit:
+            # 同名 term 已經在（上一輪建的，但 description 被翻譯覆蓋掉、對不回中文名），
+            # WP 回 term_exists 並附 term_id，直接沿用
+            hit = next((r for r in wp('GET', taxonomy, params={'search': body['name'], 'per_page': 20})
+                        if r['name'] == body['name'] and has_suffix(r['slug'])), None)
+            if not hit:
+                raise
+            created = hit
+            print(f'  = 沿用既有 {kind} {created["slug"]}（{created["name"]}）')
+        else:
+            print(f'  ＋ 建立 {kind} {created["slug"]}（{created["name"]}）')
         result.append(created['id'])
     return result
 
@@ -584,7 +700,7 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         for i, chunk in enumerate(chunks):
             print(f'  翻譯第 {i + 1}/{len(chunks)} 段（{len(chunk)} 字元）…')
             out_chunks.append(translate_chunk(chunk, i, len(chunks)))
-        en_content = normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_chunks))))
+        en_content = fix_terms(normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_chunks)))))
         meta = translate_meta(title, content)
         translated = {
             'source_modified': post['modified'],
@@ -601,6 +717,10 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
     if CJK_PUNCT_RE.search(re.sub(r'<style[\s\S]*?</style>', '', translated['content'])):
         translated['content'] = normalize_punct(translated['content'])
+        cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
+    fixed = fix_terms(translated['content'])
+    if fixed != translated['content']:
+        translated['content'] = fixed
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
     if has_cjk(translated['content']):
         cleaned = re.sub(r'[（(][^()（）]*[)）]', '', re.sub(r'<style[\s\S]*?</style>', '', translated['content']))
@@ -621,10 +741,10 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
     category_ids = ensure_target_terms('categories', post.get('categories', []), 'category')
     tag_ids = ensure_target_terms('tags', post.get('tags', []), 'tag')
     body = {
-        'title': translated['title'],
+        'title': fix_plain(translated['title']),
         'slug': target_slug,
         'content': translated['content'],
-        'excerpt': translated['excerpt'],
+        'excerpt': fix_plain(translated['excerpt']),
         'status': status,
         'categories': category_ids,
         'tags': tag_ids,

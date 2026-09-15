@@ -48,10 +48,36 @@ def text_nodes(html: str) -> list[str]:
     return [t.strip() for t in re.findall(r'>([^<]+)<', clean(html)) if t.strip()]
 
 
+BLOCK_TAGS = r'p|li|h[1-6]|dt|dd|td|th|figcaption|blockquote|summary|div'
+BLOCK_RE = re.compile(
+    rf'<({BLOCK_TAGS})(?:\s[^>]*)?>((?:(?!<(?:{BLOCK_TAGS})[\s>])[\s\S])*?)</\1>', re.I)
+
+
+def blocks(html: str) -> list[str]:
+    """以「最內層的區塊元素」為單位取文字，行內的 <strong>、<a> 合併進同一段。
+    逐個文字節點配對會因為譯文把 <strong> 的位置挪一下就整篇錯位，審閱模型接著把後面每一段都報成
+    「翻到下一段去了」；區塊層級兩邊結構一樣（結構核對有把關），配對就穩。"""
+    out = []
+    for _, inner in BLOCK_RE.findall(clean(html)):
+        text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', inner)).strip()
+        if text:
+            out.append(text)
+    return out
+
+
+def _wan(m: re.Match) -> str:
+    """「6 萬」「3.8万」「3 萬 8」→ 60000／38000／38000，跟譯文展開後的全數字比得起來"""
+    base = float(m.group(1)) * 10000
+    if m.group(2):
+        base += int(m.group(2)) * 1000
+    return str(int(round(base)))
+
+
 def numbers(html: str) -> list[str]:
-    """抓出正文裡的數字。千分位統一去掉，1,200 與 1200 視為同一個"""
+    """抓出正文裡的數字。千分位統一去掉，1,200 與 1200 視為同一個；中文的「萬」先展開成全數字"""
     out = []
     for t in text_nodes(html):
+        t = re.sub(r'(\d+(?:\.\d+)?)\s*[萬万]\s*(\d)?(?![\d,])', _wan, t)
         for m in re.finditer(r'\d[\d,]*(?:\.\d+)?', t):
             out.append(m.group(0).replace(',', ''))
     return out
@@ -121,7 +147,10 @@ Report ONLY real problems, and grade each one:
   a nuance lost.
 
 Do NOT report at all: legitimate rephrasing, word order, punctuation style, sentence splitting,
-or the brand name spaceA. If a pair is fine, omit it. Most pairs should be fine — do not pad the list.
+or the brand name spaceA. House rules that are deliberate, never problems: Taiwan-dollar amounts
+are written with the NT$ prefix even when the Chinese only says 萬/元 (6 萬 → NT$60,000, 3 萬 8 →
+NT$38,000, 6 到 10 萬 → NT$60,000~100,000 or NT$6〜10万); Western brand names stay in Latin letters
+(諾保科 → Nobel Biocare); section labels use the fixed target-language names. If a pair is fine, omit it. Most pairs should be fine — do not pad the list.
 
 Return ONLY a JSON array. Each item:
 {"i": <index>, "嚴重度": "嚴重" 或 "普通", "問題": "<用繁體中文說明哪裡不對>", "建議": "<這段該怎麼改，用繁體中文寫>", "回譯": "<把該段譯文回譯成繁體中文>"}
@@ -131,7 +160,7 @@ Return ONLY a JSON array. Each item:
 
 
 def ai_review(src_html: str, dst_html: str, lang: str, model: str) -> list[dict]:
-    a, b = text_nodes(src_html), text_nodes(dst_html)
+    a, b = blocks(src_html), blocks(dst_html)
     if len(a) != len(b):
         print(f'  ⚠ 段落數對不上（原文 {len(a)}、譯文 {len(b)}），逐段比對可能錯位，僅供參考', file=sys.stderr)
     pairs = [{'i': i, 'zh': x, 't': y} for i, (x, y) in enumerate(zip(a, b)) if len(x) > 8]
