@@ -47,12 +47,11 @@ export default function JaContactPage() {
               訂正を最優先とします：確認のうえ記事を修正し、最終更新日を更新します。
             </p>
             <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              Editorial and commercial matters are handled separately at spaceA. Recommendation lists and rankings are not for
-              sale, and we do not accept sponsored content. Details are in{' '}
+              spaceAが販売しているのは「広告」と明示した広告枠のみです。スポンサーコンテンツは受け付けず、おすすめリストや順位も販売しません。詳細は{' '}
               <Link href="/ja/standards" className="text-brand-600 font-bold">
                 私たちの基準
               </Link>
-              .
+              をご覧ください。
             </p>
           </section>
 

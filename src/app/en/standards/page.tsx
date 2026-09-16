@@ -99,8 +99,8 @@ export default function EnStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">What do we not do?</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
                   <li className="py-4 text-balance">
-                    No sponsored content. Brands cannot pay for a recommendation, a ranking or a changed conclusion, and they do
-                    not get to review drafts.
+                    No sponsored content, no paid rankings. The only thing we sell is clearly labelled ad space. Brands cannot pay
+                    for a recommendation, a ranking or a changed conclusion, and they do not get to review drafts.
                   </li>
                   <li className="py-4 text-balance">
                     No claiming tests we did not run. Each article states whether a conclusion comes from testing, user feedback
@@ -124,14 +124,14 @@ export default function EnStandardsPage() {
                   How are partnerships and affiliate links disclosed?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA earns revenue from affiliate marketing and advertising. That shapes how the site is run, but not the
-                  recommendations themselves:
+                  spaceA earns revenue from affiliate links and ad space. What we sell is ad placements labelled as such, never
+                  the articles themselves:
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
                     'Purchase links in articles may be affiliate links. If you buy through one we earn a commission; the price is the same as going to the retailer directly.',
-                    'We do not accept sponsored content. Recommendation lists and rankings are not for sale, and brands cannot review or edit drafts.',
-                    'Ads are kept separate from editorial content; there are no ads dressed up as reviews. If a product was loaned by a brand for testing, the article says so at the top.',
+                    'Ad space is open for booking. Ads are labelled as ads and kept separate from articles; there are no ads dressed up as reviews. Buying an ad does not get a brand into a recommendation list or move it up.',
+                    'No sponsored content, no paid rankings. Recommendation lists, rankings and conclusions are not for sale, and brands cannot review or edit drafts. If a product was loaned by a brand for testing, the article says so at the top.',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />

@@ -57,7 +57,7 @@ const FAQ_ITEMS = [
   {
     question: 'Can brands pay to change the content?',
     answer:
-      'No. spaceA does not accept sponsored content, and does not sell placements in recommendation lists, rankings or conclusions. The full rules are on the Our Standards page.',
+      'No. The only thing spaceA sells is clearly labelled ad space. We do not accept sponsored content or sell placements in recommendation lists, rankings or conclusions. The full rules are on the Our Standards page.',
   },
   {
     question: 'What if I find an error or a broken link?',

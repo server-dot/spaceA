@@ -45,7 +45,7 @@ export default function ContactPage() {
               內容有誤、想建議我們寫哪個主題，或要談廣告與內容授權，都可以從這裡告訴我們。內容更正會優先處理，我們核對後會更正文章並更新最後更新日期。
             </p>
             <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              spaceA 的編輯內容與商務往來分開處理，推薦名單與排序不對外開放付費，也不接業配。詳細作法寫在
+              spaceA 只賣標示為廣告的版面，不接業配、不賣推薦名單與排序。詳細作法寫在
               <Link href="/standards" className="text-brand-600 font-bold">
                 推薦標準
               </Link>

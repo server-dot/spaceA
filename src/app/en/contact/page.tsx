@@ -47,8 +47,8 @@ export default function EnContactPage() {
               Corrections come first: after checking, we fix the article and update its last-updated date.
             </p>
             <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              Editorial and commercial matters are handled separately at spaceA. Recommendation lists and rankings are not for
-              sale, and we do not accept sponsored content. Details are in{' '}
+              The only thing spaceA sells is clearly labelled ad space. We do not accept sponsored content, and recommendation
+              lists and rankings are not for sale. Details are in{' '}
               <Link href="/en/standards" className="text-brand-600 font-bold">
                 Our Standards
               </Link>

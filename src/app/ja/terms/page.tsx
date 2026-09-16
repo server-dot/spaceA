@@ -123,12 +123,11 @@ export default function JaTermsPage() {
                   本サイトはマーケットプレイス、ブランドサイト、他のウェブサイトへのリンクを含み、一部はアフィリエイトリンクです。それらのコンテンツ、利用規約、プライバシーポリシーは各サイトの責任であり、spaceA はそれらを管理せず、一切の責任を負いません。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  Ads are kept separate from editorial content. We do not accept sponsored content, and recommendation lists and
-                  rankings are not for sale; see the{' '}
+                  広告は編集コンテンツと分けて掲載します。販売しているのは「広告」と明示した広告枠のみで、スポンサーコンテンツは受け付けず、おすすめリストや順位も販売しません。詳細は{' '}
                   <Link href="/ja/standards#disclosure" className="text-brand-600 font-bold">
                     提携に関する開示
                   </Link>
-                  .
+                  をご覧ください。
                 </p>
               </section>
 

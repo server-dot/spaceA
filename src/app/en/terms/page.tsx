@@ -131,8 +131,8 @@ export default function EnTermsPage() {
                   no liability for them.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  Ads are kept separate from editorial content. We do not accept sponsored content, and recommendation lists and
-                  rankings are not for sale; see the{' '}
+                  Ads are kept separate from editorial content. The only thing we sell is clearly labelled ad space; we do not accept
+                  sponsored content, and recommendation lists and rankings are not for sale. See the{' '}
                   <Link href="/en/standards#disclosure" className="text-brand-600 font-bold">
                     partnership disclosure
                   </Link>

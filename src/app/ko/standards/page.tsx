@@ -96,7 +96,7 @@ export default function KoStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">하지 않는 일</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
                   <li className="py-4 text-balance">
-                    스폰서 콘텐츠 금지: 브랜드는 추천, 순위 또는 결론을 대가로 구입할 수 없으며, 초안을 검토할 권한도 없습니다.
+                    스폰서 콘텐츠와 순위 판매를 하지 않습니다. 판매하는 것은 광고로 표시된 광고 지면뿐이며, 브랜드는 추천, 순위 또는 결론을 대가로 구입할 수 없고 초안을 검토할 권한도 없습니다.
                   </li>
                   <li className="py-4 text-balance">
                     직접 진행하지 않은 테스트를 마치 한 것처럼 주장하지 않습니다. 각 기사는 결론이 테스트, 사용자 피드백, 또는 브랜드 자료 중 어디에 근거하는지 명시합니다.
@@ -118,13 +118,13 @@ export default function KoStandardsPage() {
                   제휴 관계와 제휴 링크는 어떻게 공개하나요?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA는 제휴 마케팅과 광고에서 수익을 얻습니다. 이는 사이트 운영 방식에 영향을 주지만, 추천 내용 자체에는 영향을 주지 않습니다:
+                  spaceA의 수익은 제휴 링크와 광고 지면에서 나옵니다. 판매하는 것은 광고로 표시된 지면이며, 기사 자체는 판매하지 않습니다:
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
                     '기사 내 구매 링크는 제휴 링크일 수 있습니다. 이를 통해 구매하면 수수료를 받지만, 가격은 소매업체에 직접 접속했을 때와 동일합니다.',
-                    '스폰서 콘텐츠를 수락하지 않습니다. 추천 목록과 순위는 판매 대상이 아니며, 브랜드는 초안을 검토하거나 수정할 수 없습니다.',
-                    '광고는 편집 기사와 분리되어 있으며, 리뷰로 위장된 광고는 없습니다. 브랜드로부터 제품을 대여받아 테스트한 경우에는 기사 상단에 그 사실을 명시합니다.',
+                    '광고 지면은 게재 신청을 받습니다. 광고는 광고로 표시하고 기사와 분리해 게재하며, 리뷰로 위장된 광고는 없습니다. 광고를 집행해도 추천 목록에 들어가거나 순위가 올라가지 않습니다.',
+                    '스폰서 콘텐츠와 순위 판매를 하지 않습니다. 추천 목록, 순위, 결론은 판매 대상이 아니며, 브랜드는 초안을 검토하거나 수정할 수 없습니다. 브랜드로부터 제품을 대여받아 테스트한 경우에는 기사 상단에 그 사실을 명시합니다.',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />

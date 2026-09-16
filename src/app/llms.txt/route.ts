@@ -60,7 +60,7 @@ ${categoryLines}
 
 ## 關於
 
-- [關於我們與編輯方針](${SITE_URL}/about): 推薦內容如何產生、是否有業配合作、排行如何計算
+- [關於我們與編輯方針](${SITE_URL}/about): 推薦內容如何產生、廣告版面與推薦內容怎麼分開、排行如何計算
 - [聯絡我們](${SITE_URL}/contact)
 - [隱私權政策](${SITE_URL}/privacy)
 - [使用條款](${SITE_URL}/terms)

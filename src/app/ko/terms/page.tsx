@@ -123,12 +123,11 @@ export default function KoTermsPage() {
                   본 사이트는 마켓플레이스, 브랜드 웹사이트 및 기타 사이트로 연결되는 링크(일부는 제휴 링크 포함)를 제공합니다. 해당 사이트들의 콘텐츠, 약관 및 개인정보처리방침은 해당 사이트의 책임이며, spaceA는 이를 통제하거나 책임을 지지 않습니다.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  Ads are kept separate from editorial content. We do not accept sponsored content, and recommendation lists and
-                  rankings are not for sale; see the{' '}
+                  광고는 편집 기사와 분리해 게재합니다. 판매하는 것은 광고로 표시된 광고 지면뿐이며, 후원성 콘텐츠를 받지 않고 추천 목록과 순위도 판매하지 않습니다. 자세한 내용은{' '}
                   <Link href="/ko/standards#disclosure" className="text-brand-600 font-bold">
                     제휴 공개
                   </Link>
-                  .
+                  을 참조하세요.
                 </p>
               </section>
 

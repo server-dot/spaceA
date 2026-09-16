@@ -125,7 +125,7 @@ export default function TermsPage() {
                   無法控制也不承擔其責任。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  廣告與編輯內容分開呈現。我們不接業配，推薦名單與排序不對外開放付費，詳見
+                  廣告與編輯內容分開呈現。我們只賣標示為廣告的版面，不接業配、不賣推薦名單與排序，詳見
                   <Link href="/standards#disclosure" className="text-brand-600 font-bold">
                     合作揭露
                   </Link>

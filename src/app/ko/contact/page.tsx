@@ -46,12 +46,11 @@ export default function KoContactPage() {
               오류를 발견하셨거나 주제를 제안하고 싶거나 광고 및 콘텐츠 라이선스에 대해 논의하고 싶으신가요? 여기가 연락처입니다. 정정이 우선 처리됩니다: 확인 후 기사를 수정하고 최종 업데이트 날짜를 갱신합니다.
             </p>
             <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              Editorial and commercial matters are handled separately at spaceA. Recommendation lists and rankings are not for
-              sale, and we do not accept sponsored content. Details are in{' '}
+              spaceA가 판매하는 것은 광고로 표시된 광고 지면뿐입니다. 후원성 콘텐츠를 받지 않으며 추천 목록과 순위도 판매하지 않습니다. 자세한 내용은{' '}
               <Link href="/ko/standards" className="text-brand-600 font-bold">
                 편집 기준
               </Link>
-              .
+              을 참조하세요.
             </p>
           </section>
 
