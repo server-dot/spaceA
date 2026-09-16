@@ -164,8 +164,7 @@ const zh = {
     `從怎麼挑到怎麼比，我們把${name}相關的推薦文整理成一條龍的決策流程，看完就知道自己該選哪一個。`,
   readTopic: '閱讀專題',
   join: {
-    kicker: '專家・達人介紹',
-    title: '專家・達人精選推薦',
+    kicker: '專家・達人招募',
     body: '在找各領域的達人與寫手，把你實際用過、比較過的東西寫成清單，文章署名並附上你的介紹。',
     joinTitle: '把你的專業寫成一份推薦清單',
     cta: '加入寫手團隊',
@@ -335,8 +334,7 @@ const en: UIStrings = {
     `From how to choose to how to compare, our ${name} articles walk you through the whole decision so you know which one to pick.`,
   readTopic: 'Read the topic',
   join: {
-    kicker: 'Experts & creators',
-    title: 'Picks from experts and creators',
+    kicker: 'Experts & creators wanted',
     body: 'We are looking for experts and writers in every category. Turn what you have actually used and compared into a list, with your byline and bio on it.',
     joinTitle: 'Turn what you know into a recommendation list',
     cta: 'Join as a writer',
@@ -502,8 +500,7 @@ const ja: UIStrings = {
     `選び方から比べ方まで、${name}のおすすめ記事を一本の流れに整理しました。読み終える頃には、どれを選ぶべきか分かります。`,
   readTopic: '特集を読む',
   join: {
-    kicker: '専門家・達人紹介',
-    title: '専門家・達人のおすすめ',
+    kicker: '専門家・達人募集',
     body: '各分野の達人やライターを募集しています。実際に使って比べたものをリストにまとめてください。記事には署名と自己紹介を掲載します。',
     joinTitle: 'あなたの専門知識をおすすめリストに',
     cta: 'ライターとして参加する',
@@ -669,8 +666,7 @@ const ko: UIStrings = {
     `고르는 법부터 비교하는 법까지, ${name} 관련 추천 글을 하나의 흐름으로 정리했습니다. 다 읽고 나면 무엇을 골라야 할지 알 수 있습니다.`,
   readTopic: '특집 읽기',
   join: {
-    kicker: '전문가·달인 소개',
-    title: '전문가·달인의 추천',
+    kicker: '전문가·달인 모집',
     body: '각 분야의 전문가와 작가를 찾고 있습니다. 직접 써 보고 비교한 것을 리스트로 정리해 주세요. 기사에는 이름과 소개를 함께 싣습니다.',
     joinTitle: '당신의 전문 지식을 추천 리스트로',
     cta: '작가로 참여하기',

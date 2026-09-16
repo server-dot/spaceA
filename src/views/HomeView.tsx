@@ -1,11 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { GET_HOMEPAGE_BLOCKS } from '@/lib/graphql/queries/homepage'
 import { fetchQuery } from '@/lib/graphql/client'
-import { SITE_NAME, SITE_URL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_URL } from '@/lib/constants'
+import { SITE_NAME, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
-import ArticleImageFallback from '@/components/article/ArticleImageFallback'
 import HomeClient, { type HomeCategoryBlock } from './HomeClient'
 import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
 import { formatDate } from '@/lib/format'
@@ -189,52 +187,9 @@ export default async function HomeView({ lang }: { lang: Lang }) {
             </section>
           )}
 
-          {/* 專家・達人區（版型參考 mybest）：封面＋標題＋作者頭像／職稱／名字，下方一條加入團隊。
-              目前站上只有阿康一位署名編輯，卡片先拿最新文章、作者寫死；等有外部寫手再改吃 WP author 欄位 */}
-          {latestPosts.length > 0 && (
-            <section className="mt-16">
-              <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
-              <h2 className="font-serif text-[26px] font-bold leading-snug mt-2 text-paper-ink">{t.join.title}</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 mt-7">
-                {latestPosts.slice(0, 4).map((post) => {
-                  const cat = post.categories.nodes[0]
-                  const href = articleHref(lang, cat?.slug ?? '', post.slug)
-                  return (
-                    <Link key={post.slug} href={href} className="group block">
-                      <div className="relative aspect-[2/1] rounded-lg overflow-hidden bg-gray-100">
-                        {post.featuredImage?.node ? (
-                          <Image
-                            src={post.featuredImage.node.sourceUrl}
-                            alt={post.featuredImage.node.altText || post.title}
-                            fill
-                            sizes="(max-width: 1024px) 50vw, 25vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <ArticleImageFallback size={32} />
-                        )}
-                      </div>
-                      <h3 className="text-[15px] font-bold leading-snug text-paper-ink line-clamp-2 mt-3 group-hover:text-brand-600 transition-colors">
-                        {post.title}
-                      </h3>
-                      <div className="flex items-center gap-2.5 mt-3">
-                        <Image
-                          src={EDITOR_AVATAR_URL}
-                          alt={EDITOR_NAME}
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 rounded-full object-cover shrink-0"
-                        />
-                        <div className="min-w-0 leading-tight">
-                          <div className="text-[11px] text-paper-muted">{t.editorRole}</div>
-                          <div className="text-[13px] font-bold text-paper-ink truncate">{EDITOR_NAME}</div>
-                        </div>
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-              <div className="mt-10 rounded-[20px] bg-brand-50 border border-brand-100 px-8 sm:px-11 py-9 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-8 md:gap-12 items-center">
+          {/* 寫手招募橫幅。專家・達人文章卡先拿掉（站上只有一位署名編輯，等有外部寫手再放回來） */}
+          <section className="mt-16">
+              <div className="rounded-[20px] bg-brand-50 border border-brand-100 px-8 sm:px-11 py-9 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-8 md:gap-12 items-center">
                 <div>
                   <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
                   <h3 className="font-serif text-2xl font-bold leading-snug mt-2 text-paper-ink">{t.join.joinTitle}</h3>
@@ -258,8 +213,7 @@ export default async function HomeView({ lang }: { lang: Lang }) {
                   ))}
                 </ul>
               </div>
-            </section>
-          )}
+          </section>
 
           {blocks[0] && (
             <section className="mt-16 mb-16 rounded-[20px] overflow-hidden grid grid-cols-1 sm:grid-cols-2 bg-brand-600 text-white">
