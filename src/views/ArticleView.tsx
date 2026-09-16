@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { GET_ARTICLE, GET_ALL_POST_SLUGS, GET_POST_TRANSLATIONS } from '@/lib/graphql/queries/article'
 import { GET_CATEGORY } from '@/lib/graphql/queries/category'
-import { GET_ALL_CATEGORIES } from '@/lib/graphql/queries/navigation'
+import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { WPPost, WPPostCard } from '@/types/wordpress'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
@@ -188,11 +188,16 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
   const relatedData = await fetchQuery<CategoryPostsData>(GET_CATEGORY, { slug: category.slug, first: 4 })
   const related = (relatedData?.category?.posts?.nodes ?? []).filter((p) => p.slug !== wpSlug).slice(0, 3)
 
-  const navData = await fetchQuery<{ categories: { nodes: Array<{ name: string; slug: string }> } }>(
-    GET_ALL_CATEGORIES
+  // 側欄「換個主題看」只列有文章的分類（0 篇的不顯示）
+  const navData = await fetchQuery<{ categories: { nodes: Array<{ name: string; slug: string; count: number | null }> } }>(
+    GET_NAVIGATION
   )
   const otherCategories = (navData?.categories?.nodes ?? []).filter(
-    (c) => !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) && langOfCategorySlug(c.slug) === lang && c.slug !== category.slug
+    (c) =>
+      !EXCLUDED_CATEGORY_SLUGS.includes(c.slug) &&
+      langOfCategorySlug(c.slug) === lang &&
+      c.slug !== category.slug &&
+      (c.count ?? 0) > 0
   )
 
   // WordPress 自動截的 excerpt 會把開頭的目錄區塊當摘要，改優先吃 Yoast 描述（見 resolveSummary）

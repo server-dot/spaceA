@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { GET_HOMEPAGE_BLOCKS } from '@/lib/graphql/queries/homepage'
-import { GET_ALL_CATEGORIES } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, SITE_URL, EXCLUDED_CATEGORY_SLUGS, EDITOR_NAME, EDITOR_AVATAR_URL } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
@@ -64,23 +63,17 @@ interface LatestPostsData {
   posts: { nodes: WPPostCard[] }
 }
 
-interface AllCategoriesData {
-  categories: { nodes: Array<{ name: string; slug: string; count: number | null }> }
-}
-
 export default async function HomeView({ lang }: { lang: Lang }) {
   const t = ui(lang)
   const isLang = (slug: string) => !EXCLUDED_CATEGORY_SLUGS.includes(slug) && langOfCategorySlug(slug) === lang
   // 抓比較大的上限（涵蓋所有分類，中英文分類都在同一個 WP），避免 Uncategorized 佔掉名額後，排在後面的真實分類被截斷抓不到
-  const [data, latestData, allCatsData] = await Promise.all([
+  const [data, latestData] = await Promise.all([
     fetchQuery<HomepageBlocksData>(GET_HOMEPAGE_BLOCKS, {
       first: 40,
       postsPerCategory: 5,
     }),
     // 最新文章四種語言混在一起回來（翻譯批次發布後其他語言會擠掉中文），多抓一點再依語言過濾
     fetchQuery<LatestPostsData>(GET_LATEST_POSTS, { first: 60 }),
-    // 選主題 chip 要列出全部分類（含還沒發文的 0 篇），跟只含有文章分類的 blocks 分開查
-    fetchQuery<AllCategoriesData>(GET_ALL_CATEGORIES),
   ])
 
   const categories = data?.categories?.nodes ?? []
@@ -88,13 +81,10 @@ export default async function HomeView({ lang }: { lang: Lang }) {
     .filter((c) => isLang(c.slug) && c.posts.nodes.length > 0)
     .map((c) => ({ slug: c.slug, name: c.name, count: c.count, posts: c.posts.nodes }))
 
-  // GET_HOMEPAGE_BLOCKS 用 hideEmpty:true 查，count 才拿得到正確數字（WPGraphQL 的怪癖，
-  // hideEmpty:false 時 count 永遠回傳 null）；沒文章的分類這裡直接補 0
-  const countBySlug = new Map(categories.map((c) => [c.slug, c.count ?? 0]))
-  // 英文站只列已經有英文分類的（沒翻的分類連過去是 404），中文站照舊列全部
-  const topics = (allCatsData?.categories?.nodes ?? [])
-    .filter((c) => isLang(c.slug))
-    .map((c) => ({ slug: c.slug, name: c.name, count: countBySlug.get(c.slug) ?? 0 }))
+  // 選主題 chip 只列有文章的分類（0 篇的不顯示），直接用 blocks 那次查詢的結果
+  const topics = categories
+    .filter((c) => isLang(c.slug) && (c.count ?? 0) > 0)
+    .map((c) => ({ slug: c.slug, name: c.name, count: c.count ?? 0 }))
     .sort((a, b) => b.count - a.count)
 
   // 「熱門排行」目前還沒有真實閱讀數據，先用最新發布的文章頂替（見 src/app/popular）

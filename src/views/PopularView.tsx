@@ -4,7 +4,7 @@ import PopularRankingJsonLd from '@/components/seo/PopularRankingJsonLd'
 import PopularRankingClient from './PopularRankingClient'
 import { type RankedArticle } from './popular-data'
 import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
-import { GET_ALL_CATEGORIES, GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
+import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { formatDate, resolveSummary } from '@/lib/format'
@@ -46,12 +46,10 @@ export default async function PopularView({ lang }: { lang: Lang }) {
     { label: t.home, href: homeHref(lang) },
     { label: t.popularTitle, href: `${langPrefix(lang)}/popular` },
   ]
-  const [postsData, allCatsData, countedCatsData] = await Promise.all([
+  const [postsData, catsData] = await Promise.all([
     // 中英文文章混在一起回來，多抓一點再依語言過濾
     fetchQuery<LatestPostsData>(GET_LATEST_POSTS, { first: 60 }),
-    fetchQuery<NavigationData>(GET_ALL_CATEGORIES),
-    // WPGraphQL 的 count 欄位在 hideEmpty:false 時永遠回傳 null（WPGraphQL 本身的怪癖），
-    // 所以有文章數的分類要另外用 hideEmpty:true 查一次才拿得到真正的數字，兩邊用 slug 合併
+    // 「換個主題看」只列有文章的分類（0 篇的不顯示）
     fetchQuery<NavigationData>(GET_NAVIGATION),
   ])
 
@@ -77,12 +75,9 @@ export default async function PopularView({ lang }: { lang: Lang }) {
     }
   })
 
-  const countBySlug = new Map(
-    (countedCatsData?.categories?.nodes ?? []).map((cat) => [cat.slug, cat.count ?? 0])
-  )
-  const categories = (allCatsData?.categories?.nodes ?? [])
-    .filter((cat) => isLang(cat.slug))
-    .map((cat) => ({ ...cat, count: countBySlug.get(cat.slug) ?? 0 }))
+  const categories = (catsData?.categories?.nodes ?? [])
+    .filter((cat) => isLang(cat.slug) && (cat.count ?? 0) > 0)
+    .map((cat) => ({ ...cat, count: cat.count ?? 0 }))
     .sort((a, b) => b.count - a.count)
 
   const dateModified = articles[0]?.dateISO ?? new Date().toISOString()
