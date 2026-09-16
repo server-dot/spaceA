@@ -63,10 +63,6 @@ export default function EnStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
                   How do we gather data and write recommendations?
                 </h2>
-                <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  Every article goes through the three steps below before it is published. If we could not find something,
-                  we say so in the article instead of making up a number.
-                </p>
                 <ol className="grid gap-8 mt-8 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
                   {[
                     {
