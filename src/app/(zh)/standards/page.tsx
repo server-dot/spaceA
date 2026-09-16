@@ -51,7 +51,7 @@ export default function StandardsPage() {
                 推薦標準
               </h1>
               <p className="text-[17px] leading-loose text-paper-body mt-5 max-w-2xl text-balance">
-                spaceA 是繁體中文的推薦文內容平台。我們不假裝每樣東西都親手用過，做的是把網路上公開的討論彙整起來、交叉核對，再由編輯部寫成能照著做的建議，並標明每則資訊的來源與更新日期。
+                spaceA 是繁體中文的推薦文內容平台。我們把網路上公開的討論彙整起來、交叉核對，再由編輯部寫成能照著做的建議，並標明每則資訊的來源與更新日期。
               </p>
               <p className="text-xs text-paper-muted mt-3">
                 最後更新：<time dateTime={LAST_UPDATED}>2026年8月28日</time>

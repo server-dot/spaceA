@@ -51,7 +51,7 @@ export default function JaStandardsPage() {
                 基準
               </h1>
               <p className="text-[17px] leading-loose text-paper-body mt-5 max-w-2xl text-balance">
-                spaceAは台湾発のおすすめサイトです。私たちがすべてを自ら試したと主張することはありません。行っているのは、公開されているオンラインの議論を集め、照合し、編集者がそれを実行可能な助言にまとめることです。すべての主張について出典と更新日を明記します。
+                spaceAは台湾発のおすすめサイトです。公開されているオンラインの議論を集めて照合し、編集者が実行可能な助言にまとめ、すべての主張について出典と更新日を明記します。
               </p>
               <p className="text-xs text-paper-muted mt-3">
                 最終更新日： <time dateTime={LAST_UPDATED}>2026年8月28日</time>

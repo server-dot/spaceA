@@ -51,9 +51,8 @@ export default function EnStandardsPage() {
                 Our Standards
               </h1>
               <p className="text-[17px] leading-loose text-paper-body mt-5 max-w-2xl text-balance">
-                spaceA is a recommendation site from Taiwan. We do not pretend to have tried everything ourselves. What we do is
-                gather public online discussion, cross-check it, and have our editors turn it into advice you can act on, citing
-                the source and update date of every claim.
+                spaceA is a recommendation site from Taiwan. We gather public online discussion, cross-check it, and have our
+                editors turn it into advice you can act on, citing the source and update date of every claim.
               </p>
               <p className="text-xs text-paper-muted mt-3">
                 Last updated: <time dateTime={LAST_UPDATED}>August 28, 2026</time>

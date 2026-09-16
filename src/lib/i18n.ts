@@ -150,7 +150,7 @@ const zh = {
   howWePick: '我們怎麼挑',
   howWePickTitle: '彙整網路上最真實的聲量，再交給編輯核對',
   howWePickBody:
-    '我們不假裝每樣東西都親手用過。spaceA 的做法是把公開討論整理起來——論壇、社群、電商評論與專業評測——找出被反覆提到的優點與缺點，再回到官方與通路資料核對，最後標明每則資訊的來源。',
+    'spaceA 把論壇、社群、電商評論與專業評測裡的公開討論整理起來，找出被反覆提到的優點與缺點，再回到官方與通路資料核對，最後標明每則資訊的來源。',
   steps: [
     { n: '01', title: '蒐集聲量', body: '彙整論壇、社群與電商評論，記錄每個型號被提到的次數與正負評價比例。' },
     { n: '02', title: '交叉核對', body: '規格與價格一律回到官方與通路頁面確認，不採用單一來源的說法。' },
@@ -320,7 +320,7 @@ const en: UIStrings = {
   howWePick: 'How we pick',
   howWePickTitle: 'Gather the most honest voices online, then have editors verify them',
   howWePickBody:
-    "We don't pretend to have tried everything ourselves. spaceA collects public discussion from forums, social media, marketplace reviews and expert tests, finds the pros and cons people keep mentioning, checks them against official and retailer data, and cites the source of every claim.",
+    "spaceA collects public discussion from forums, social media, marketplace reviews and expert tests, finds the pros and cons people keep mentioning, checks them against official and retailer data, and cites the source of every claim.",
   steps: [
     { n: '01', title: 'Collect', body: 'Gather forum, social and marketplace reviews and log how often each model is mentioned and how it is rated.' },
     { n: '02', title: 'Cross-check', body: 'Specs and prices are always verified against official and retailer pages, never a single source.' },
@@ -486,7 +486,7 @@ const ja: UIStrings = {
   howWePick: '選び方のルール',
   howWePickTitle: 'ネット上のいちばん率直な声を集め、編集部が裏取りする',
   howWePickBody:
-    'すべてを自分で使ったふりはしません。spaceA は掲示板、SNS、EC のレビュー、専門家のテストなど公開された議論を集め、繰り返し挙がる長所と短所を洗い出し、公式や販売店の情報と突き合わせたうえで、情報ごとに出典を明記します。',
+    'spaceA は掲示板、SNS、EC のレビュー、専門家のテストなど公開された議論を集め、繰り返し挙がる長所と短所を洗い出し、公式や販売店の情報と突き合わせたうえで、情報ごとに出典を明記します。',
   steps: [
     { n: '01', title: '声を集める', body: '掲示板、SNS、EC のレビューをまとめ、どの型番が何回言及され、評価がどう分かれたかを記録します。' },
     { n: '02', title: '突き合わせる', body: 'スペックと価格は必ず公式ページと販売店で確認し、ひとつの情報源だけでは採用しません。' },
@@ -652,7 +652,7 @@ const ko: UIStrings = {
   howWePick: '고르는 방법',
   howWePickTitle: '온라인의 솔직한 목소리를 모아 편집부가 확인합니다',
   howWePickBody:
-    '모든 제품을 직접 써봤다고 말하지 않습니다. spaceA는 커뮤니티, SNS, 쇼핑몰 후기, 전문 리뷰 같은 공개된 논의를 모아 반복해서 언급되는 장단점을 찾고, 공식과 판매처 정보와 대조한 뒤 정보마다 출처를 밝힙니다.',
+    'spaceA는 커뮤니티, SNS, 쇼핑몰 후기, 전문 리뷰 같은 공개된 논의를 모아 반복해서 언급되는 장단점을 찾고, 공식과 판매처 정보와 대조한 뒤 정보마다 출처를 밝힙니다.',
   steps: [
     { n: '01', title: '후기 수집', body: '커뮤니티, SNS, 쇼핑몰 후기를 모아 각 모델이 몇 번 언급되고 평가가 어떻게 갈리는지 기록합니다.' },
     { n: '02', title: '교차 확인', body: '사양과 가격은 반드시 공식 페이지와 판매처에서 확인하며, 한 곳의 정보만으로는 싣지 않습니다.' },

@@ -51,7 +51,7 @@ export default function KoStandardsPage() {
                 편집 기준
               </h1>
               <p className="text-[17px] leading-loose text-paper-body mt-5 max-w-2xl text-balance">
-                spaceA는 대만 기반의 추천 사이트입니다. 우리가 모든 것을 직접 시험해봤다고 주장하지 않습니다. 대신 공개된 온라인 논의를 수집하고 교차 검증한 뒤, 편집팀이 근거와 업데이트 날짜를 명시해 실제로 활용할 수 있는 권장안으로 정리합니다.
+                spaceA는 대만 기반의 추천 사이트입니다. 공개된 온라인 논의를 수집하고 교차 검증한 뒤, 편집팀이 근거와 업데이트 날짜를 명시해 실제로 활용할 수 있는 권장안으로 정리합니다.
               </p>
               <p className="text-xs text-paper-muted mt-3">
                 최종 갱신: <time dateTime={LAST_UPDATED}>2026년 8월 28일</time>
