@@ -87,7 +87,7 @@ export const LANG_NAME: Record<Lang, string> = {
 /** 站上介面用字。內文本身來自 WordPress，這裡只管版面上的固定字串 */
 const zh = {
   home: '首頁',
-  siteTagline: '推薦文與選購指南，比完再決定',
+  siteTagline: '真實評價整理的推薦文與選購指南',
   siteDescription:
     'spaceA 彙整網路真實聲量的推薦文與選購指南，涵蓋旅遊住宿、美妝保養、行銷服務等主題，每篇都標明資料來源與更新日期，幫你比完再決定買什麼、找誰。',
   langMenu: '語言',
@@ -119,6 +119,7 @@ const zh = {
   postCountShort: (n: number) => `${n} 篇`,
   categoryMetaDesc: (name: string) =>
     `spaceA 的${name}推薦文與選購指南，每篇都標明資料來源與更新日期，幫你比完再決定。`,
+  categoryTitle: (name: string) => `${name}推薦文與選購指南`,
   categoryCollection: (name: string) => `${name}推薦文章`,
   categoryCollectionDesc: (name: string) => `spaceA ${name}分類的推薦文章列表`,
   categoryList: (name: string) => `${name}文章列表`,
@@ -276,6 +277,7 @@ const en: UIStrings = {
   postCountShort: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'}`,
   categoryMetaDesc: (name: string) =>
     `spaceA's ${name} recommendations and buying guides. Every article lists its sources and last update, so you can compare before you decide.`,
+  categoryTitle: (name: string) => `${name} Recommendations & Buying Guides`,
   categoryCollection: (name: string) => `${name} Recommendations`,
   categoryCollectionDesc: (name: string) => `Recommendation articles in spaceA's ${name} category`,
   categoryList: (name: string) => `${name} articles`,
@@ -429,6 +431,7 @@ const ja: UIStrings = {
   postCountShort: (n: number) => `${n} 件`,
   categoryMetaDesc: (name: string) =>
     `spaceA の${name}のおすすめ記事と選び方ガイド。すべての記事に出典と更新日を明記しているので、比べてから決められます。`,
+  categoryTitle: (name: string) => `${name}のおすすめ記事と選び方ガイド`,
   categoryCollection: (name: string) => `${name}のおすすめ記事`,
   categoryCollectionDesc: (name: string) => `spaceA の${name}カテゴリのおすすめ記事一覧`,
   categoryList: (name: string) => `${name}の記事一覧`,
@@ -582,6 +585,7 @@ const ko: UIStrings = {
   postCountShort: (n: number) => `${n}건`,
   categoryMetaDesc: (name: string) =>
     `spaceA의 ${name} 추천 글과 구매 가이드. 모든 글에 출처와 업데이트 날짜를 밝혀 비교하고 결정할 수 있습니다.`,
+  categoryTitle: (name: string) => `${name} 추천 글과 구매 가이드`,
   categoryCollection: (name: string) => `${name} 추천 글`,
   categoryCollectionDesc: (name: string) => `spaceA ${name} 카테고리의 추천 글 목록`,
   categoryList: (name: string) => `${name} 글 목록`,

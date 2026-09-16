@@ -110,6 +110,11 @@ html.js .hero-line path {
     margin-bottom: 1.4rem;
   }
 
+  /* 比較表表頭：文章 HTML 的 <tr style="color:#fff"> 會被 typography 的 thead th 深灰字蓋掉，改回繼承 */
+  .prose thead tr[style*="color"] th {
+    color: inherit;
+  }
+
   .prose h2::before {
     content: '✓';
     margin-right: 0.6rem;

@@ -14,7 +14,6 @@ import CategoryPageClient from './CategoryPageClient'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 import { WPSeo } from '@/types/seo'
 import { decodeRouteParam } from '@/lib/route-params'
-import { stripWpSiteSuffix } from '@/lib/format'
 import {
   LANGS,
   LANG_TAG,
@@ -97,7 +96,8 @@ export async function generateCategoryMetadata(lang: Lang, { params }: CategoryR
   const description = cat.seo?.metaDesc || cat.description || t.categoryMetaDesc(cat.name)
 
   return {
-    title: stripWpSiteSuffix(cat.seo?.title) || cat.name,
+    // 不吃 Yoast 的分類標題：沒手填時它給的是「〈美妝保養〉彙整頁面」這種 WP 預設樣板
+    title: t.categoryTitle(cat.name),
     description,
     alternates: {
       canonical: path,
@@ -114,7 +114,7 @@ export async function generateCategoryMetadata(lang: Lang, { params }: CategoryR
       siteName: SITE_NAME,
       locale: OG_LOCALE[lang],
       url: path,
-      title: stripWpSiteSuffix(cat.seo?.opengraphTitle) || cat.name,
+      title: t.categoryTitle(cat.name),
       description: cat.seo?.opengraphDescription || description,
       images: cat.seo?.opengraphImage?.sourceUrl
         ? [{ url: cat.seo.opengraphImage.sourceUrl }]
