@@ -121,7 +121,7 @@ export default function TermsPage() {
                   第三方連結與廣告怎麼處理？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  本站含有前往電商通路、品牌官網與其他網站的連結，部分為聯盟連結。這些網站的內容、交易條件與隱私政策由各網站自行負責，spaceA
+                  本站含有前往電商通路、品牌官網與其他網站的連結，皆直接前往該網站，不是聯盟連結。這些網站的內容、交易條件與隱私政策由各網站自行負責，spaceA
                   無法控制也不承擔其責任。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">

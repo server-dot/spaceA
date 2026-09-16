@@ -8,7 +8,7 @@ import { SITE_NAME, EDITORIAL_EMAIL } from '@/lib/constants'
 
 // 英文版隱私權政策。內容照 app/(zh)/privacy/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
-  'What data spaceA collects, how cookies and analytics are used, how affiliate links are tracked, and the rights you can exercise.'
+  'What data spaceA collects, how cookies and analytics are used, how article links and ads are tracked, and the rights you can exercise.'
 const LAST_UPDATED = '2026-08-28'
 
 const BREADCRUMBS = [
@@ -20,7 +20,7 @@ const TOC_ITEMS = [
   { label: 'What we collect', href: '#collect' },
   { label: 'How it is used', href: '#use' },
   { label: 'Cookies and analytics', href: '#cookie' },
-  { label: 'Affiliate link tracking', href: '#affiliate' },
+  { label: 'Link and ad tracking', href: '#affiliate' },
   { label: 'Your rights', href: '#rights' },
 ]
 
@@ -83,7 +83,7 @@ export default function EnPrivacyPage() {
                   {[
                     'Replying to your messages, including corrections, topic suggestions and partnership enquiries.',
                     'Improving site content and experience, such as deciding which topics need more coverage and which pages readers abandon.',
-                    'Measuring affiliate link clicks and results, to understand whether our recommendations are useful to readers.',
+                    'Measuring clicks on article links, to understand whether our recommendations are useful to readers.',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
@@ -101,8 +101,8 @@ export default function EnPrivacyPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">How do cookies and analytics work?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   This site uses third-party tools such as Google Analytics for traffic analysis. They record anonymous browsing
-                  information through cookies. Advertising and affiliate platforms may also set cookies when you click a link, to
-                  record where the conversion came from.
+                  information through cookies. Advertising platforms may also set cookies when you click an ad, to record where
+                  the visit came from.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   You can disable or delete cookies in your browser settings. The site remains fully readable with cookies
@@ -111,11 +111,11 @@ export default function EnPrivacyPage() {
               </section>
 
               <section id="affiliate" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">What do affiliate links track?</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">What do article links and ads track?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  Purchase links in articles may be affiliate links. When you click one, the retailer or affiliate platform records
-                  that the visit came from spaceA, for commission purposes. The price is the same as visiting the retailer
-                  directly, and we never receive your order details or payment information.
+                  Links in articles go straight to brand or retailer pages and do not pass through any affiliate platform. spaceA
+                  never receives your order details or payment information and earns nothing from them. Ad space is served by
+                  advertising platforms, which may set a cookie when you click an ad.
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
                   The full disclosure is in our{' '}

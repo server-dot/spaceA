@@ -126,7 +126,7 @@ export default function EnTermsPage() {
                   How are third-party links and ads handled?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  This site links to marketplaces, brand websites and other sites, some through affiliate links. Their content,
+                  This site links to marketplaces, brand websites and other sites. These are direct links, not affiliate links. Their content,
                   terms and privacy policies are the responsibility of those sites; spaceA has no control over them and accepts
                   no liability for them.
                 </p>

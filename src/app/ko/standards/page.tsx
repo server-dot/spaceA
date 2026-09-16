@@ -8,7 +8,7 @@ import { SITE_NAME } from '@/lib/constants'
 
 // 韓文版推薦標準。內容照 app/(zh)/standards/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
-  'spaceA가 공개 논의와 리뷰를 수집하는 방식, 교차 검증 방법, 제휴 공개 방식 및 오류 정정 요청 방법에 대한 설명입니다.'
+  'spaceA가 공개 논의와 리뷰를 수집하는 방식, 교차 검증 방법, 광고·협업 공개 방식 및 오류 정정 요청 방법에 대한 설명입니다.'
 const LAST_UPDATED = '2026-08-28'
 
 const BREADCRUMBS = [
@@ -19,7 +19,7 @@ const BREADCRUMBS = [
 const TOC_ITEMS = [
   { label: '데이터 수집 방법', href: '#how' },
   { label: '하지 않는 일', href: '#limits' },
-  { label: '제휴 및 제휴 링크', href: '#disclosure' },
+  { label: '광고 및 협업 고지', href: '#disclosure' },
   { label: '정정 안내', href: '#corrections' },
 ]
 
@@ -115,14 +115,14 @@ export default function KoStandardsPage() {
 
               <section id="disclosure" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
-                  제휴 관계와 제휴 링크는 어떻게 공개하나요?
+                  광고와 협업 관계는 어떻게 공개하나요?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA의 수익은 제휴 링크와 광고 지면에서 나옵니다. 판매하는 것은 광고로 표시된 지면이며, 기사 자체는 판매하지 않습니다:
+                  spaceA의 수익은 광고 지면에서 나옵니다. 판매하는 것은 광고로 표시된 지면이며, 기사 자체는 판매하지 않습니다:
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
-                    '기사 내 구매 링크는 제휴 링크일 수 있습니다. 이를 통해 구매하면 수수료를 받지만, 가격은 소매업체에 직접 접속했을 때와 동일합니다.',
+                    '기사 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결됩니다. 제휴 링크가 아니며, 클릭이나 구매로 spaceA가 수익을 얻지 않습니다.',
                     '광고 지면은 게재 신청을 받습니다. 광고는 광고로 표시하고 기사와 분리해 게재하며, 리뷰로 위장된 광고는 없습니다. 광고를 집행해도 추천 목록에 들어가거나 순위가 올라가지 않습니다.',
                     '스폰서 콘텐츠와 순위 판매를 하지 않습니다. 추천 목록, 순위, 결론은 판매 대상이 아니며, 브랜드는 초안을 검토하거나 수정할 수 없습니다. 브랜드로부터 제품을 대여받아 테스트한 경우에는 기사 상단에 그 사실을 명시합니다.',
                   ].map((text) => (

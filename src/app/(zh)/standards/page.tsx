@@ -18,7 +18,7 @@ const BREADCRUMBS = [
 const TOC_ITEMS = [
   { label: '我們怎麼取得資料', href: '#how' },
   { label: '哪些事我們不做', href: '#limits' },
-  { label: '合作與聯盟連結揭露', href: '#disclosure' },
+  { label: '廣告與合作揭露', href: '#disclosure' },
   { label: '內容更正流程', href: '#corrections' },
 ]
 
@@ -105,14 +105,14 @@ export default function StandardsPage() {
 
               <section id="disclosure" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
-                  合作與聯盟連結怎麼揭露？
+                  廣告與合作怎麼揭露？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA 的收入來自聯盟連結與廣告版面。我們賣的是標示為「廣告」的版位，不賣文章內容：
+                  spaceA 的收入來自廣告版面。我們賣的是標示為「廣告」的版位，不賣文章內容：
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
-                    '文章中的購買連結可能是聯盟連結，你透過它購買我們會取得分潤，價格與你直接前往通路相同。',
+                    '文章裡的連結都直接前往品牌官網或通路頁面，不是聯盟連結，你點擊或購買 spaceA 不會分潤。',
                     '廣告版面對外開放刊登，會標示「廣告」並與文章分開呈現，不會有看起來像評測的廣告。買廣告的廠商不會因此進入推薦名單或往前排。',
                     '不接業配、不賣排名。推薦名單、排序與結論不對外開放付費，廠商也不能審閱或修改稿件。若曾借測廠商提供的產品，會在文章開頭標示。',
                   ].map((text) => (

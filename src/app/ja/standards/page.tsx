@@ -19,7 +19,7 @@ const BREADCRUMBS = [
 const TOC_ITEMS = [
   { label: 'データ収集の方法', href: '#how' },
   { label: '行わないこと（要約）', href: '#limits' },
-  { label: '提携およびアフィリエイトリンク', href: '#disclosure' },
+  { label: '広告と提携の開示', href: '#disclosure' },
   { label: '訂正', href: '#corrections' },
 ]
 
@@ -115,14 +115,14 @@ export default function JaStandardsPage() {
 
               <section id="disclosure" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
-                  提携関係やアフィリエイトリンクはどのように開示していますか？
+                  広告や提携関係はどのように開示していますか？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceAの収益はアフィリエイトリンクと広告枠からです。販売しているのは「広告」と明示した枠であり、記事そのものは販売しません：
+                  spaceAの収益は広告枠からです。販売しているのは「広告」と明示した枠であり、記事そのものは販売しません：
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
-                    '記事内の購入リンクはアフィリエイトリンクである場合があります。そこから購入された場合、当社に手数料が入りますが、購入者の支払う価格は販売業者に直接行く場合と同じです。',
+                    '記事内のリンクはブランド公式サイトや販売ページに直接つながります。アフィリエイトリンクではなく、クリックや購入によってspaceAが報酬を得ることはありません。',
                     '広告枠は掲載を受け付けています。広告は「広告」と表示し、記事とは分けて掲載します。レビューを装った広告はありません。広告を出稿しても、おすすめリストに入ったり順位が上がったりすることはありません。',
                     'スポンサーコンテンツや順位の販売は行いません。おすすめリスト、ランキング、結論は販売せず、ブランドがドラフトをレビューまたは編集することはできません。ブランドから製品を貸与してテストした場合は、記事の冒頭にその旨を明記します。',
                   ].map((text) => (

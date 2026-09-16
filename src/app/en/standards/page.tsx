@@ -19,7 +19,7 @@ const BREADCRUMBS = [
 const TOC_ITEMS = [
   { label: 'How we gather data', href: '#how' },
   { label: 'What we do not do', href: '#limits' },
-  { label: 'Partnerships and affiliate links', href: '#disclosure' },
+  { label: 'Ads and partnerships', href: '#disclosure' },
   { label: 'Corrections', href: '#corrections' },
 ]
 
@@ -121,15 +121,15 @@ export default function EnStandardsPage() {
 
               <section id="disclosure" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
-                  How are partnerships and affiliate links disclosed?
+                  How are ads and partnerships disclosed?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA earns revenue from affiliate links and ad space. What we sell is ad placements labelled as such, never
+                  spaceA earns revenue from ad space. What we sell is ad placements labelled as such, never
                   the articles themselves:
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
-                    'Purchase links in articles may be affiliate links. If you buy through one we earn a commission; the price is the same as going to the retailer directly.',
+                    'Links in articles go straight to brand or retailer pages. They are not affiliate links, and spaceA earns nothing when you click or buy.',
                     'Ad space is open for booking. Ads are labelled as ads and kept separate from articles; there are no ads dressed up as reviews. Buying an ad does not get a brand into a recommendation list or move it up.',
                     'No sponsored content, no paid rankings. Recommendation lists, rankings and conclusions are not for sale, and brands cannot review or edit drafts. If a product was loaned by a brand for testing, the article says so at the top.',
                   ].map((text) => (

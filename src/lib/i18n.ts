@@ -97,13 +97,13 @@ const zh = {
   updated: '更新',
   readingTime: (min: number) => `閱讀約 ${min} 分鐘`,
   disclosure:
-    '本文彙整網路公開討論、電商與訂房平台評論及品牌官方資訊，並由編輯部核對後撰寫。部分連結為聯盟連結，不影響推薦內容。價格與供貨請以通路頁面為準。',
+    '本文彙整網路公開討論、電商與訂房平台評論及品牌官方資訊，並由編輯部核對後撰寫。文中連結皆為品牌官網或通路頁面，本站不從點擊或購買中分潤。價格與供貨請以通路頁面為準。',
   conclusionFirst: '先看結論',
   editorIntro: '編者介紹',
   toc: '本篇目錄',
   faq: '常見問題',
   provenance: '這篇怎麼寫出來的',
-  knowledgeDisclosure: '本篇為知識分享，不含合作或聯盟連結。若未來加入，會在文章開頭揭露。',
+  knowledgeDisclosure: '本篇為知識分享，不含廣告或合作內容。若未來加入，會在文章開頭揭露。',
   editorialPolicy: '編輯方針',
   readMore: '延伸閱讀',
   editorFooter: '我們彙整網路上公開的討論與評論，交叉核對後撰寫推薦，並標註每則資訊的來源與更新日期。發現內容有誤，歡迎',
@@ -208,7 +208,7 @@ const zh = {
     {
       title: '條款與政策',
       links: [
-        { label: '合作與聯盟連結揭露', href: '/standards#disclosure' },
+        { label: '廣告與合作揭露', href: '/standards#disclosure' },
         { label: '內容更正政策', href: '/standards#corrections' },
         { label: '評測守則', href: '/standards#limits' },
         { label: '隱私權政策', href: '/privacy' },
@@ -252,14 +252,14 @@ const en: UIStrings = {
   updated: 'Updated',
   readingTime: (min: number) => `${min} min read`,
   disclosure:
-    'This article compiles public online discussion, marketplace and booking-site reviews, and official brand information, verified by our editors. Some links are affiliate links; they do not affect our picks. Prices and availability are subject to the retailer.',
+    'This article compiles public online discussion, marketplace and booking-site reviews, and official brand information, verified by our editors. Links go straight to brand or retailer pages; spaceA earns nothing from clicks or purchases. Prices and availability are subject to the retailer.',
   conclusionFirst: 'Key Takeaways',
   editorIntro: 'About the Editor',
   toc: 'In This Article',
   faq: 'FAQ',
   provenance: 'How This Article Was Written',
   knowledgeDisclosure:
-    'This is an educational article with no sponsored or affiliate links. If that changes, we will disclose it at the top.',
+    'This is an educational article with no ads or sponsored content. If that changes, we will disclose it at the top.',
   editorialPolicy: 'Editorial policy',
   readMore: 'Further Reading',
   editorFooter:
@@ -406,14 +406,14 @@ const ja: UIStrings = {
   updated: '更新',
   readingTime: (min: number) => `約 ${min} 分で読めます`,
   disclosure:
-    'この記事はネット上の公開された議論、EC・予約サイトのレビュー、ブランド公式情報をまとめ、編集部が確認したうえで執筆しています。一部アフィリエイトリンクを含みますが、掲載内容には影響しません。価格と在庫は各販売ページをご確認ください。',
+    'この記事はネット上の公開された議論、EC・予約サイトのレビュー、ブランド公式情報をまとめ、編集部が確認したうえで執筆しています。記事内のリンクはブランド公式サイトや販売ページに直接つながるもので、クリックや購入による報酬は受け取っていません。価格と在庫は各販売ページをご確認ください。',
   conclusionFirst: '結論から',
   editorIntro: '編集者について',
   toc: '目次',
   faq: 'よくある質問',
   provenance: 'この記事の作り方',
   knowledgeDisclosure:
-    'この記事はナレッジ記事で、広告やアフィリエイトリンクを含みません。今後追加する場合は記事の冒頭で明記します。',
+    'この記事はナレッジ記事で、広告や提携コンテンツを含みません。今後追加する場合は記事の冒頭で明記します。',
   editorialPolicy: '編集方針',
   readMore: '関連記事',
   editorFooter:
@@ -519,7 +519,7 @@ const ja: UIStrings = {
     {
       title: '規約とポリシー',
       links: [
-        { label: '提携・アフィリエイトの開示', href: '/ja/standards#disclosure' },
+        { label: '広告・提携の開示', href: '/ja/standards#disclosure' },
         { label: '訂正ポリシー', href: '/ja/standards#corrections' },
         { label: 'レビューの原則', href: '/ja/standards#limits' },
         { label: 'プライバシーポリシー', href: '/ja/privacy' },
@@ -560,14 +560,14 @@ const ko: UIStrings = {
   updated: '수정',
   readingTime: (min: number) => `약 ${min}분 분량`,
   disclosure:
-    '이 글은 온라인에 공개된 게시물, 쇼핑몰과 예약 사이트 후기, 브랜드 공식 정보를 정리하고 편집부가 확인한 뒤 작성했습니다. 일부 링크는 제휴 링크이며 추천 내용에는 영향을 주지 않습니다. 가격과 재고는 판매 페이지를 기준으로 확인해 주세요.',
+    '이 글은 온라인에 공개된 게시물, 쇼핑몰과 예약 사이트 후기, 브랜드 공식 정보를 정리하고 편집부가 확인한 뒤 작성했습니다. 글 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결되며, 클릭이나 구매로 수익을 얻지 않습니다. 가격과 재고는 판매 페이지를 기준으로 확인해 주세요.',
   conclusionFirst: '핵심 결론',
   editorIntro: '편집자 소개',
   toc: '목차',
   faq: '자주 묻는 질문',
   provenance: '이 글을 쓴 방법',
   knowledgeDisclosure:
-    '이 글은 정보성 콘텐츠로 광고나 제휴 링크를 포함하지 않습니다. 앞으로 포함하게 되면 글 첫머리에 밝히겠습니다.',
+    '이 글은 정보성 콘텐츠로 광고나 협업 콘텐츠를 포함하지 않습니다. 앞으로 포함하게 되면 글 첫머리에 밝히겠습니다.',
   editorialPolicy: '편집 방침',
   readMore: '함께 읽기',
   editorFooter:
@@ -673,7 +673,7 @@ const ko: UIStrings = {
     {
       title: '약관과 정책',
       links: [
-        { label: '제휴·어필리에이트 고지', href: '/ko/standards#disclosure' },
+        { label: '광고·협업 고지', href: '/ko/standards#disclosure' },
         { label: '정정 정책', href: '/ko/standards#corrections' },
         { label: '리뷰 원칙', href: '/ko/standards#limits' },
         { label: '개인정보처리방침', href: '/ko/privacy' },

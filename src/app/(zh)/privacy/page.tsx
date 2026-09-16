@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { SITE_NAME } from '@/lib/constants'
 
 const DESCRIPTION =
-  'spaceA 蒐集哪些資料、如何使用 Cookie 與分析工具、聯盟連結的追蹤方式，以及您可以行使的權利。'
+  'spaceA 蒐集哪些資料、如何使用 Cookie 與分析工具、文章連結與廣告的追蹤方式，以及您可以行使的權利。'
 const LAST_UPDATED = '2026-08-28'
 
 const BREADCRUMBS = [
@@ -19,7 +19,7 @@ const TOC_ITEMS = [
   { label: '蒐集哪些資料', href: '#collect' },
   { label: '資料用途', href: '#use' },
   { label: 'Cookie 與分析工具', href: '#cookie' },
-  { label: '聯盟連結追蹤', href: '#affiliate' },
+  { label: '文章連結與廣告追蹤', href: '#affiliate' },
   { label: '您的權利', href: '#rights' },
 ]
 
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
                   {[
                     '回覆您的來信，包括內容更正、選題建議與合作洽詢。',
                     '改善網站內容與體驗，例如判斷哪些主題該補充、哪些頁面讀者看不完。',
-                    '統計聯盟連結的點擊與成效，用於了解推薦內容是否對讀者有用。',
+                    '統計文章連結的點擊，用於了解推薦內容是否對讀者有用。',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   本站使用 Google Analytics 等第三方工具進行流量分析，這些工具會透過 Cookie
-                  記錄匿名的瀏覽資訊。廣告與聯盟平台也可能在您點擊連結時，透過 Cookie 記錄轉換來源。
+                  記錄匿名的瀏覽資訊。廣告平台也可能在您點擊廣告時，透過 Cookie 記錄來源。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   您可以在瀏覽器設定中停用或刪除 Cookie。停用後仍可正常閱讀本站內容，但部分功能的紀錄會失效。
@@ -111,10 +111,10 @@ export default function PrivacyPage() {
 
               <section id="affiliate" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">
-                  聯盟連結會追蹤什麼？
+                  文章連結與廣告會追蹤什麼？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  文章中的購買連結可能是聯盟連結。您點擊後，通路或聯盟平台會記錄這筆造訪來自 spaceA，用於計算分潤。價格與您直接前往通路相同，我們不會取得您的訂單明細或付款資訊。
+                  文章中的連結直接前往品牌官網或通路頁面，不經過聯盟平台，spaceA 不會取得您的訂單明細或付款資訊，也不從中分潤。廣告版面由廣告平台提供，您點擊廣告時廣告平台可能透過 Cookie 記錄來源。
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
                   完整的合作揭露寫在

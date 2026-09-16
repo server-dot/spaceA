@@ -8,7 +8,7 @@ import { SITE_NAME, EDITORIAL_EMAIL } from '@/lib/constants'
 
 // 韓文版隱私權政策。內容照 app/(zh)/privacy/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
-  'spaceA가 수집하는 데이터, 쿠키 및 분석 도구의 사용 방식, 제휴 링크 추적 방식, 그리고 귀하가 행사할 수 있는 권리.'
+  'spaceA가 수집하는 데이터, 쿠키 및 분석 도구의 사용 방식, 기사 링크와 광고 추적 방식, 그리고 귀하가 행사할 수 있는 권리.'
 const LAST_UPDATED = '2026-08-28'
 
 const BREADCRUMBS = [
@@ -20,7 +20,7 @@ const TOC_ITEMS = [
   { label: '수집 항목', href: '#collect' },
   { label: '사용 목적', href: '#use' },
   { label: '쿠키 및 분석', href: '#cookie' },
-  { label: '제휴 링크 추적', href: '#affiliate' },
+  { label: '링크 및 광고 추적', href: '#affiliate' },
   { label: '귀하의 권리', href: '#rights' },
 ]
 
@@ -79,7 +79,7 @@ export default function KoPrivacyPage() {
                   {[
                     '정정 요청, 주제 제안, 제휴 문의 등 귀하의 메시지에 회신하기 위함.',
                     '어떤 주제를 더 다루어야 하는지, 어떤 페이지에서 이탈이 발생하는지 등 사이트 콘텐츠와 이용 경험을 개선하기 위함.',
-                    '추천이 독자에게 유용한지 파악하기 위해 제휴 링크 클릭 및 결과를 측정하기 위함.',
+                    '추천이 독자에게 유용한지 파악하기 위해 기사 링크 클릭을 측정하기 위함.',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
@@ -95,7 +95,7 @@ export default function KoPrivacyPage() {
               <section id="cookie" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">쿠키와 분석 도구는 어떻게 작동하나요?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  이 사이트는 트래픽 분석을 위해 Google Analytics 등 제3자 도구를 사용합니다. 이들은 쿠키를 통해 익명화된 방문 정보를 기록합니다. 광고 및 제휴 플랫폼은 사용자가 링크를 클릭할 때 전환 출처를 기록하기 위해 쿠키를 설정할 수 있습니다.
+                  이 사이트는 트래픽 분석을 위해 Google Analytics 등 제3자 도구를 사용합니다. 이들은 쿠키를 통해 익명화된 방문 정보를 기록합니다. 광고 플랫폼은 사용자가 광고를 클릭할 때 방문 출처를 기록하기 위해 쿠키를 설정할 수 있습니다.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   브라우저 설정에서 쿠키를 비활성화하거나 삭제할 수 있습니다. 쿠키를 비활성화해도 사이트는 정상적으로 읽을 수 있으나 일부 추적 기능은 작동하지 않을 수 있습니다.
@@ -103,16 +103,16 @@ export default function KoPrivacyPage() {
               </section>
 
               <section id="affiliate" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">제휴 링크는 무엇을 추적하나요?</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">기사 링크와 광고는 무엇을 추적하나요?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  게시글 내 구매 링크는 제휴 링크일 수 있습니다. 클릭 시 리테일러나 제휴 플랫폼은 수수료 계산을 위해 방문 경로가 spaceA에서 왔음을 기록합니다. 가격은 리테일러에 직접 방문했을 때와 동일하며, 저희는 주문 내역이나 결제 정보를 받지 않습니다.
+                  기사 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결되며 제휴 플랫폼을 거치지 않습니다. spaceA는 주문 내역이나 결제 정보를 받지 않으며 수익도 얻지 않습니다. 광고 지면은 광고 플랫폼이 제공하며, 광고를 클릭할 때 쿠키가 설정될 수 있습니다.
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
-                  The full disclosure is in our{' '}
+                  자세한 고지는
                   <Link href="/ko/standards#disclosure" className="text-brand-600 font-bold">
                     편집 기준
                   </Link>
-                  .
+                  을 참조하세요.
                 </p>
               </section>
 

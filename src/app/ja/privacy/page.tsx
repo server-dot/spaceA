@@ -8,7 +8,7 @@ import { SITE_NAME, EDITORIAL_EMAIL } from '@/lib/constants'
 
 // 日文版隱私權政策。內容照 app/(zh)/privacy/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
-  'spaceAが収集するデータ、クッキーや解析の利用方法、アフィリエイトリンクの追跡方法、ならびに行使可能な権利について。'
+  'spaceAが収集するデータ、クッキーや解析の利用方法、記事内リンクと広告の追跡方法、ならびに行使可能な権利について。'
 const LAST_UPDATED = '2026-08-28'
 
 const BREADCRUMBS = [
@@ -20,7 +20,7 @@ const TOC_ITEMS = [
   { label: '収集するデータ', href: '#collect' },
   { label: '利用目的', href: '#use' },
   { label: 'クッキーと解析', href: '#cookie' },
-  { label: 'アフィリエイトリンクの追跡', href: '#affiliate' },
+  { label: 'リンクと広告の追跡', href: '#affiliate' },
   { label: '皆様の権利', href: '#rights' },
 ]
 
@@ -79,7 +79,7 @@ export default function JaPrivacyPage() {
                   {[
                     '訂正、トピックの提案、提携に関するお問い合わせを含む、皆様からのメッセージへの返信。',
                     'どのトピックにより注力すべきかや、どのページで離脱が起きているかなどを把握し、サイトのコンテンツや体験を改善すること。',
-                    'アフィリエイトリンクのクリック数や成果を計測し、当社のおすすめが読者にとって有益かどうかを評価すること。',
+                    '記事内リンクのクリック数を計測し、当社のおすすめが読者にとって有益かどうかを評価すること。',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
@@ -95,7 +95,7 @@ export default function JaPrivacyPage() {
               <section id="cookie" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">クッキーと解析はどのように機能しますか？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  当サイトでは、Google Analytics等のサードパーティー製ツールをトラフィック解析のために使用しています。これらはクッキーを通じて匿名の閲覧情報を記録します。また、広告やアフィリエイトのプラットフォームは、リンクをクリックした際にクッキーを設定し、コンバージョンの発生元を記録することがあります。
+                  当サイトでは、Google Analytics等のサードパーティー製ツールをトラフィック解析のために使用しています。これらはクッキーを通じて匿名の閲覧情報を記録します。また、広告プラットフォームは、広告をクリックした際にクッキーを設定し、訪問元を記録することがあります。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
                   ブラウザの設定でクッキーを無効化または削除することができます。クッキーを無効にしても当サイトは問題なく閲覧できますが、一部のトラッキング機能は動作しなくなります。
@@ -103,16 +103,16 @@ export default function JaPrivacyPage() {
               </section>
 
               <section id="affiliate" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">アフィリエイトリンクは何を追跡しますか？</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">記事内リンクと広告は何を追跡しますか？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 text-balance">
-                  記事内の購入リンクはアフィリエイトリンクである場合があります。クリックすると、小売業者やアフィリエイトプラットフォームはその訪問がspaceA経由であったことを記録し、コミッションの計算に使用します。価格は小売業者を直接訪問した場合と同じであり、当社が注文情報や支払い情報を受け取ることはありません。
+                  記事内のリンクはブランド公式サイトや販売ページに直接つながり、アフィリエイトプラットフォームを経由しません。spaceAが注文情報や支払い情報を受け取ることはなく、報酬も得ていません。広告枠は広告プラットフォームが配信しており、広告をクリックした際にクッキーが設定される場合があります。
                 </p>
                 <p className="text-sm leading-relaxed text-paper-secondary mt-3">
-                  The full disclosure is in our{' '}
+                  詳細な開示は
                   <Link href="/ja/standards#disclosure" className="text-brand-600 font-bold">
                     編集基準
                   </Link>
-                  .
+                  をご覧ください。
                 </p>
               </section>
 
