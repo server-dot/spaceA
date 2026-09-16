@@ -62,7 +62,7 @@ export default function KoStandardsPage() {
                   데이터를 어떻게 수집하고 추천 기사를 작성하나요?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  과정은 세 가지 고정 단계로 이루어집니다. 모든 기사는 출간 전에 이 세 단계를 모두 완료합니다. 데이터가 없을 경우에는 기사를 작성하지 않으며, 추측으로 빈틈을 메우지 않습니다.
+                  모든 기사는 발행 전에 아래 세 단계를 거칩니다. 찾지 못한 정보는 찾지 못했다고 쓰고, 숫자를 추측으로 채워 넣지 않습니다.
                 </p>
                 <ol className="grid gap-8 mt-8 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
                   {[

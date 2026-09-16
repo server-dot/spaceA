@@ -64,8 +64,8 @@ export default function EnStandardsPage() {
                   How do we gather data and write recommendations?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  The process has three fixed steps. Every article completes all three before publishing. When the data is not
-                  there, we do not write it, and we never fill gaps with guesses.
+                  Every article goes through the three steps below before it is published. If we could not find something,
+                  we say so in the article instead of making up a number.
                 </p>
                 <ol className="grid gap-8 mt-8 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
                   {[

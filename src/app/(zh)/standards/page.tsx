@@ -62,7 +62,7 @@ export default function StandardsPage() {
                   我們怎麼取得資料、怎麼寫推薦？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  流程固定三步。每篇文章都跑完這三步才會發布，遇到資料不足就不寫，不用推測補齊。
+                  每篇文章發布前都會走完下面三個步驟。查不到的資料就直接寫查不到，不會自己補一個數字上去。
                 </p>
                 <ol className="grid gap-8 mt-8 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
                   {[

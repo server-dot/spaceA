@@ -62,7 +62,7 @@ export default function JaStandardsPage() {
                   データはどのように収集し、推奨はどのように作成していますか？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  このプロセスは三つの定められたステップで構成されており、すべての記事は公開前にこれら三つをすべて完了します。データが存在しない場合は記述せず、推測で埋めることは決して行いません。
+                  どの記事も公開前に次の三つのステップを通します。調べても分からなかったことは「分からなかった」と書き、数字を推測で補うことはしません。
                 </p>
                 <ol className="grid gap-8 mt-8 pl-[34px] border-l-2 border-brand-200 list-none max-w-2xl">
                   {[
