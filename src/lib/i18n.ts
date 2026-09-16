@@ -8,6 +8,8 @@
  * 中文列表只取沒有後綴的分類，其他語言只取自己後綴的分類，靠這條規則就能算出彼此的對照頁。
  * 建各語言版本用 `scripts/translate_post.py --lang ja`。
  */
+import { JOIN_FORM_URL } from './constants'
+
 export type Lang = 'zh' | 'en' | 'ja' | 'ko'
 
 /** 中文是主站（沒有後綴、沒有網址前綴），其餘語言照這個順序排在語言選單裡 */
@@ -214,7 +216,7 @@ const zh = {
         { label: '合作洽談', href: '/contact#form' },
         { label: '廣告刊登', href: '/contact#form' },
         { label: '內容授權', href: '/contact#form' },
-        { label: '加入寫手團隊', href: '/join' },
+        { label: '加入寫手團隊', href: JOIN_FORM_URL },
       ],
     },
     {
@@ -383,7 +385,7 @@ const en: UIStrings = {
         { label: 'Partnerships', href: '/en/contact#form' },
         { label: 'Advertising', href: '/en/contact#form' },
         { label: 'Content licensing', href: '/en/contact#form' },
-        { label: 'Join as a writer', href: '/en/contact?topic=join#form' },
+        { label: 'Join as a writer', href: JOIN_FORM_URL },
       ],
     },
     {
@@ -549,7 +551,7 @@ const ja: UIStrings = {
         { label: '協業のご相談', href: '/ja/contact#form' },
         { label: '広告掲載', href: '/ja/contact#form' },
         { label: 'コンテンツ利用許諾', href: '/ja/contact#form' },
-        { label: 'ライター募集', href: '/ja/contact?topic=join#form' },
+        { label: 'ライター募集', href: JOIN_FORM_URL },
       ],
     },
     {
@@ -715,7 +717,7 @@ const ko: UIStrings = {
         { label: '제휴 문의', href: '/ko/contact#form' },
         { label: '광고 게재', href: '/ko/contact#form' },
         { label: '콘텐츠 이용 허락', href: '/ko/contact#form' },
-        { label: '작가 모집', href: '/ko/contact?topic=join#form' },
+        { label: '작가 모집', href: JOIN_FORM_URL },
       ],
     },
     {

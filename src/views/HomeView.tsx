@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { GET_HOMEPAGE_BLOCKS } from '@/lib/graphql/queries/homepage'
 import { fetchQuery } from '@/lib/graphql/client'
-import { SITE_NAME, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
+import { SITE_NAME, SITE_URL, EXCLUDED_CATEGORY_SLUGS, JOIN_FORM_URL } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
 import HomeClient, { type HomeCategoryBlock } from './HomeClient'
 import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
@@ -194,12 +194,14 @@ export default async function HomeView({ lang }: { lang: Lang }) {
                   <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
                   <h3 className="font-serif text-2xl font-bold leading-snug mt-2 text-paper-ink">{t.join.joinTitle}</h3>
                   <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">{t.join.body}</p>
-                  <Link
-                    href={lang === 'zh' ? '/join' : `${langPrefix(lang)}/contact?topic=join#form`}
+                  <a
+                    href={JOIN_FORM_URL}
+                    target="_blank"
+                    rel="noopener"
                     className="inline-block w-fit mt-6 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-3 rounded-full transition-colors"
                   >
                     {t.join.cta}
-                  </Link>
+                  </a>
                 </div>
                 <ul className="grid gap-3 list-none">
                   {t.join.perks.map((perk, i) => (

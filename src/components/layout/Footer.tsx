@@ -54,6 +54,7 @@ export default function Footer({ lang, categories }: FooterProps) {
                     <li key={l.label}>
                       <Link
                         href={l.href}
+                        {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}
                         className="text-xs text-paper-secondary hover:text-brand-600 transition-colors"
                       >
                         {l.label}

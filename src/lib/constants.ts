@@ -36,3 +36,6 @@ export const EDITOR_ROLE = '內容編輯'
 // 一樣不掛學歷、證照或年資，避免寫出無法查證的資歷
 export const EDITOR_BIO =
   '現職 AI 流程開發工程師，曾任 IG 文章寫手、珠寶公司行銷文案編輯。習慣在下單前先問 AI，再開五六個分頁逐項比價，喜歡滑 Threads 看實際使用者的評價與心得。'
+
+// 「加入寫手團隊」的 Google 表單（跟 mybest 一樣直接連表單，不在站內做頁面）
+export const JOIN_FORM_URL = process.env.NEXT_PUBLIC_JOIN_FORM_URL || 'https://forms.gle/REPLACE_ME'
