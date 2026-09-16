@@ -115,5 +115,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   })
 
-  return [...staticPages, ...categories, ...posts]
+  // /join 目前只有中文版，單獨列、不掛 hreflang
+  const joinPage: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/join`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+  ]
+
+  return [...staticPages, ...joinPage, ...categories, ...posts]
 }

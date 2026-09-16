@@ -234,14 +234,29 @@ export default async function HomeView({ lang }: { lang: Lang }) {
                   )
                 })}
               </div>
-              <div className="mt-8 bg-paper-card border border-paper-border rounded-xl px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4">
-                <p className="text-sm leading-loose text-paper-secondary flex-1">{t.join.body}</p>
-                <Link
-                  href={`${langPrefix(lang)}/contact?topic=join#form`}
-                  className="inline-block w-fit bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-3 rounded-full transition-colors whitespace-nowrap"
-                >
-                  {t.join.cta}
-                </Link>
+              <div className="mt-10 rounded-[20px] bg-brand-50 border border-brand-100 px-8 sm:px-11 py-9 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-8 md:gap-12 items-center">
+                <div>
+                  <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
+                  <h3 className="font-serif text-2xl font-bold leading-snug mt-2 text-paper-ink">{t.join.joinTitle}</h3>
+                  <p className="text-[15px] leading-loose text-paper-secondary mt-3 text-balance">{t.join.body}</p>
+                  <Link
+                    href={lang === 'zh' ? '/join' : `${langPrefix(lang)}/contact?topic=join#form`}
+                    className="inline-block w-fit mt-6 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-3 rounded-full transition-colors"
+                  >
+                    {t.join.cta}
+                  </Link>
+                </div>
+                <ul className="grid gap-3 list-none">
+                  {t.join.perks.map((perk, i) => (
+                    <li key={perk.title} className="flex gap-4 items-start bg-white/80 rounded-xl px-5 py-4 border border-brand-100">
+                      <b className="font-serif text-sm font-bold text-brand-600 tracking-wider mt-0.5">0{i + 1}</b>
+                      <div>
+                        <b className="block text-[15px] font-bold text-paper-ink">{perk.title}</b>
+                        <p className="text-sm leading-relaxed text-paper-secondary mt-1">{perk.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </section>
           )}

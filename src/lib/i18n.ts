@@ -167,7 +167,13 @@ const zh = {
     kicker: '專家・達人介紹',
     title: '專家・達人精選推薦',
     body: '在找各領域的達人與寫手，把你實際用過、比較過的東西寫成清單，文章署名並附上你的介紹。',
+    joinTitle: '把你的專業寫成一份推薦清單',
     cta: '加入寫手團隊',
+    perks: [
+      { title: '署名與介紹', body: '文章掛你的名字，附個人介紹與社群連結。' },
+      { title: '稿費依篇計算', body: '主題由你提，也可以接編輯部的題目。' },
+      { title: '編輯部幫你核對', body: '規格與價格由編輯部確認，你只管寫你懂的部分。' },
+    ],
   },
   categoryListName: 'spaceA 文章分類',
   // 頁尾
@@ -209,7 +215,7 @@ const zh = {
         { label: '合作洽談', href: '/contact#form' },
         { label: '廣告刊登', href: '/contact#form' },
         { label: '內容授權', href: '/contact#form' },
-        { label: '加入寫手團隊', href: '/contact?topic=join#form' },
+        { label: '加入寫手團隊', href: '/join' },
       ],
     },
     {
@@ -332,7 +338,13 @@ const en: UIStrings = {
     kicker: 'Experts & creators',
     title: 'Picks from experts and creators',
     body: 'We are looking for experts and writers in every category. Turn what you have actually used and compared into a list, with your byline and bio on it.',
+    joinTitle: 'Turn what you know into a recommendation list',
     cta: 'Join as a writer',
+    perks: [
+      { title: 'Byline and bio', body: 'Your name on the article, with a bio and social links.' },
+      { title: 'Paid per article', body: 'Pitch your own topics or take briefs from the editors.' },
+      { title: 'Editors check the facts', body: 'Specs and prices are verified by the editors; you write what you know.' },
+    ],
   },
   categoryListName: 'spaceA categories',
   footerDisclaimer:
@@ -493,7 +505,13 @@ const ja: UIStrings = {
     kicker: '専門家・達人紹介',
     title: '専門家・達人のおすすめ',
     body: '各分野の達人やライターを募集しています。実際に使って比べたものをリストにまとめてください。記事には署名と自己紹介を掲載します。',
+    joinTitle: 'あなたの専門知識をおすすめリストに',
     cta: 'ライターとして参加する',
+    perks: [
+      { title: '署名と自己紹介', body: '記事にあなたの名前、自己紹介、SNSリンクを掲載します。' },
+      { title: '原稿料は記事ごと', body: 'テーマの持ち込みも、編集部からの依頼も可能です。' },
+      { title: '事実確認は編集部', body: 'スペックや価格は編集部が確認します。得意な部分だけ書いてください。' },
+    ],
   },
   categoryListName: 'spaceA のカテゴリ',
   footerDisclaimer:
@@ -654,7 +672,13 @@ const ko: UIStrings = {
     kicker: '전문가·달인 소개',
     title: '전문가·달인의 추천',
     body: '각 분야의 전문가와 작가를 찾고 있습니다. 직접 써 보고 비교한 것을 리스트로 정리해 주세요. 기사에는 이름과 소개를 함께 싣습니다.',
+    joinTitle: '당신의 전문 지식을 추천 리스트로',
     cta: '작가로 참여하기',
+    perks: [
+      { title: '이름과 소개 게재', body: '기사에 이름, 소개, SNS 링크를 함께 싣습니다.' },
+      { title: '원고료는 기사 단위', body: '주제 제안과 편집부 의뢰 모두 가능합니다.' },
+      { title: '사실 확인은 편집부가', body: '사양과 가격은 편집부가 확인하니 잘 아는 부분만 쓰면 됩니다.' },
+    ],
   },
   categoryListName: 'spaceA 카테고리',
   footerDisclaimer:
