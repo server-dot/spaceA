@@ -163,6 +163,17 @@ const zh = {
   featuredBody: (name: string) =>
     `從怎麼挑到怎麼比，我們把${name}相關的推薦文整理成一條龍的決策流程，看完就知道自己該選哪一個。`,
   readTopic: '閱讀專題',
+  join: {
+    kicker: '專家・達人招募',
+    title: '把你的專業寫成一份推薦清單',
+    body: 'spaceA 在找各領域的達人與寫手。你熟旅遊、美妝、健康、美食或行銷，願意把自己實際用過、比較過的東西整理成清單，就適合來投稿。',
+    wants: [
+      '文章署名，並附上你的個人介紹與社群連結',
+      '稿費依篇計算，主題由你提，也可以接編輯部的題目',
+      '規格與價格由編輯部核對，你只管寫你懂的部分',
+    ],
+    cta: '加入寫手團隊',
+  },
   categoryListName: 'spaceA 文章分類',
   // 頁尾
   footerDisclaimer:
@@ -203,6 +214,7 @@ const zh = {
         { label: '合作洽談', href: '/contact#form' },
         { label: '廣告刊登', href: '/contact#form' },
         { label: '內容授權', href: '/contact#form' },
+        { label: '加入寫手團隊', href: '/contact?topic=join#form' },
       ],
     },
     {
@@ -321,6 +333,17 @@ const en: UIStrings = {
   featuredBody: (name: string) =>
     `From how to choose to how to compare, our ${name} articles walk you through the whole decision so you know which one to pick.`,
   readTopic: 'Read the topic',
+  join: {
+    kicker: 'Experts & creators wanted',
+    title: 'Turn what you know into a recommendation list',
+    body: 'spaceA is looking for experts and writers in every category. If you know travel, beauty, health, food or marketing and can turn what you have actually used and compared into a list, we would like to hear from you.',
+    wants: [
+      'Your byline, bio and social links on every article',
+      'Paid per article; pitch your own topics or take briefs from the editors',
+      'Editors verify specs and prices, you write the part you know',
+    ],
+    cta: 'Join as a writer',
+  },
   categoryListName: 'spaceA categories',
   footerDisclaimer:
     'spaceA curates products and services to give readers more options. Some information on this site comes from partner brands or organisations, who may provide product details or third-party links. Please evaluate carefully; all information is for reference only.',
@@ -360,6 +383,7 @@ const en: UIStrings = {
         { label: 'Partnerships', href: '/en/contact#form' },
         { label: 'Advertising', href: '/en/contact#form' },
         { label: 'Content licensing', href: '/en/contact#form' },
+        { label: 'Join as a writer', href: '/en/contact?topic=join#form' },
       ],
     },
     {
@@ -475,6 +499,17 @@ const ja: UIStrings = {
   featuredBody: (name: string) =>
     `選び方から比べ方まで、${name}のおすすめ記事を一本の流れに整理しました。読み終える頃には、どれを選ぶべきか分かります。`,
   readTopic: '特集を読む',
+  join: {
+    kicker: '専門家・達人募集',
+    title: 'あなたの専門知識をおすすめリストに',
+    body: 'spaceAでは各分野の達人やライターを募集しています。旅行、美容、健康、グルメ、マーケティングに詳しく、実際に使って比べたものをリストにまとめられる方をお待ちしています。',
+    wants: [
+      '記事に署名と自己紹介、SNSリンクを掲載します',
+      '原稿料は記事ごと。テーマの持ち込みも編集部からの依頼も可能です',
+      'スペックや価格は編集部が確認するので、得意な部分だけ書いてください',
+    ],
+    cta: 'ライターとして参加する',
+  },
   categoryListName: 'spaceA のカテゴリ',
   footerDisclaimer:
     'spaceA は選ぶための情報を届け、読者により多くの選択肢を提供します。当サイトの一部の情報は提携ブランドや関連団体と協力し、商品情報や第三者リンクの提供を受けています。ご利用の際は内容を十分にご検討ください。掲載情報は参考用です。',
@@ -514,6 +549,7 @@ const ja: UIStrings = {
         { label: '協業のご相談', href: '/ja/contact#form' },
         { label: '広告掲載', href: '/ja/contact#form' },
         { label: 'コンテンツ利用許諾', href: '/ja/contact#form' },
+        { label: 'ライター募集', href: '/ja/contact?topic=join#form' },
       ],
     },
     {
@@ -629,6 +665,17 @@ const ko: UIStrings = {
   featuredBody: (name: string) =>
     `고르는 법부터 비교하는 법까지, ${name} 관련 추천 글을 하나의 흐름으로 정리했습니다. 다 읽고 나면 무엇을 골라야 할지 알 수 있습니다.`,
   readTopic: '특집 읽기',
+  join: {
+    kicker: '전문가·달인 모집',
+    title: '당신의 전문 지식을 추천 리스트로',
+    body: 'spaceA는 각 분야의 전문가와 작가를 찾고 있습니다. 여행, 뷰티, 건강, 음식, 마케팅에 밝고 직접 써 보고 비교한 것을 리스트로 정리할 수 있다면 연락 주세요.',
+    wants: [
+      '기사에 이름과 소개, SNS 링크를 함께 싣습니다',
+      '원고료는 기사 단위로 지급하며, 주제 제안과 편집부 의뢰 모두 가능합니다',
+      '사양과 가격은 편집부가 확인하니 잘 아는 부분만 쓰시면 됩니다',
+    ],
+    cta: '작가로 참여하기',
+  },
   categoryListName: 'spaceA 카테고리',
   footerDisclaimer:
     'spaceA는 고르는 데 필요한 정보를 제공해 독자에게 더 많은 선택지를 드립니다. 이 사이트의 일부 정보는 제휴 브랜드나 관련 기관과 협력해 제품 정보나 제3자 링크를 제공받습니다. 이용하실 때 충분히 검토해 주시고, 모든 정보는 참고용입니다.',
@@ -668,6 +715,7 @@ const ko: UIStrings = {
         { label: '제휴 문의', href: '/ko/contact#form' },
         { label: '광고 게재', href: '/ko/contact#form' },
         { label: '콘텐츠 이용 허락', href: '/ko/contact#form' },
+        { label: '작가 모집', href: '/ko/contact?topic=join#form' },
       ],
     },
     {

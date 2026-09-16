@@ -16,6 +16,7 @@ import {
   categoryHref,
   homeHref,
   langOfCategorySlug,
+  langPrefix,
   ui,
   staticAlternates,
   type Lang,
@@ -195,6 +196,28 @@ export default async function HomeView({ lang }: { lang: Lang }) {
               </div>
             </section>
           )}
+
+          <section className="mt-16 bg-paper-card border border-paper-border rounded-[20px] px-9 sm:px-11 py-10 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-8 md:gap-12 items-center">
+            <div>
+              <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
+              <h2 className="font-serif text-[26px] font-bold leading-snug mt-3 text-paper-ink">{t.join.title}</h2>
+              <p className="text-[15px] leading-loose text-paper-secondary mt-3.5 text-balance">{t.join.body}</p>
+              <Link
+                href={`${langPrefix(lang)}/contact?topic=join#form`}
+                className="inline-block w-fit mt-6 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-6 py-3 rounded-full transition-colors"
+              >
+                {t.join.cta}
+              </Link>
+            </div>
+            <ul className="grid gap-4 list-none">
+              {t.join.wants.map((text) => (
+                <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
+                  <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />
+                  <span className="text-[15px] leading-loose text-paper-body">{text}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
           {blocks[0] && (
             <section className="mt-16 mb-16 rounded-[20px] overflow-hidden grid grid-cols-1 sm:grid-cols-2 bg-brand-600 text-white">
