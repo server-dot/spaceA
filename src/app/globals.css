@@ -93,7 +93,7 @@ html.js .hero-line path {
   }
 }
 
-/* 文章內文的 h2／h3 統一樣式：h2 深藍實心橫幅（前置 ✓），h3 深藍粗體＋虛線底線（前置 ▸）。
+/* 文章內文的 h2／h3 統一樣式：h2 深藍實心橫幅（前置 ✓），h3 深藍粗體＋虛線底線（前置一條粗直線）。
    直接吃 WordPress 內容裡的裸 h2/h3，已發布的舊文章不用重貼也會套用。
    色值統一吃品牌藍 brand-600，不另外引入第二套藍 */
 @layer components {
@@ -136,9 +136,12 @@ html.js .hero-line path {
   }
 
   .prose h3::before {
-    content: '▸';
+    content: '';
     flex: none;
-    font-size: 0.9em;
+    align-self: stretch;
+    width: 4px;
+    border-radius: 2px;
+    background: theme('colors.brand.600');
   }
 
   @media (min-width: 640px) {
