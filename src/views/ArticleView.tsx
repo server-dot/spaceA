@@ -15,7 +15,9 @@ import ArticleJsonLd from '@/components/seo/ArticleJsonLd'
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import HowToJsonLd from '@/components/seo/HowToJsonLd'
-import { SITE_NAME, EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_AVATAR_URL } from '@/lib/constants'
+import ItemListJsonLd from '@/components/seo/ItemListJsonLd'
+import { extractBrandList } from '@/lib/brand-list'
+import { SITE_NAME, EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_AVATAR_URL, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import {
@@ -220,6 +222,7 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
       <BreadcrumbJsonLd items={breadcrumbs} />
       {parsed.faq && <FaqJsonLd items={parsed.faq} />}
       {parsed.howTo && <HowToJsonLd name={parsed.howTo.sectionTitle} steps={parsed.howTo.steps} />}
+      <ItemListJsonLd name={post.title} url={`${SITE_URL}${selfHref}`} items={extractBrandList(post.content)} />
 
       <div className="bg-paper">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
