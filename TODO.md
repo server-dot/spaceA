@@ -225,7 +225,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] `src/app/[category]/[slug]/page.tsx` 補上 `export const revalidate = 3600` — 原本沒設，文章頁在部署當下被靜態化後就不再更新，WordPress 改了內容要等下次部署才會反映（首頁、分類頁、sitemap 本來就有設）
 
 ### Phase 5 — ISR Webhook
-- [ ] WordPress WP Webhooks plugin 設定
+- [ ] WordPress WP Webhooks plugin 設定（2026-09-18：REVALIDATE_SECRET 已設進 Zeabur，手動可用 scripts/revalidate.sh；WP→n8n 自動呼叫還沒接）
 - [ ] 測試：WP 發文 → 頁面自動更新
 
 ### Phase 6 — Analytics（選用）
