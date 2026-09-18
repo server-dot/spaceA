@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { SITE_NAME, COMPANY_NAME, COMPANY_REG_NO } from '@/lib/constants'
+import { SITE_NAME, COMPANY_NAME, COMPANY_REG_NO, EDITORIAL_EMAIL } from '@/lib/constants'
 import { categoryHref, homeHref, langPrefix, ui, type Lang } from '@/lib/i18n'
 import { WPCategory } from '@/types/wordpress'
 
@@ -40,7 +40,7 @@ export default function Footer({ lang, categories }: FooterProps) {
           href={homeHref(lang)}
           className="flex items-center justify-center gap-3 text-2xl font-bold tracking-tight text-paper-ink hover:text-brand-600 transition-colors mt-11"
         >
-          <Image src="/logo-sa-mark.png" alt="" width={38} height={38} />
+          <Image src="/logo-sa-mark.png" alt={SITE_NAME} width={38} height={38} />
           {SITE_NAME}
         </Link>
 
@@ -90,6 +90,10 @@ export default function Footer({ lang, categories }: FooterProps) {
           </div>
           <div className="text-xs text-paper-muted mt-2">
             {t.operatedBy(COMPANY_NAME, COMPANY_REG_NO)}
+          </div>
+          {/* 編輯部信箱露在頁尾：可查證的聯絡方式是 E-E-A-T 的一部分，之前只有文章頁底部有 */}
+          <div className="text-xs text-paper-muted mt-2">
+            <a href={`mailto:${EDITORIAL_EMAIL}`} className="hover:text-brand-600 transition-colors">{EDITORIAL_EMAIL}</a>
           </div>
         </div>
       </div>

@@ -173,13 +173,15 @@ export default async function CategoryView({ lang, params }: CategoryRouteProps 
             </div>
           </section>
 
+          {/* 列表頁只有 h1 會被判成沒有段落結構，補一個 h2 當文章清單的標題 */}
+          <h2 className="sr-only">{t.categoryArticlesHeading(cat.name)}</h2>
           <Suspense fallback={null}>
             <CategoryPageClient lang={lang} categorySlug={wpSlug} posts={posts} initialPageInfo={pageInfo} />
           </Suspense>
 
           {otherCategories.length > 0 && (
             <section className="mt-16 bg-paper-card border border-paper-border rounded-2xl p-9">
-              <div className="text-xs tracking-wider text-brand-600 font-bold">{t.otherCategories}</div>
+              <h2 className="text-xs tracking-wider text-brand-600 font-bold">{t.otherCategories}</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
                 {otherCategories.map((c) => (
                   <Link

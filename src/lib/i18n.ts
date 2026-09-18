@@ -117,6 +117,7 @@ const zh = {
   seeMoreOf: (name: string) => `看更多${name}`,
   otherTopics: '換個主題看',
   otherCategories: '其他分類',
+  categoryArticlesHeading: (name: string) => `${name}文章列表`,
   postCount: (n: number) => `共 ${n} 篇`,
   postCountShort: (n: number) => `${n} 篇`,
   categoryMetaDesc: (name: string) =>
@@ -287,6 +288,7 @@ const en: UIStrings = {
   seeMoreOf: (name: string) => `More ${name}`,
   otherTopics: 'Other topics',
   otherCategories: 'Other categories',
+  categoryArticlesHeading: (name: string) => `${name} articles`,
   postCount: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'}`,
   postCountShort: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'}`,
   categoryMetaDesc: (name: string) =>
@@ -453,6 +455,7 @@ const ja: UIStrings = {
   seeMoreOf: (name: string) => `${name}をもっと見る`,
   otherTopics: '他のテーマを見る',
   otherCategories: '他のカテゴリ',
+  categoryArticlesHeading: (name: string) => `${name}の記事一覧`,
   postCount: (n: number) => `全 ${n} 件`,
   postCountShort: (n: number) => `${n} 件`,
   categoryMetaDesc: (name: string) =>
@@ -619,6 +622,7 @@ const ko: UIStrings = {
   seeMoreOf: (name: string) => `${name} 더 보기`,
   otherTopics: '다른 주제 보기',
   otherCategories: '다른 카테고리',
+  categoryArticlesHeading: (name: string) => `${name} 글 목록`,
   postCount: (n: number) => `총 ${n}건`,
   postCountShort: (n: number) => `${n}건`,
   categoryMetaDesc: (name: string) =>

@@ -17,7 +17,7 @@ export default function Header({ lang }: { lang: Lang }) {
             href={homeHref(lang)}
             className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-paper-ink hover:text-brand-600 transition-colors shrink-0"
           >
-            <Image src="/logo-sa-mark.png" alt="" width={30} height={30} className="block" />
+            <Image src="/logo-sa-mark.png" alt={SITE_NAME} width={30} height={30} className="block" />
             {SITE_NAME}
           </Link>
           <div className="flex items-center gap-2 md:gap-5">
