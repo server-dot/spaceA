@@ -7,6 +7,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 set -a; . ./.env.local; set +a
 : "${REVALIDATE_SECRET:?.env.local 缺 REVALIDATE_SECRET}"
-curl -s -w " HTTP %{http_code}\n" -X POST "${NEXT_PUBLIC_SITE_URL%/}/api/revalidate" \
+# .env.local 的 NEXT_PUBLIC_SITE_URL 是本機 dev，這支一律打正式站，要打別站用 REVALIDATE_SITE_URL 蓋掉
+SITE="${REVALIDATE_SITE_URL:-https://spacea.com.tw}"
+curl -s -w " HTTP %{http_code}\n" -X POST "${SITE%/}/api/revalidate" \
   -H "x-revalidate-secret: $REVALIDATE_SECRET" -H "Content-Type: application/json" \
   -d "{\"slug\":\"$1\",\"category\":\"$2\"}"
