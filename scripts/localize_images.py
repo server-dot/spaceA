@@ -30,9 +30,14 @@ def curl_json(url, method='GET', data=None, headers=(), binary=None):
     for h in headers: cmd += ['-H', h]
     if data is not None: cmd += ['-H', 'Content-Type: application/json', '--data-binary', '@' + data]
     if binary is not None: cmd += ['--data-binary', '@' + binary]
-    out = subprocess.run(cmd, capture_output=True, text=True).stdout
-    try: return json.loads(out)
-    except Exception: sys.exit(f'WP 回傳不是 JSON：{out[:300]}')
+    # WP 主機偶爾回 520/502，重試三次再放棄
+    import time
+    for attempt in range(3):
+        out = subprocess.run(cmd, capture_output=True, text=True).stdout
+        try: return json.loads(out)
+        except Exception:
+            if attempt < 2: time.sleep(5); continue
+            sys.exit(f'WP 回傳不是 JSON：{out[:300]}')
 
 def download(url, dest):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0', 'Referer': 'https://' + urlparse(url).netloc + '/'})
