@@ -34,7 +34,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
 - [x] 8 篇全翻完（2026-09-15，八篇合計不到 US$1）：161→359、326→360、308→362、283→363、224→364、214→365、187→366、112→367。英文分類建了 marketing-en／travel-en／food-en／beauty-en
   - 腳本踩過的坑都補進去了：Cloudflare 對大 payload 偶爾回 520（已加重試）、回應 JSON 前面有雜訊（從第一個 `{` 開始解）、中文 slug 的標籤在 WP 是百分比編碼（英文標籤改用英文名轉 slug，`description` 存中文原名當對照鍵）、模型會漏翻 SVG `<text>` 與卡片的 `<dt>` 標籤（加了 `translate_svg_texts`／`translate_leftovers` 兩道補翻）
   - `--force` 只覆蓋文章、翻譯吃快取；真的要重翻用 `--retranslate`
-- [ ] 逐篇肉眼看英文版：品牌英文名對不對（Cona's Chocolate、18度C 這種）。SVG 標籤重疊與比較表擠欄 2026-09-21 已用 `SvgTextFit` ＋ `.compare-table` CSS 在前端修掉（36 個譯文網址掃過沒有超框／疊字）
+- [x] 英文版品牌名（2026-09-21）：把 11 篇英文版的品牌名對照各家官網抓出來比過，改了 9 篇：紅杉→Hongsan、樂夫人→Mrs. Love、老行家→Lo Hong Ka、佳誠→Grace Dental、重心→Jung Shin、美膚娜娜→FRUSIRNANA、艾萬霖→ExoNoa、艾斯伊歐→AISEO、凹凸→OTTO、翻玩→Fun Play Melbourne、雷克斯→Rex Melbourne Tour、安盛→Hotel 20 Alley、帝景→Lake Hotel；清掉卡片標題殘留的商城促銷字（「[Hot sale…]」「[B area]」）與重複字（LA EXO LA EXO、VIGILL Vigill）。直接改 WP＋翻譯快取（scratchpad/fix_en_names.py）。**積木行銷英文名沒動**（stack.com.tw，要問使用者官方英文怎麼寫）。SVG 標籤重疊與比較表擠欄同日已用 `SvgTextFit` ＋ `.compare-table` CSS 修掉
 - [x] 英文版送 GSC — sitemap 早已提交且自動帶 /en，2026-09-21 GSC 已看到 /en /ja /ko 網址被檢索，不用另外送
 - [x] 其他頁面英文版（2026-09-15）：`/en/about`、`/en/standards`、`/en/contact`（表單字串在 `views/ContactForm.tsx`，Slack 通知帶 `lang`）、`/en/privacy`、`/en/terms`、`/en/popular`、`/en/search`。頁首頁籤與頁尾欄位改吃 `i18n` 的 `nav`／`footerColumns`，語言切換每頁對同一頁。文案是照中文版翻的，**兩邊改文案要一起改**（每個 en 檔頭有註明）
   - 「熱門排行」英文定 **Popular**（使用者選的，不是 Trending）
@@ -173,7 +173,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] 封面上傳前轉 JPEG — 新增 `封面圖壓成JPEG` 節點（Edit Image，resize 1600×900 onlyIfLarger ＋ format jpeg / quality 82），接在 `轉封面圖檔` 和 `上傳封面圖到WordPress` 之間，上傳檔名改 `cover.jpg`。實測 1.4MB PNG → 約 180KB JPEG。n8n 主機有 graphicsmagick，Edit Image 可用
 
 ### 推薦文交件檢查清單
-- [ ] StackTool 生成器的預估時間要改（`/Users/kc/stacktools/app/recommendation/page.tsx`）— UI 寫「研究 1～3 分鐘」「生成 3～5 分鐘」，實測研究 5～7 分鐘、完整生成 10～16 分鐘（8～10 家）。**改好先不要 push，使用者說等他決定再觸發部署**
+- [x] StackTool 生成器的預估時間（2026-09-21 已改成研究 5～7 分鐘、生成 10～16 分鐘、超時提示 25 分鐘，stacktools commit fa9b8bf **只 commit 在本機沒 push**，等使用者決定再部署）
 - [x] 商品類文章的封面：2026-09-14 post 308 定案走「AI 空景 + 真實商品去背合成」（`scripts/build_cover_scene.py` + `scripts/rmbg.swift`），不是拼貼（`build_cover_collage.py` 留著備用）。n8n 的 `封面圖提示詞` 還是 AI 畫整張，商品類跑完要手動換
 - [x] Tavily 額度用完就直接回前端錯誤（2026-09-15）— 推薦文-1／1b／3 三個 workflow 入口加「Tavily額度檢查」節點（打一次 basic 搜尋，error 輸出 → 回傳失敗狀態），不再燒 LLM。key 換成新的（credential「Tavily account」）；`~/stacktools/.env.local` 的 `TAVILY_API_KEY` 還是舊的
 - [x] n8n 參考資料已改（2026-09-21）：`格式化參考資料` 先列 WF2 背景來源（品牌官網網域的一律丟掉）、再列每家 `brandDetails[].reference_links` 各取 2 條社群討論串（PTT 板名／Dcard／Threads 自動標籤、跨品牌去重）。原問題：WF2 只搜關鍵字、只留摘要，抓到隱私政策這種無關頁；`格式化參考資料` 應改成列研究階段 `brandDetails[].reference_links`（社群討論串）＋有關的官方來源，不列官方產品頁。目前每篇靠手動補（見檢查清單 2b）
@@ -225,8 +225,8 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] `src/app/[category]/[slug]/page.tsx` 補上 `export const revalidate = 3600` — 原本沒設，文章頁在部署當下被靜態化後就不再更新，WordPress 改了內容要等下次部署才會反映（首頁、分類頁、sitemap 本來就有設）
 
 ### Phase 5 — ISR Webhook
-- [ ] WordPress WP Webhooks plugin 設定（2026-09-18：REVALIDATE_SECRET 已設進 Zeabur，手動可用 scripts/revalidate.sh；WP→n8n 自動呼叫還沒接）
-- [ ] 測試：WP 發文 → 頁面自動更新
+- [x] 自動清快取（2026-09-21）：不裝 WP 外掛，改在會寫 WP 的三個地方自己打 `/api/revalidate`——`translate_post.py`、`localize_images.py` 已接；n8n 推薦文工作流的節點（貼上 WordPress → 設定精選圖片 → **清前台快取** → 回傳完成狀態，用 Header Auth 憑證 `spaceA revalidate secret` id 9pz7OvoOXbnQcX43）**還沒接上**，MCP 寫入被權限擋，要在 n8n 手動加或下次對話再試
+- [ ] 測試：下一篇推薦文生成完，看前台有沒有自己更新
 
 ### Phase 6 — Analytics（選用）
 - [x] Google Analytics 4 加入 layout（`src/app/layout.tsx` 用 `@next/third-parties/google` 的 `GoogleAnalytics`，讀取 `NEXT_PUBLIC_GA_ID`，未設定則不注入，本地 `.env.local` 尚未填值）
