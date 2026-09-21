@@ -34,7 +34,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
 - [x] 8 篇全翻完（2026-09-15，八篇合計不到 US$1）：161→359、326→360、308→362、283→363、224→364、214→365、187→366、112→367。英文分類建了 marketing-en／travel-en／food-en／beauty-en
   - 腳本踩過的坑都補進去了：Cloudflare 對大 payload 偶爾回 520（已加重試）、回應 JSON 前面有雜訊（從第一個 `{` 開始解）、中文 slug 的標籤在 WP 是百分比編碼（英文標籤改用英文名轉 slug，`description` 存中文原名當對照鍵）、模型會漏翻 SVG `<text>` 與卡片的 `<dt>` 標籤（加了 `translate_svg_texts`／`translate_leftovers` 兩道補翻）
   - `--force` 只覆蓋文章、翻譯吃快取；真的要重翻用 `--retranslate`
-- [x] 英文版品牌名（2026-09-21）：把 11 篇英文版的品牌名對照各家官網抓出來比過，改了 9 篇：紅杉→Hongsan、樂夫人→Mrs. Love、老行家→Lo Hong Ka、佳誠→Grace Dental、重心→Jung Shin、美膚娜娜→FRUSIRNANA、艾萬霖→ExoNoa、艾斯伊歐→AISEO、凹凸→OTTO、翻玩→Fun Play Melbourne、雷克斯→Rex Melbourne Tour、安盛→Hotel 20 Alley、帝景→Lake Hotel；清掉卡片標題殘留的商城促銷字（「[Hot sale…]」「[B area]」）與重複字（LA EXO LA EXO、VIGILL Vigill）。直接改 WP＋翻譯快取（scratchpad/fix_en_names.py）。**積木行銷英文名沒動**（stack.com.tw，要問使用者官方英文怎麼寫）。SVG 標籤重疊與比較表擠欄同日已用 `SvgTextFit` ＋ `.compare-table` CSS 修掉
+- [x] 英文版品牌名（2026-09-21）：把 11 篇英文版的品牌名對照各家官網抓出來比過，改了 9 篇：紅杉→Hongsan、樂夫人→Mrs. Love、老行家→Lo Hong Ka、佳誠→Grace Dental、重心→Jung Shin、美膚娜娜→FRUSIRNANA、艾萬霖→ExoNoa、艾斯伊歐→AISEO、凹凸→OTTO、翻玩→Fun Play Melbourne、雷克斯→Rex Melbourne Tour、安盛→Hotel 20 Alley、帝景→Lake Hotel；清掉卡片標題殘留的商城促銷字（「[Hot sale…]」「[B area]」）與重複字（LA EXO LA EXO、VIGILL Vigill）。直接改 WP＋翻譯快取（scratchpad/fix_en_names.py）。積木行銷英文定 **Stack**（使用者說的）。SVG 標籤重疊與比較表擠欄同日已用 `SvgTextFit` ＋ `.compare-table` CSS 修掉
 - [x] 英文版送 GSC — sitemap 早已提交且自動帶 /en，2026-09-21 GSC 已看到 /en /ja /ko 網址被檢索，不用另外送
 - [x] 其他頁面英文版（2026-09-15）：`/en/about`、`/en/standards`、`/en/contact`（表單字串在 `views/ContactForm.tsx`，Slack 通知帶 `lang`）、`/en/privacy`、`/en/terms`、`/en/popular`、`/en/search`。頁首頁籤與頁尾欄位改吃 `i18n` 的 `nav`／`footerColumns`，語言切換每頁對同一頁。文案是照中文版翻的，**兩邊改文案要一起改**（每個 en 檔頭有註明）
   - 「熱門排行」英文定 **Popular**（使用者選的，不是 Trending）
@@ -225,7 +225,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] `src/app/[category]/[slug]/page.tsx` 補上 `export const revalidate = 3600` — 原本沒設，文章頁在部署當下被靜態化後就不再更新，WordPress 改了內容要等下次部署才會反映（首頁、分類頁、sitemap 本來就有設）
 
 ### Phase 5 — ISR Webhook
-- [x] 自動清快取（2026-09-21）：不裝 WP 外掛，改在會寫 WP 的三個地方自己打 `/api/revalidate`——`translate_post.py`、`localize_images.py` 已接；n8n 推薦文工作流的節點（貼上 WordPress → 設定精選圖片 → **清前台快取** → 回傳完成狀態，用 Header Auth 憑證 `spaceA revalidate secret` id 9pz7OvoOXbnQcX43）**還沒接上**，MCP 寫入被權限擋，要在 n8n 手動加或下次對話再試
+- [x] 自動清快取（2026-09-21）：不裝 WP 外掛，改在會寫 WP 的三個地方自己打 `/api/revalidate`——`translate_post.py`、`localize_images.py` 已接；n8n 推薦文工作流也接上了（貼上 WordPress → 設定精選圖片 → **清前台快取** → 回傳完成狀態，Header Auth 憑證 `spaceA revalidate secret` id 9pz7OvoOXbnQcX43，分類 slug 從 WP 永久連結拆；已發佈到 active 版本）
 - [ ] 測試：下一篇推薦文生成完，看前台有沒有自己更新
 
 ### Phase 6 — Analytics（選用）
