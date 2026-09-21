@@ -855,7 +855,8 @@ def revalidate(post_slug: str, category_slug: str) -> None:
     req = urllib.request.Request(
         f'{site}/api/revalidate',
         data=json.dumps({'slug': post_slug, 'category': category_slug}).encode(),
-        headers={'x-revalidate-secret': secret, 'Content-Type': 'application/json'},
+        # Cloudflare 會擋 urllib 預設的 Python-urllib UA（回 403），要帶瀏覽器 UA
+        headers={'x-revalidate-secret': secret, 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0 (spaceA translate_post)'},
         method='POST',
     )
     try:
