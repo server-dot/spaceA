@@ -80,7 +80,9 @@ export default async function PopularView({ lang }: { lang: Lang }) {
     .map((cat) => ({ ...cat, count: cat.count ?? 0 }))
     .sort((a, b) => b.count - a.count)
 
-  const dateModified = articles[0]?.dateISO ?? new Date().toISOString()
+  // WP 的 date 不帶時區，補 +08:00（Rich Results Test 會對沒時區的 datetime 提警告）
+  const rawDate = articles[0]?.dateISO
+  const dateModified = rawDate ? (/(?:Z|[+-]\d{2}:\d{2})$/.test(rawDate) ? rawDate : `${rawDate}+08:00`) : new Date().toISOString()
 
   return (
     <>

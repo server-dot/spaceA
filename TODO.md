@@ -237,8 +237,8 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] Zeabur 環境變數 `NEXT_PUBLIC_SITE_URL` 已改成 `https://spacea.com.tw`（2026-09-11 線上 sitemap 確認全部指向新網域）
 - [x] Google Search Console 網域擁有權驗證（`spacea.com.tw`，seo@stack.com.tw）
 - [x] 提交 sitemap.xml 到 Search Console
-- [ ] Lighthouse 審核（Performance > 90, SEO = 100）
-- [ ] Google Rich Results Test 驗證
+- [x] Lighthouse 審核（2026-09-21 正式站，首頁／分類頁／文章頁）：SEO 100、Best Practices 100、Accessibility 96–97；Performance 桌機 75–97、手機 55–84。修了分類頁 CLS 0.45（useSearchParams 讓文章清單整段退到客戶端渲染，SSR HTML 沒有文章，改 useSyncExternalStore）、paper.muted 對比 2.9→5.3、語言鈕 aria-label。手機 Performance 剩 LCP 圖片（封面 PNG 1.4MB 走 next/image 已壓到 150KB，再要就是 WP 端出圖改 JPEG）與首頁 hero 動畫的 forced reflow，沒再追
+- [x] Google Rich Results Test（2026-09-21，/food/best-frozen-meal-packs）：Article、BreadcrumbList、ItemList（輪轉介面）、Organization 四項有效。三個選擇性警告已修：datePublished／dateModified 補 +08:00、author 補 url（/about）。FAQPage 有輸出但工具不再列（2023 起 Google 只給政府／醫療站 FAQ 摘要）
 
 ---
 

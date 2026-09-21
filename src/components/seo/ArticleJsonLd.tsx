@@ -1,6 +1,6 @@
 import { SITE_NAME, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
-import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, ui } from '@/lib/i18n'
+import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
 import { countWords, resolveSummary } from '@/lib/format'
 import { deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
@@ -28,8 +28,9 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
     articleSection: articleTypeLabel(lang, articleType),
     url,
     inLanguage: LANG_TAG[lang],
-    datePublished: post.date,
-    dateModified: post.modified,
+    // WPGraphQL 的 date／modified 是站台時區（Asia/Taipei）但不帶時區，Rich Results Test 會警告
+    datePublished: withTaipeiOffset(post.date),
+    dateModified: withTaipeiOffset(post.modified),
     wordCount: countWords(post.content, lang),
     image: image?.sourceUrl
       ? imageWidth && imageHeight
@@ -41,6 +42,7 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
       '@type': 'Person',
       name: ui(lang).editorName,
       jobTitle: ui(lang).editorRole,
+      url: `${SITE_URL}${langPrefix(lang)}/about`,
       worksFor: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
     },
     publisher: {
@@ -65,4 +67,9 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   )
+}
+
+/** 沒有時區的 ISO 字串補上 +08:00；已經帶 Z 或偏移量的原樣回傳 */
+function withTaipeiOffset(iso: string) {
+  return /(?:Z|[+-]\d{2}:\d{2})$/.test(iso) ? iso : `${iso}+08:00`
 }
