@@ -17,14 +17,16 @@
 需要 .env.local 裡的：NEXT_PUBLIC_WORDPRESS_URL、WORDPRESS_APP_USER、WORDPRESS_APP_PASSWORD、OPENROUTER_API_KEY
 （選用 OPENROUTER_MODEL，預設跟 n8n 推薦文生成器同一個 openai/gpt-5-mini）。
 
-翻譯結果會先快取在 scripts/.translate-cache/<post id>.json，寫 WP 失敗重跑不會再燒一次 API；
-要重新翻請加 --retranslate。
+翻譯結果會先快取在 scripts/.translate-cache/<post id>.<lang>.json，寫 WP 失敗重跑不會再燒一次 API。
+原文改過再跑 --force 時只翻改過的段落：拿 WP 修訂版當上次的原文，逐段對 hash，沒改的段沿用 WP 上現在的譯文
+（手動改過的名字、數字都保得住）。要整篇重翻請加 --retranslate。
 """
 
 from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import re
 import sys
@@ -288,9 +290,9 @@ def strip_fences(text: str) -> str:
 
 # ---------- 內文切段與檢查 ----------
 
-def split_html(html: str) -> list[str]:
-    """照 <h2> 切章，再把相鄰的章併到 CHUNK_CHARS 以內。每段開頭是完整的章，模型比較不會亂掉。
-    單一章超過上限（推薦清單那章常常兩三萬字）再往下照 <h3>、再照 <div> 切。"""
+def split_parts(html: str) -> list[str]:
+    """照 <h2> 切章，單一章超過上限（推薦清單那章常常兩三萬字）再往下照 <h3>、再照 <div> 切。
+    這是「局部重翻」的最小單位：每一小段對原文算 hash，原文沒改的段直接沿用上次的譯文。"""
     parts: list[str] = []
     for section in re.split(r'(?=<h2[\s>])', html):
         if len(section) <= CHUNK_CHARS:
@@ -301,6 +303,43 @@ def split_html(html: str) -> list[str]:
                 parts.append(sub)
             else:
                 parts.extend(re.split(r'(?=<div[\s>])', sub))
+    return [p for p in parts if p]
+
+
+def split_like(source: str, translated: str) -> list[str] | None:
+    """把譯文切成跟 split_parts(source) 一樣多的段：切法完全照原文的長度決定（譯文通常比中文長，
+    直接對譯文跑 split_parts 會多切出幾段對不上）。哪一層對不齊就回 None。"""
+    out: list[str] = []
+    src_h2 = [x for x in re.split(r'(?=<h2[\s>])', source) if x]
+    tr_h2 = [x for x in re.split(r'(?=<h2[\s>])', translated) if x]
+    if len(src_h2) != len(tr_h2):
+        return None
+    for sec, tsec in zip(src_h2, tr_h2):
+        if len(sec) <= CHUNK_CHARS:
+            out.append(tsec)
+            continue
+        src_h3 = [x for x in re.split(r'(?=<h3[\s>])', sec) if x]
+        tr_h3 = [x for x in re.split(r'(?=<h3[\s>])', tsec) if x]
+        if len(src_h3) != len(tr_h3):
+            return None
+        for sub, tsub in zip(src_h3, tr_h3):
+            if len(sub) <= CHUNK_CHARS:
+                out.append(tsub)
+                continue
+            src_div = [x for x in re.split(r'(?=<div[\s>])', sub) if x]
+            tr_div = [x for x in re.split(r'(?=<div[\s>])', tsub) if x]
+            if len(src_div) != len(tr_div):
+                return None
+            out.extend(tr_div)
+    return out
+
+
+def part_hash(part: str) -> str:
+    return hashlib.sha1(part.strip().encode()).hexdigest()[:16]
+
+
+def merge_parts(parts: list[str]) -> list[str]:
+    """把相鄰的小段併到 CHUNK_CHARS 以內再送模型，每段開頭是完整的章，模型比較不會亂掉。"""
     chunks: list[str] = []
     current = ''
     for part in parts:
@@ -312,6 +351,68 @@ def split_html(html: str) -> list[str]:
     if current:
         chunks.append(current)
     return chunks
+
+
+def split_html(html: str) -> list[str]:
+    return merge_parts(split_parts(html))
+
+
+def previous_source(post_id: int, modified: str) -> str | None:
+    """上次翻譯時的原文：WP 修訂版裡 modified 對得上的那一版。"""
+    try:
+        revs = wp('GET', f'posts/{post_id}/revisions', params={'per_page': 50, 'context': 'edit'})
+    except SystemExit:
+        return None
+    for rev in revs:
+        if rev.get('modified') == modified or rev.get('date') == modified:
+            return rev['content']['raw']
+    return None
+
+
+def reusable_parts(post_id: int, cached: dict | None, existing: dict | None) -> dict[str, str]:
+    """局部重翻用：把上次翻譯的原文切段算 hash，對上譯文切出來的同位置段落。
+    譯文優先拿 WP 上現在那篇（手動修過的名字、數字都在那裡），沒有才用快取。"""
+    if not cached:
+        return {}
+    old_src = previous_source(post_id, cached.get('source_modified', ''))
+    if not old_src:
+        return {}
+    translated = (existing or {}).get('content', {}).get('raw') or cached.get('content', '')
+    old_parts = split_parts(old_src)
+    tr_parts = split_like(old_src, translated)
+    if not tr_parts or not old_parts:
+        print('  ⚠ 舊譯文的章節數跟舊原文對不起來，整篇重翻', file=sys.stderr)
+        return {}
+    return {part_hash(src): out for src, out in zip(old_parts, tr_parts)}
+
+
+def translate_parts(parts: list[str], reuse: dict[str, str]) -> list[str]:
+    """原文段有舊譯文就沿用，沒有的併成大段送模型；模型回來的段落切不回同樣的段數就一段一段翻。"""
+    out: list[str | None] = [reuse.get(part_hash(p)) for p in parts]
+    todo = [i for i, o in enumerate(out) if o is None]
+    print(f'  {len(parts)} 段裡沿用 {len(parts) - len(todo)} 段、要翻 {len(todo)} 段')
+    if not todo:
+        return [o or '' for o in out]
+    # 相鄰的待翻段併在一起送
+    groups: list[list[int]] = []
+    for i in todo:
+        if groups and groups[-1][-1] == i - 1 and sum(len(parts[j]) for j in groups[-1]) + len(parts[i]) <= CHUNK_CHARS:
+            groups[-1].append(i)
+        else:
+            groups.append([i])
+    for g_index, group in enumerate(groups):
+        chunk = ''.join(parts[i] for i in group)
+        print(f'  翻譯第 {g_index + 1}/{len(groups)} 批（{len(group)} 段、{len(chunk)} 字元）…')
+        result = translate_chunk(chunk, g_index, len(groups))
+        pieces = split_like(chunk, result)
+        if pieces and len(pieces) == len(group):
+            for i, piece in zip(group, pieces):
+                out[i] = piece
+        else:
+            print(f'  ⚠ 這批回來的章節切不回原本的 {len(group)} 段，改成逐段翻', file=sys.stderr)
+            for i in group:
+                out[i] = translate_chunk(parts[i], g_index, len(groups))
+    return [o or '' for o in out]
 
 
 TAG_CHECK = ['h2', 'h3', 'p', 'li', 'img', 'a', 'table', 'tr', 'details', 'svg', 'div']
@@ -753,28 +854,37 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
 
     CACHE_DIR.mkdir(exist_ok=True)
     cache_file = CACHE_DIR / f'{post_id}.{LANG}.json'
+    legacy_cache = CACHE_DIR / f'{post_id}.json'   # 還沒有 --lang 之前的英文快取
+    if LANG == 'en' and not cache_file.exists() and legacy_cache.exists():
+        cache_file = legacy_cache
     cached = json.loads(cache_file.read_text()) if cache_file.exists() and not retranslate else None
     if cached and cached.get('source_modified') == post['modified']:
         print('  使用快取的翻譯（來源沒改過）')
         translated = cached
     else:
-        chunks = split_html(content)
-        print(f'  內文 {len(content)} 字元，切成 {len(chunks)} 段，模型 {MODEL}')
-        out_chunks = []
-        for i, chunk in enumerate(chunks):
-            print(f'  翻譯第 {i + 1}/{len(chunks)} 段（{len(chunk)} 字元）…')
-            out_chunks.append(translate_chunk(chunk, i, len(chunks)))
-        en_content = fix_terms(normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_chunks)))))
+        parts = split_parts(content)
+        # 原文只改了幾段時，沒改的段沿用上次的譯文（拿 WP 修訂版當舊原文對 hash），只翻改過的
+        reuse = {} if retranslate else reusable_parts(post_id, cached, existing)
+        print(f'  內文 {len(content)} 字元，切成 {len(parts)} 段，模型 {MODEL}')
+        out_parts = translate_parts(parts, reuse)
+        en_content = fix_terms(normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_parts)))))
         if LANG == 'ja':
             en_content = collapse_ja_names(en_content, content)
-        meta = translate_meta(title, content)
+        # 標題沒改、第一段（前言）沒改，標題與摘要也沿用
+        if cached and reuse and cached.get('source_title') == title and part_hash(parts[0]) in reuse:
+            meta = {'title': cached['title'], 'excerpt': cached['excerpt']}
+            print('  標題與摘要沿用上次')
+        else:
+            meta = translate_meta(title, content)
         translated = {
             'source_modified': post['modified'],
+            'source_title': title,
             'title': meta['title'],
             'excerpt': meta['excerpt'],
             'content': en_content,
             'leftovers_done': True,
         }
+        cache_file = CACHE_DIR / f'{post_id}.{LANG}.json'
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
         print(f'  翻譯完成，快取在 {cache_file.relative_to(ROOT)}')
 
