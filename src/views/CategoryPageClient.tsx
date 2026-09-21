@@ -2,8 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { WPPostCard } from '@/types/wordpress'
 import { ARTICLE_TYPE_LABELS } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
@@ -39,11 +38,16 @@ export default function CategoryPageClient({
   const [loadingMore, setLoadingMore] = useState(false)
 
   const [tag, setTag] = useState<string | null>(null)
-  const searchParams = useSearchParams()
-  const initialType = searchParams.get('type')
-  const [type, setType] = useState<string | null>(
-    initialType && initialType in ARTICLE_TYPE_LABELS ? initialType : null
+  // ?type= 篩選在掛載後才從網址讀。之前用 useSearchParams，靜態頁會整個退到客戶端渲染：
+  // 伺服器 HTML 裡沒有半篇文章（Suspense fallback 是 null），列表在客戶端才長出來，
+  // 把下面的「其他分類」往下推，CLS 0.45；爬蟲拿到的分類頁也是空的
+  const initialType = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).get('type'),
+    () => null
   )
+  const [typeOverride, setType] = useState<string | null | undefined>(undefined)
+  const type = typeOverride !== undefined ? typeOverride : initialType && initialType in ARTICLE_TYPE_LABELS ? initialType : null
 
   async function handleLoadMore() {
     if (!pageInfo.hasNextPage || loadingMore) return

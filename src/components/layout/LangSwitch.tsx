@@ -42,7 +42,7 @@ export default function LangSwitch({ lang }: { lang: Lang }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={t.langMenu}
+        aria-label={`${LANG_NAME[lang]}（${t.langMenu}）`}
         className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-paper-secondary border border-paper-border rounded-full pl-3 pr-2.5 py-1.5 hover:text-brand-600 hover:border-brand-600 transition-colors"
       >
         <GlobeIcon />

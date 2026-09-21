@@ -28,7 +28,7 @@ const config: Config = {
           ink: '#1d1c1a',
           body: '#46433f',
           secondary: '#6f6a63',
-          muted: '#9c968d',
+          muted: '#716b64', // 原 #9c968d 在白底只有 2.9:1，12px 小字過不了 4.5:1
           border: '#e6e2da',
           surface: '#f1eee8',
           card: '#ffffff',
