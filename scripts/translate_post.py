@@ -415,6 +415,69 @@ def translate_parts(parts: list[str], reuse: dict[str, str]) -> list[str]:
     return [o or '' for o in out]
 
 
+# 卡片裡的固定標籤（dt、評價欄標題、使用感受／回購那兩行、小編點評）每段是分開翻的，
+# 模型每次選字都不一樣（Pricing／Pricing model／Price…），同一篇八張卡會出現三四種寫法。
+# 這些標籤在原文是固定字串，翻完照原文的順序逐個換成統一譯法。
+LABELS: dict[str, dict[str, str]] = {
+    '產品定位': {'en': 'Product positioning', 'ja': '商品の位置づけ', 'ko': '상품 포지셔닝'},
+    '服務定位': {'en': 'Service positioning', 'ja': 'サービスの位置づけ', 'ko': '서비스 포지셔닝'},
+    '景點定位': {'en': 'About the spot', 'ja': '観光地の位置づけ', 'ko': '관광지 포지셔닝'},
+    '產品價格': {'en': 'Price', 'ja': '価格', 'ko': '가격'},
+    '收費模式': {'en': 'Pricing', 'ja': '料金体系', 'ko': '요금 체계'},
+    '門票': {'en': 'Admission', 'ja': '入場料', 'ko': '입장료'},
+    '官網價格': {'en': 'Official price', 'ja': '公式価格', 'ko': '공식 가격'},
+    '每包膠原蛋白': {'en': 'Collagen per pack', 'ja': '1包あたりのコラーゲン', 'ko': '1포당 콜라겐'},
+    '主要特色': {'en': 'Key features', 'ja': '主な特徴', 'ko': '주요 특징'},
+    '主要規格': {'en': 'Key specs', 'ja': '主な仕様', 'ko': '주요 사양'},
+    '核心功能': {'en': 'Core functions', 'ja': '主な機能', 'ko': '핵심 기능'},
+    '保固期限': {'en': 'Warranty', 'ja': '保証期間', 'ko': '보증 기간'},
+    '隨附配件': {'en': 'Included accessories', 'ja': '付属品', 'ko': '구성품'},
+    '核心成分': {'en': 'Key ingredients', 'ja': '主要成分', 'ko': '핵심 성분'},
+    '劑量': {'en': 'Dosage', 'ja': '配合量', 'ko': '용량'},
+    '劑型': {'en': 'Form', 'ja': '剤形', 'ko': '제형'},
+    '複方成分': {'en': 'Other ingredients', 'ja': 'その他の成分', 'ko': '기타 성분'},
+    '包裝份量': {'en': 'Pack size', 'ja': '内容量', 'ko': '포장 단위'},
+    '產地': {'en': 'Origin', 'ja': '原産地', 'ko': '원산지'},
+    '適用場景': {'en': 'Best for', 'ja': '適したシーン', 'ko': '적합한 상황'},
+    '適合怎麼玩': {'en': 'How to enjoy it', 'ja': '楽しみ方', 'ko': '즐기는 방법'},
+    '官方資訊': {'en': 'Official information', 'ja': '公式情報', 'ko': '공식 정보'},
+    '網友正面評價': {'en': 'What users like', 'ja': '利用者の声（良い点）', 'ko': '사용자 긍정 후기'},
+    '網友負面評價': {'en': 'What users complain about', 'ja': '利用者の声（悪い点）', 'ko': '사용자 부정 후기'},
+    '實際使用感受：': {'en': 'Hands-on impressions: ', 'ja': '使用感：', 'ko': '실제 사용 후기: '},
+    '回購傾向：': {'en': 'Likelihood to repurchase: ', 'ja': 'リピート意向：', 'ko': '재구매 의향: '},
+    '合作體驗：': {'en': 'Working experience: ', 'ja': '取引の実感：', 'ko': '협업 경험: '},
+    '續約意願：': {'en': 'Likelihood to renew: ', 'ja': '契約更新の意向：', 'ko': '재계약 의향: '},
+    '入住體驗：': {'en': 'Stay experience: ', 'ja': '宿泊体験：', 'ko': '투숙 경험: '},
+    '回訪意願：': {'en': 'Likelihood to return: ', 'ja': '再訪の意向：', 'ko': '재방문 의향: '},
+    '小編點評': {'en': "Editor's take", 'ja': '編集部のひとこと', 'ko': '에디터 코멘트'},
+}
+LABEL_SLOTS = [
+    re.compile(r'(<dt>)(.*?)(</dt>)'),
+    re.compile(r'(<p class="col-title">)(.*?)(</p>)'),
+    re.compile(r'(<p class="repurchase-line"><strong>)(.*?)(</strong>)'),
+    re.compile(r'(<span class="lbl">)(.*?)(</span>)'),
+]
+
+
+def normalize_labels(source: str, translated: str) -> str:
+    """照原文順序把卡片固定標籤換成統一譯法；某一種標籤的數量對不上就那一種不動。"""
+    for pat in LABEL_SLOTS:
+        src = [m.group(2).strip() for m in pat.finditer(source)]
+        tr = list(pat.finditer(translated))
+        if len(src) != len(tr):
+            continue
+        out = []
+        last = 0
+        for m, label in zip(tr, src):
+            canon = LABELS.get(label, {}).get(LANG)
+            out.append(translated[last:m.start()])
+            out.append(m.group(1) + (canon if canon else m.group(2)) + m.group(3))
+            last = m.end()
+        out.append(translated[last:])
+        translated = ''.join(out)
+    return translated
+
+
 TAG_CHECK = ['h2', 'h3', 'p', 'li', 'img', 'a', 'table', 'tr', 'details', 'svg', 'div']
 
 
@@ -868,6 +931,7 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         print(f'  內文 {len(content)} 字元，切成 {len(parts)} 段，模型 {MODEL}')
         out_parts = translate_parts(parts, reuse)
         en_content = fix_terms(normalize_punct(translate_leftovers(translate_svg_texts(''.join(out_parts)))))
+        en_content = normalize_labels(content, en_content)
         if LANG == 'ja':
             en_content = collapse_ja_names(en_content, content)
         # 標題沒改、第一段（前言）沒改，標題與摘要也沿用
@@ -897,7 +961,7 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
     if CJK_PUNCT_RE.search(re.sub(r'<style[\s\S]*?</style>', '', translated['content'])):
         translated['content'] = normalize_punct(translated['content'])
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
-    fixed = fix_terms(translated['content'])
+    fixed = normalize_labels(content, fix_terms(translated['content']))
     if LANG == 'ja':
         fixed = collapse_ja_names(fixed, content)
     if fixed != translated['content']:
