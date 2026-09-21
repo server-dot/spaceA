@@ -34,7 +34,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
 - [x] 8 篇全翻完（2026-09-15，八篇合計不到 US$1）：161→359、326→360、308→362、283→363、224→364、214→365、187→366、112→367。英文分類建了 marketing-en／travel-en／food-en／beauty-en
   - 腳本踩過的坑都補進去了：Cloudflare 對大 payload 偶爾回 520（已加重試）、回應 JSON 前面有雜訊（從第一個 `{` 開始解）、中文 slug 的標籤在 WP 是百分比編碼（英文標籤改用英文名轉 slug，`description` 存中文原名當對照鍵）、模型會漏翻 SVG `<text>` 與卡片的 `<dt>` 標籤（加了 `translate_svg_texts`／`translate_leftovers` 兩道補翻）
   - `--force` 只覆蓋文章、翻譯吃快取；真的要重翻用 `--retranslate`
-- [ ] 逐篇肉眼看英文版：行程時間軸 SVG 有幾個標籤重疊（Lugao Coffee Estate／Stay near Shuishe Pier）、品牌英文名對不對（Cona's Chocolate、18度C 這種）、比較表欄位
+- [ ] 逐篇肉眼看英文版：品牌英文名對不對（Cona's Chocolate、18度C 這種）。SVG 標籤重疊與比較表擠欄 2026-09-21 已用 `SvgTextFit` ＋ `.compare-table` CSS 在前端修掉（36 個譯文網址掃過沒有超框／疊字）
 - [x] 英文版送 GSC — sitemap 早已提交且自動帶 /en，2026-09-21 GSC 已看到 /en /ja /ko 網址被檢索，不用另外送
 - [x] 其他頁面英文版（2026-09-15）：`/en/about`、`/en/standards`、`/en/contact`（表單字串在 `views/ContactForm.tsx`，Slack 通知帶 `lang`）、`/en/privacy`、`/en/terms`、`/en/popular`、`/en/search`。頁首頁籤與頁尾欄位改吃 `i18n` 的 `nav`／`footerColumns`，語言切換每頁對同一頁。文案是照中文版翻的，**兩邊改文案要一起改**（每個 en 檔頭有註明）
   - 「熱門排行」英文定 **Popular**（使用者選的，不是 Trending）
@@ -168,7 +168,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
   - 副標：不再寫死「精選 N 家口碑推薦，帶您找到最合適的 XX」，依主題自寫兩行；**只有數字變色**，其他全深色（模型自己挑詞上色會只上到半個詞）
   - 便利貼：原本引號框住「挑選時要看哪三件事」，模型會照抄成文案；改成「只寫三個項目本身」＋只能在頓號換行、不准把同一個字寫兩次
   - post 266 封面 media 280（雪梨歌劇院實景）。另加：徽章直徑約等於大標一行高、便利貼斜約 4 度、三行固定不亂斷（模型對尺寸指令吃得不準，徽章還是偏大）
-- [ ] 封面檔名要獨特 — n8n 每次都上傳 `cover.jpg`，WordPress 改名成 `cover-1.jpg` 之後被 Cloudflare 快取，換文章也拿到舊圖（post 283 一度顯示 266 的封面）。`上傳封面圖到WordPress` 的檔名要帶 slug 或時間戳
+- [x] 封面檔名要獨特（2026-09-21 改成 `cover-<yyyyMMdd-HHmmss>-<jobId 前 8 碼>.jpg`）— 原問題：n8n 每次都上傳 `cover.jpg`，WordPress 改名成 `cover-1.jpg` 之後被 Cloudflare 快取，換文章也拿到舊圖（post 283 一度顯示 266 的封面）。`上傳封面圖到WordPress` 的檔名要帶 slug 或時間戳
 - [x] Wix 網站的卡片圖 — Wix（wixstatic.com）的 og:image 是全站共用首頁那張，翻玩墨爾本、悠游墨爾本都抓成首頁圖。`Code in JavaScript2`（抓官方頁）改成：og:image 是 wixstatic 就只給 10 分，內文的 wixstatic.com/media 圖加 90 分（有 fill/fit 尺寸參數再加 20）。post 283 兩張已手動換
 - [x] 封面上傳前轉 JPEG — 新增 `封面圖壓成JPEG` 節點（Edit Image，resize 1600×900 onlyIfLarger ＋ format jpeg / quality 82），接在 `轉封面圖檔` 和 `上傳封面圖到WordPress` 之間，上傳檔名改 `cover.jpg`。實測 1.4MB PNG → 約 180KB JPEG。n8n 主機有 graphicsmagick，Edit Image 可用
 
@@ -176,13 +176,13 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [ ] StackTool 生成器的預估時間要改（`/Users/kc/stacktools/app/recommendation/page.tsx`）— UI 寫「研究 1～3 分鐘」「生成 3～5 分鐘」，實測研究 5～7 分鐘、完整生成 10～16 分鐘（8～10 家）。**改好先不要 push，使用者說等他決定再觸發部署**
 - [x] 商品類文章的封面：2026-09-14 post 308 定案走「AI 空景 + 真實商品去背合成」（`scripts/build_cover_scene.py` + `scripts/rmbg.swift`），不是拼貼（`build_cover_collage.py` 留著備用）。n8n 的 `封面圖提示詞` 還是 AI 畫整張，商品類跑完要手動換
 - [x] Tavily 額度用完就直接回前端錯誤（2026-09-15）— 推薦文-1／1b／3 三個 workflow 入口加「Tavily額度檢查」節點（打一次 basic 搜尋，error 輸出 → 回傳失敗狀態），不再燒 LLM。key 換成新的（credential「Tavily account」）；`~/stacktools/.env.local` 的 `TAVILY_API_KEY` 還是舊的
-- [ ] n8n 參考資料要改 — WF2 只搜關鍵字、只留摘要，抓到隱私政策這種無關頁；`格式化參考資料` 應改成列研究階段 `brandDetails[].reference_links`（社群討論串）＋有關的官方來源，不列官方產品頁。目前每篇靠手動補（見檢查清單 2b）
+- [x] n8n 參考資料已改（2026-09-21）：`格式化參考資料` 先列 WF2 背景來源（品牌官網網域的一律丟掉）、再列每家 `brandDetails[].reference_links` 各取 2 條社群討論串（PTT 板名／Dcard／Threads 自動標籤、跨品牌去重）。原問題：WF2 只搜關鍵字、只留摘要，抓到隱私政策這種無關頁；`格式化參考資料` 應改成列研究階段 `brandDetails[].reference_links`（社群討論串）＋有關的官方來源，不列官方產品頁。目前每篇靠手動補（見檢查清單 2b）
 - [x] post 112、187 的總結已回頭改成不點名品牌、不掛 CTA（2026-09-11）
 - [x] `docs/推薦文交件檢查清單.md` — 生成後的健檢流程（比較表價格、文案殘句與 B2B 殘留、卡片圖與連結、封面、SEO 前台檢查），附「推薦對象怎麼選」與「已經寫進 n8n 不用逐條人工檢」的對照表。範本文章：post 224 新店飯店
 
 ### 推薦文前言（n8n workflow `推薦文-3-完整生成`）
 - [x] `前言` 節點提示詞整個重寫（2026-09-14）— 舊版要求「兩個關鍵字加粗＋連到前言連結」，生出來是「南投不像旅遊手冊那樣硬邦邦…」每篇都要重寫。新版照 post 326 校過的前言當範式：第一句具體情境或最常犯的錯 → 市場怎麼分那一句用 `<strong>`（重點句，不是關鍵字）→ 帶一兩個研究摘要裡的數字 → 客戶自然帶一句、連結只掛品牌名 → 講完就停，禁「這篇比了 N 家…各有對應」公式收尾。有把 `brands`／`brandDetails` 的摘要餵進去讓它有數字可拿。**下一篇生出來要看它有沒有照做**
-- [ ] `總結` 節點還在強制「關鍵字加粗至少 1 次」，跟「加粗標重點不標關鍵字」衝突，下次順手改
+- [x] `總結` 節點（2026-09-21 已改：關鍵字自然出現不加粗，<strong> 只包 1～2 句判斷句）— 原本強制「關鍵字加粗至少 1 次」，跟「加粗標重點不標關鍵字」衝突，下次順手改
 
 ### 推薦文章節標題（n8n workflow `推薦文-3-完整生成`）
 - [x] 推薦清單章節的 h2 不再寫死「品牌推薦」— 新增 `章節標題` 節點（chainLlm，掛在 `抓人設` 後平行跑，共用既有 OpenRouter Chat Model），吃標題／關鍵字／品牌數／subject_type，依語意輸出一行 h2：量詞看主題（商品→款、店家公司飯店診所→家、景點→個、課程→門），商品類寫「5款外泌體保養品推薦」、店家類寫「精選8家新店飯店推薦」。`組卡片章節` 讀它的輸出，抓不到或超過 30 字就退回「品牌推薦」。節點 `onError: continueRegularOutput`，失敗不擋發文
