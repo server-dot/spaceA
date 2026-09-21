@@ -115,6 +115,23 @@ html.js .hero-line path {
     color: inherit;
   }
 
+  /* 比較表是照中文字寬排的：表頭 nowrap、儲存格 break-word。譯成日韓文後表頭變長（「1包あたりのコラーゲン」），
+     nowrap 的表頭把寬度吃光，商品名那欄被擠到一字一行。表頭改可折行、每欄給最小寬，品牌欄不折 */
+  .prose .compare-table th {
+    white-space: normal !important;
+    min-width: 5em;
+  }
+  .prose .compare-table td {
+    min-width: 5em;
+  }
+  .prose .compare-table th:first-child,
+  .prose .compare-table td:first-child {
+    white-space: nowrap !important;
+  }
+  .prose .compare-table td:nth-child(2) {
+    min-width: 9em;
+  }
+
   .prose h2::before {
     content: '✓';
     margin-right: 0.6rem;

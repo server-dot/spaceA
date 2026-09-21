@@ -35,7 +35,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
   - 腳本踩過的坑都補進去了：Cloudflare 對大 payload 偶爾回 520（已加重試）、回應 JSON 前面有雜訊（從第一個 `{` 開始解）、中文 slug 的標籤在 WP 是百分比編碼（英文標籤改用英文名轉 slug，`description` 存中文原名當對照鍵）、模型會漏翻 SVG `<text>` 與卡片的 `<dt>` 標籤（加了 `translate_svg_texts`／`translate_leftovers` 兩道補翻）
   - `--force` 只覆蓋文章、翻譯吃快取；真的要重翻用 `--retranslate`
 - [ ] 逐篇肉眼看英文版：行程時間軸 SVG 有幾個標籤重疊（Lugao Coffee Estate／Stay near Shuishe Pier）、品牌英文名對不對（Cona's Chocolate、18度C 這種）、比較表欄位
-- [ ] 英文版送 GSC（sitemap 會自動帶 /en 網址）
+- [x] 英文版送 GSC — sitemap 早已提交且自動帶 /en，2026-09-21 GSC 已看到 /en /ja /ko 網址被檢索，不用另外送
 - [x] 其他頁面英文版（2026-09-15）：`/en/about`、`/en/standards`、`/en/contact`（表單字串在 `views/ContactForm.tsx`，Slack 通知帶 `lang`）、`/en/privacy`、`/en/terms`、`/en/popular`、`/en/search`。頁首頁籤與頁尾欄位改吃 `i18n` 的 `nav`／`footerColumns`，語言切換每頁對同一頁。文案是照中文版翻的，**兩邊改文案要一起改**（每個 en 檔頭有註明）
   - 「熱門排行」英文定 **Popular**（使用者選的，不是 Trending）
   - 順手修：中文熱門排行與搜尋原本會混進英文文章，已依分類 `-en` 過濾
@@ -49,7 +49,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
   - 工具鏈：`translate_post.py`（翻＋修正表）→ `check_translation.py --review`（區塊配對＋Gemini 審）→ 我讀報告、直接改 `scripts/.translate-cache/<id>.<lang>.json` 再 `--force` 推回 WP
   - 韓文人名地名音譯品質仍是最弱的一環（模型有時用韓式漢字音、有時用國語音），已在提示詞要求國語音譯＋全篇一致，但只能抽查
   - 日文「小編點評」定為「編集部のひとこと」、韓文「에디터 코멘트」；日文店名一律漢字原名不加片假名
-- [ ] 翻好的文章送 GSC（seo@stack.com.tw；Chrome 擴充在 search.google.com 沒權限，要使用者自己貼）
+- [x] 翻好的文章送 GSC — 同上，sitemap 自動帶，GSC 已在爬 /ja /ko
 - 教訓：先部署程式再建 WP 資料。之前線上還是兩語版時就建了 `-ja` 分類，日文分類直接漏到中文首頁
 
 ## post 497 台北隆鼻診所 校稿（2026-09-16 已完成）
@@ -122,7 +122,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 5. ~~**第三篇澳洲一日遊**~~ — 完成（post 283），還剩七個主題，動筆前先照 `docs/推薦文交件檢查清單.md` 決定「推薦對象」要選產品還是服務（卡片要圖就選產品）
 
 ## 進行中
-- [ ] 寫新文章 — 目前 WordPress 只有 3 篇（都在「行銷」「影音器材」分類），內容太少，熱門排行/分類頁/首頁都撐不起來，要盡快補文章
+- [ ] 寫新文章 — 十篇交辦只剩寵物用品（2026-09-21 核對；下面清單是進度）
 
   待寫主題（2026-09-09 交辦，十篇）：
   - [x] 外泌體保養品 — post 214 `/beauty/exosome-skincare-recommendation/`
@@ -213,7 +213,7 @@ post 308 `/food/taiwan-dark-chocolate-guide/` 14 項健檢全部修完並已寫�
 - [x] FAQ schema 元件（`src/components/seo/FaqJsonLd.tsx`，已在文章頁套用）
 - [x] 文章頁內容解析（`src/lib/content-parsers.ts`）— 從 `post.content` 抽出「結論」「常見問題」「這篇怎麼寫出來的」，幫 h2 補錨點 id 產生「本篇目錄」（TOC），並清掉 StackTool 自帶的舊 `<nav class="toc">`
 - [x] 文章頁 FAQ 自動偵測 — 兩種格式都認：選購指南的 `<h2>常見問題</h2>` + `<h3>Q：…</h3>`／`<p>A：…</p>`，以及 StackTool 推薦文的 `<h2>FAQ</h2>` + `<details class="faq-item">`（`.question-text`／`.answer-container`）。解析後套 FaqJsonLd
-- [ ] 選配：`extractConclusion` 是否也認「總結」— StackTool 推薦文的結論叫「總結」且放在文末，所以那些文章的「先看結論」框目前是空的。認了就能把結論前置（對 GEO 有利），但會改動既有文章版面
+- [x] 選配：`extractConclusion` 也認「總結」（已做，`CONCLUSION_HEADING_PATTERN` 含結論／總結／Conclusion／まとめ／정리）— 原問題：— StackTool 推薦文的結論叫「總結」且放在文末，所以那些文章的「先看結論」框目前是空的。認了就能把結論前置（對 GEO 有利），但會改動既有文章版面
 - [x] HowTo schema（`HowToJsonLd`）— 只給知識分享用，推薦文的 `<ol>` 是排名清單不套
 
 ### 文章頁區塊順序
