@@ -117,6 +117,21 @@ def process(post_id, dry_run):
         json.dump({'content': new_content}, f, ensure_ascii=False); body = f.name
     r = curl_json(f'{WP}/wp-json/wp/v2/posts/{post_id}', 'POST', data=body); os.unlink(body)
     print(f'  → post {post_id} 更新 {changed} 張' if r.get('id') else f'  ✗ 更新失敗：{str(r)[:200]}')
+    if r.get('id'):
+        revalidate(post_id, r.get('slug', post['slug']))
+
+def revalidate(post_id, post_slug):
+    """換完圖直接叫正式站清這篇的快取；失敗只提示，改用 scripts/revalidate.sh"""
+    secret = ENV.get('REVALIDATE_SECRET')
+    if not secret:
+        print('  ⚠ .env.local 沒有 REVALIDATE_SECRET，前台要自己跑 scripts/revalidate.sh'); return
+    cats = curl_json(f'{WP}/wp-json/wp/v2/categories?post={post_id}&_fields=slug')
+    cat = cats[0]['slug'] if isinstance(cats, list) and cats else ''
+    site = ENV.get('REVALIDATE_SITE_URL', 'https://spacea.com.tw').rstrip('/')
+    out = subprocess.run(['curl', '-s', '-o', '/dev/null', '-w', '%{http_code}', '-X', 'POST', f'{site}/api/revalidate',
+                          '-H', f'x-revalidate-secret: {secret}', '-H', 'Content-Type: application/json',
+                          '-d', json.dumps({'slug': post_slug, 'category': cat})], capture_output=True, text=True).stdout
+    print(f'  ✓ 前台快取已清' if out == '200' else f'  ⚠ 清前台快取回 {out}，自己跑 scripts/revalidate.sh {post_slug} {cat}')
 
 def main():
     ap = argparse.ArgumentParser()

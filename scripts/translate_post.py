@@ -841,7 +841,28 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         print(f'  ✓ 建立譯文 post {saved["id"]}：{saved["link"]}')
     cat_slug = wp('GET', f'categories/{category_ids[0]}')['slug'] if category_ids else ''
     route_cat = cat_slug[: -len(SUFFIX)] if cat_slug.endswith(SUFFIX) else cat_slug
-    print(f'  前台：{ENV.get("NEXT_PUBLIC_SITE_URL", "")}/{LANG}/{route_cat}/{slug}（ISR 最多一小時後換新）')
+    revalidate(target_slug, cat_slug)
+    print(f'  前台：https://spacea.com.tw/{LANG}/{route_cat}/{slug}')
+
+
+def revalidate(post_slug: str, category_slug: str) -> None:
+    """寫完 WP 直接叫正式站清快取，不用再手動跑 scripts/revalidate.sh。失敗只印警告，譯文已經存好了。"""
+    secret = ENV.get('REVALIDATE_SECRET')
+    if not secret or not category_slug:
+        print('  ⚠ 沒有 REVALIDATE_SECRET 或分類，前台要自己跑 scripts/revalidate.sh', file=sys.stderr)
+        return
+    site = ENV.get('REVALIDATE_SITE_URL', 'https://spacea.com.tw').rstrip('/')
+    req = urllib.request.Request(
+        f'{site}/api/revalidate',
+        data=json.dumps({'slug': post_slug, 'category': category_slug}).encode(),
+        headers={'x-revalidate-secret': secret, 'Content-Type': 'application/json'},
+        method='POST',
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            print(f'  ✓ 前台快取已清（{resp.status}）')
+    except Exception as e:  # noqa: BLE001
+        print(f'  ⚠ 清前台快取失敗：{e}，自己跑 scripts/revalidate.sh {post_slug} {category_slug}', file=sys.stderr)
 
 
 def main() -> None:
