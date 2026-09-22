@@ -41,7 +41,10 @@ export const EDITOR_BIO =
 // 空陣列就不輸出 sameAs 欄位。填的要是本人／本公司實際經營、公開可看的頁面，不要填沒在用的帳號。
 // 使用者決定（2026-09-22）：不填 stack.com.tw——sameAs 等於跟 Google 說「spaceA ＝ 積木」，
 // 讀者查到會覺得推薦文是代理商業配；頁尾的公司名是法規揭露，維持原樣就好
-export const EDITOR_SAME_AS: string[] = []
+// 編輯本人的脆：講 AI 與 n8n，跟簡介「現職 AI 流程開發工程師」對得上，證明作者是真人。
+// 使用者要低調：只在文章「編者介紹」職稱旁放一個小字連結（rel=me），首頁／關於頁不放
+export const EDITOR_THREADS_URL = 'https://www.threads.com/@q_kangber'
+export const EDITOR_SAME_AS: string[] = [EDITOR_THREADS_URL]
 export const ORG_SAME_AS: string[] = []
 
 // 「加入寫手團隊」的 Google 表單（跟 mybest 一樣直接連表單，不在站內做頁面）
