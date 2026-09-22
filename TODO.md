@@ -109,6 +109,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
 - excerpt、Yoast description 手寫；Yoast og:image 指到封面 media 784；卡片圖 `localize_images.py` 搬進媒體庫（media 788～797）
 - 2026-09-22 看了客戶 Drive（客戶/14 南輝-貝恩寵物）：2026-02-02 會議整理寫「商品導購一樣到南輝商城」，四語版的貝恩連結（前言＋卡片）都從 baan.com.tw 改到 nanhuei.com/products/baan-deodorizing-spray，價格改南輝的 NT$570（定價 600）。Drive 裡「全系列商品說明」PDF 和「商品資訊」sheet（0409 商品會議）有官網沒寫的第一手資料：無香款全成分（柿子、蜜羅木、維生素C）、SGS 總生菌檢測＋無甲醛／重金屬／塑化劑、30cm 按 2～3 下、噴毛孩要從背後、無香款可當狗乾洗澡、甜蜜夢境是痱子粉味；已補進卡片／比較表／三大重點，譯文局部重翻。內含食用酒精（客戶說不要強調，文章沒寫）。同一份會議記錄：2026 主推是地板清潔劑、除臭紙巾、除臭噴霧、擴香；客戶自己列的競品參考站是毛天使、臭味滾；產品賣點對比（柿子萃取中和 vs 香氛掩蓋、精油對貓的毒性）
 - [x] 封面重生（media 799，`best-pet-deodorizing-sprays-cover.jpg`）：第一張副標被塞進整句標題（n8n 沒切逗號），OpenRouter 儲值後用 `scratchpad/gen_cover785.py` 重生。**Yoast og:image 這次 REST meta 寫不進去**（`meta` 回空物件、yoast_head_json 還是舊圖），改用 WP admin JS：`wp.data.dispatch('yoast-seo/editor').setFacebookPreviewImage({url,id,width,height,alt:''})`＋`setTwitterPreviewImage` 再 `savePost()`，前台立刻換新
+- [x] 2026-09-22 晚：全篇 137 段逐段對 anti-ai-style.md 判斷（不是正則），清掉假擬人（對付／拿／衝著／顧到／追不上／主攻）、報幕、金句、雷區；n8n `重點快答`、`組SVG圖卡（一次解答）` 的「雷區」改「常見錯誤」（其他舊文章的 SVG 還是雷區，要改再說）。中文未定案，三語先不翻
 - [x] 2026-09-22 下午：取捨章三段＋三大重點三段改成第一人稱查證口吻（規則見檢查清單 2），FAQ 從客戶飼主問題補 3 題，第二張規格表（酒精／酸鹼／檢驗／開封／貓咪注意）；n8n `比較段落`、`前三章` 提示詞加同樣規則
 - [x] 英日韓翻譯（post 800／801／802）。韓文版同一個品牌每段音譯都不一樣（毛天使 → 마오톈스／마오천사／마오톈시），還有「臭味滾(臭味滾)」和沒翻的價格括號；手修完順手把 `collapse_ko_names` 寫進 `translate_post.py`（同一括號漢字下所有變體收斂成最常見那個、括號漢字只留第一次），en／ko 標題的破折號改掉
 
