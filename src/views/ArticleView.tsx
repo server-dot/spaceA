@@ -17,7 +17,7 @@ import FaqJsonLd from '@/components/seo/FaqJsonLd'
 import HowToJsonLd from '@/components/seo/HowToJsonLd'
 import ItemListJsonLd from '@/components/seo/ItemListJsonLd'
 import { extractBrandList } from '@/lib/brand-list'
-import { SITE_NAME, EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_AVATAR_URL, EDITOR_THREADS_URL, SITE_URL } from '@/lib/constants'
+import { SITE_NAME, EDITORIAL_EMAIL, EXCLUDED_CATEGORY_SLUGS, EDITOR_AVATAR_URL, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { decodeRouteParam } from '@/lib/route-params'
 import {
@@ -345,15 +345,6 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
                       <span className="rounded-full bg-brand-50 text-brand-700 text-xs px-2.5 py-1">
                         {t.editorRole}
                       </span>
-                      {/* rel=me：告訴搜尋引擎這是作者本人的站外檔案（跟 JSON-LD 的 sameAs 同一件事）。刻意做成小灰字不搶眼 */}
-                      <a
-                        href={EDITOR_THREADS_URL}
-                        rel="me noopener"
-                        target="_blank"
-                        className="text-xs text-paper-muted hover:text-paper-secondary underline underline-offset-2"
-                      >
-                        Threads
-                      </a>
                     </div>
                     <p className="text-sm leading-relaxed text-paper-secondary mt-2">{t.editorBio}</p>
                   </div>
