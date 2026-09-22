@@ -1,15 +1,19 @@
-import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { EDITOR_SAME_AS, ORG_SAME_AS, SITE_NAME, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
 import { countWords, resolveSummary } from '@/lib/format'
-import { deriveMetaDescription } from '@/lib/content-parsers'
+import { ReferenceItem, deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
 
 interface ArticleJsonLdProps {
   post: WPPost
+  /** 「參考資料」章的外部來源（parseArticleContent 的 references），有就輸出 citation */
+  references?: ReferenceItem[] | null
+  /** 前言第一段有標到 `.article-lead` 才輸出 speakable，選擇器對不到元素會被 Rich Results Test 報錯 */
+  hasLead?: boolean
 }
 
-export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
+export default function ArticleJsonLd({ post, references, hasLead }: ArticleJsonLdProps) {
   const categorySlug = post.categories.nodes[0]?.slug ?? 'uncategorized'
   const lang = langOfCategorySlug(categorySlug)
   const url = `${SITE_URL}${articleHref(lang, categorySlug, post.slug)}`
@@ -43,13 +47,25 @@ export default function ArticleJsonLd({ post }: ArticleJsonLdProps) {
       name: ui(lang).editorName,
       jobTitle: ui(lang).editorRole,
       url: `${SITE_URL}${langPrefix(lang)}/about`,
+      sameAs: EDITOR_SAME_AS.length > 0 ? EDITOR_SAME_AS : undefined,
       worksFor: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
     },
     publisher: {
       '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
       name: SITE_NAME,
       url: SITE_URL,
+      sameAs: ORG_SAME_AS.length > 0 ? ORG_SAME_AS : undefined,
     },
+    // 參考資料章的來源列成 citation：AI 引擎判斷「這篇有沒有查證」最直接的機器可讀訊號
+    citation:
+      references && references.length > 0
+        ? references.map((r) => ({ '@type': 'CreativeWork', name: r.name, url: r.url }))
+        : undefined,
+    // 標題＋前言第一段（含 <strong> 的可引用結論）給語音助理／AI 摘要直接取用
+    speakable: hasLead
+      ? { '@type': 'SpeakableSpecification', cssSelector: ['article h1', '.article-lead'] }
+      : undefined,
     isPartOf: {
       '@type': 'WebSite',
       name: SITE_NAME,

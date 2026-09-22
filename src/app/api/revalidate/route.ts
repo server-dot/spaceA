@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { articleHref, categoryHref, homeHref, langOfCategorySlug } from '@/lib/i18n'
+import { submitToIndexNow } from '@/lib/indexnow'
 
 /**
  * WordPress 端送來的是 WP 的分類／文章 slug（英日韓版帶 -en／-ja／-ko），
@@ -24,5 +25,8 @@ export async function POST(request: NextRequest) {
   const paths = [articleHref(lang, category, slug), categoryHref(lang, category), homeHref(lang)]
   paths.forEach((p) => revalidatePath(p))
 
-  return NextResponse.json({ revalidated: true, lang, paths })
+  // 清完快取順手通知 Bing 等引擎來抓（IndexNow）。要 await，Vercel 回應送出後函式就會被收掉
+  const indexnow = await submitToIndexNow(paths)
+
+  return NextResponse.json({ revalidated: true, lang, paths, indexnow })
 }

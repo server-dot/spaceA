@@ -1,5 +1,15 @@
 # spaceA 開發進度
 
+## 2026-09-22 SEO／GEO 技術面加深（已 commit，待部署）
+
+使用者問「還能怎麼深化 SEO／GEO」，基礎（sitemap／hreflang／9 種 JSON-LD／llms.txt／Content-Signal）都齊了，補的是機器可讀的「可驗證」訊號：
+- Article JSON-LD 加 `citation`：「參考資料」章的每個 <a> 變一筆 CreativeWork（`extractReferences`，推薦文 `.article-references` 與知識文 <ol> 都認）
+- Article JSON-LD 加 `speakable`：選擇器 `article h1` ＋ `.article-lead`。推薦文的 `.article-lead` 是「前言」後第一段（第一句就是包 strong 的可引用結論）；知識文結論被抽到「先看結論」框，class 掛在框裡那段，不做內文第一段備援（gear-checklist 第一段是表格註腳，會標錯）
+- author／publisher／Organization 加 `sameAs`（`EDITOR_SAME_AS`／`ORG_SAME_AS` in constants.ts）。**阿康的站外檔案網址還沒填**，空陣列不輸出；Organization 另補 `legalName` 積木媒體
+- `/llms-full.txt`：全站四語全文純文字版（h2/h3→#、卡片 dt/dd 攤成「欄位：值」、排名數字併進 h3、連結保留網址），套同一套 `cleanUpstreamHtml` 拆掉 StackTool 編者介紹；llms.txt 有連過去。約 1.4MB
+- IndexNow：`/api/revalidate` 清完快取順手 POST api.indexnow.org（`lib/indexnow.ts`），金鑰 `INDEXNOW_KEY`，驗證檔 `/indexnow-key.txt` 動態吐。**Vercel 環境變數要手動加同一把金鑰**（本機 .env.local 已有），沒設就靜靜跳過
+- 舊 TODO 說的 soft 404 早在 85a65f0 修掉了，線上已回 404
+
 ## 行動版頁首（2026-09-15 修好）
 
 使用者說「RWD 沒做好，大跑版」。頁首把 logo ＋ 4 個選單 ＋ 搜尋框 ＋ 語言鈕排在同一個不換行的 flex，

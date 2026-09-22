@@ -1,4 +1,4 @@
-import { SITE_NAME, SITE_URL, EDITORIAL_EMAIL } from '@/lib/constants'
+import { SITE_NAME, SITE_URL, EDITORIAL_EMAIL, ORG_SAME_AS, COMPANY_NAME } from '@/lib/constants'
 
 export default function OrganizationJsonLd() {
   const schema = {
@@ -10,6 +10,9 @@ export default function OrganizationJsonLd() {
     logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-sa-mark.png` },
     description:
       'spaceA 是推薦文內容平台，做法是彙整論壇、社群、電商評論與專業評測中的公開討論，交叉核對後由編輯部撰寫，並標註每則資訊的來源。',
+    // 站名 spaceA 是品牌，法律實體是積木媒體；兩個寫在一起搜尋引擎才對得起來
+    legalName: COMPANY_NAME,
+    sameAs: ORG_SAME_AS.length > 0 ? ORG_SAME_AS : undefined,
     publishingPrinciples: `${SITE_URL}/standards`,
     correctionsPolicy: `${SITE_URL}/standards#corrections`,
     contactPoint: {

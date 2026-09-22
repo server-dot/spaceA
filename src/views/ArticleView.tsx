@@ -218,7 +218,11 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
 
   return (
     <>
-      <ArticleJsonLd post={post} />
+      <ArticleJsonLd
+        post={post}
+        references={parsed.references}
+        hasLead={parsed.hasLead || (isKnowledge && !!parsed.conclusion)}
+      />
       <BreadcrumbJsonLd items={breadcrumbs} />
       {parsed.faq && <FaqJsonLd items={parsed.faq} />}
       {parsed.howTo && <HowToJsonLd name={parsed.howTo.sectionTitle} steps={parsed.howTo.steps} />}
@@ -289,7 +293,8 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
                   <h2 className="absolute top-0 left-6 -translate-y-1/2 bg-brand-600 text-white text-xs font-bold tracking-[0.14em] rounded-[3px] px-3.5 py-1">
                     {t.conclusionFirst}
                   </h2>
-                  <p className="text-[15.5px] leading-loose text-paper-body text-balance">
+                  {/* article-lead：Article JSON-LD 的 speakable 選擇器，知識文的可引用段落就是這段結論 */}
+                  <p className="article-lead text-[15.5px] leading-loose text-paper-body text-balance">
                     {parsed.conclusion.body}
                   </p>
                   {parsed.conclusion.takeaways.length > 0 && (

@@ -29,11 +29,20 @@ export interface ParseArticleContentOptions {
   faqLabel?: string
 }
 
+export interface ReferenceItem {
+  name: string
+  url: string
+}
+
 export interface ParsedArticleContent {
   conclusion: { body: string; takeaways: string[] } | null
   faq: FaqItem[] | null
   howTo: { sectionTitle: string; steps: HowToStepItem[] } | null
   provenance: string[] | null
+  /** 「參考資料」章列出的外部來源，餵給 Article JSON-LD 的 citation；文章沒有這章就是 null */
+  references: ReferenceItem[] | null
+  /** 前言第一段有沒有被標成 `.article-lead`（有才輸出 speakable，選擇器指到空的會被 Rich Results 報錯） */
+  hasLead: boolean
   toc: { id: string; label: string }[]
   /** 抽掉「結論」「常見問題」「這篇怎麼寫出來的」區塊、並幫剩餘 H2 補上錨點 id 之後的內文，交給既有的 prose 樣式渲染 */
   bodyHtml: string
@@ -104,6 +113,11 @@ function stripUpstreamAuthorBlock(html: string): string {
     .replace(/<div[^>]*\bclass="author-block"[^>]*>[\s\S]*?<\/div>\s*/gi, '')
 }
 
+/** 給 llms-full.txt 這類非頁面輸出用：跟頁面同一套「拆掉 StackTool 自帶的目錄／標題樣式／編者介紹」 */
+export function cleanUpstreamHtml(html: string): string {
+  return stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
+}
+
 function cutSection(html: string, heading: string): { block: string; rest: string } | null {
   const re = new RegExp(`<h2[^>]*>\\s*${heading}\\s*</h2>([\\s\\S]*?)(?=<h2[\\s>]|$)`, 'i')
   const match = html.match(re)
@@ -172,6 +186,53 @@ function extractProvenance(html: string): { provenance: string[] | null; rest: s
   if (paragraphs.length === 0) return { provenance: null, rest: html }
 
   return { provenance: paragraphs, rest: cut.rest }
+}
+
+const REFERENCES_HEADING_PATTERN = '(?:參考資料|參考來源|資料來源|References|Sources|参考資料|参考文献|참고 자료|참고자료|출처)'
+
+/**
+ * 「參考資料」章的每個連結變成一筆 citation。推薦文是 `.article-references` 裡 [1] <a>…<br>，
+ * 知識文是 <ol><li><a>，兩種都只認 <a href>；同一個網址出現兩次只留第一筆。
+ * 章節本身留在內文不抽走（讀者要看得到），這裡只是讀出來。
+ */
+export function extractReferences(html: string): ReferenceItem[] | null {
+  const re = new RegExp(`<h2[^>]*>\\s*${REFERENCES_HEADING_PATTERN}\\s*</h2>([\\s\\S]*?)(?=<h2[\\s>]|$)`, 'i')
+  const match = html.match(re)
+  if (!match) return null
+  const seen = new Set<string>()
+  const items: ReferenceItem[] = []
+  for (const m of match[1].matchAll(/<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)) {
+    const url = m[1].replace(/&amp;/g, '&').trim()
+    if (!/^https?:\/\//i.test(url) || seen.has(url)) continue
+    const name = stripTags(m[2]).replace(/^\[\d+\]\s*/, '')
+    if (!name) continue
+    seen.add(url)
+    items.push({ name, url })
+  }
+  return items.length > 0 ? items : null
+}
+
+const LEAD_HEADING_PATTERN = '(?:前言|導言|Introduction|Overview|はじめに|序論|서론|들어가며)'
+
+/**
+ * 前言第一段掛上 `.article-lead`，給 Article JSON-LD 的 speakable 當 cssSelector。
+ * 那段的第一句就是可被引用的結論（含 <strong>），語音助理與 AI 摘要直接取這段。
+ * 沒有「前言」標題的舊文就標內文第一個像樣的 <p>；但結論已經被抽到「先看結論」框的知識文不做這個備援
+ * （那時內文第一段多半是表格註腳，speakable 由頁面把 .article-lead 掛在結論框上）。
+ */
+function markLeadParagraph(html: string, allowFallback: boolean): { html: string; hasLead: boolean } {
+  const afterHeading = new RegExp(`(<h2[^>]*>\\s*${LEAD_HEADING_PATTERN}\\s*</h2>\\s*)<p(?![^>]*\\bclass=)`, 'i')
+  if (afterHeading.test(html)) {
+    return { html: html.replace(afterHeading, '$1<p class="article-lead"'), hasLead: true }
+  }
+  if (!allowFallback) return { html, hasLead: false }
+  let done = false
+  const marked = html.replace(/<p(?![^>]*\bclass=)([^>]*)>([\s\S]*?)<\/p>/i, (full, attrs: string, inner: string) => {
+    if (done || stripTags(inner).length < 30) return full
+    done = true
+    return `<p class="article-lead"${attrs}>${inner}</p>`
+  })
+  return { html: marked, hasLead: done }
 }
 
 function injectTocAnchors(html: string): { html: string; toc: ParsedArticleContent['toc'] } {
@@ -275,7 +336,7 @@ export function parseArticleContent(
     faqLabel = '常見問題',
   } = options
 
-  const cleaned = stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
+  const cleaned = cleanUpstreamHtml(html)
   const { conclusion, rest: afterConclusion } = shouldExtractConclusion
     ? extractConclusion(cleaned)
     : { conclusion: null, rest: cleaned }
@@ -286,7 +347,9 @@ export function parseArticleContent(
   const { howTo, rest: afterHowTo } = shouldExtractHowTo
     ? extractHowTo(afterProvenance)
     : { howTo: null, rest: afterProvenance }
-  const { html: fullBodyHtml, toc } = injectTocAnchors(afterHowTo)
+  const references = extractReferences(afterHowTo)
+  const { html: withLead, hasLead } = markLeadParagraph(afterHowTo, !conclusion)
+  const { html: fullBodyHtml, toc } = injectTocAnchors(withLead)
 
   // 常見問題要排在總結前面，所以把「總結」以後的內容切出來，頁面在中間插入 FAQ
   const summaryMatch = /<h2[^>]*>\s*(?:總結|結語|Conclusion|Summary|Final Thoughts|まとめ|정리)\s*<\/h2>/i.exec(fullBodyHtml)
@@ -304,7 +367,7 @@ export function parseArticleContent(
     else toc.push(entry)
   }
 
-  return { conclusion, faq, howTo, provenance, toc, bodyHtml, bodyTailHtml }
+  return { conclusion, faq, howTo, provenance, references, hasLead, toc, bodyHtml, bodyTailHtml }
 }
 
 /**

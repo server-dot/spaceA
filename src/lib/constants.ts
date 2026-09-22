@@ -37,5 +37,10 @@ export const EDITOR_ROLE = '內容編輯'
 export const EDITOR_BIO =
   '現職 AI 流程開發工程師，曾任 IG 文章寫手、珠寶公司行銷文案編輯。習慣在下單前先問 AI，再開五六個分頁逐項比價，喜歡滑 Threads 看實際使用者的評價與心得。'
 
+// JSON-LD 的 sameAs：讓搜尋引擎／AI 引擎把站上掛名的人和公司對到站外可查證的檔案（E-E-A-T 的「可驗證」那一半）。
+// 空陣列就不輸出 sameAs 欄位。填的要是本人／本公司實際經營、公開可看的頁面，不要填沒在用的帳號
+export const EDITOR_SAME_AS: string[] = []
+export const ORG_SAME_AS: string[] = ['https://stack.com.tw']
+
 // 「加入寫手團隊」的 Google 表單（跟 mybest 一樣直接連表單，不在站內做頁面）
 export const JOIN_FORM_URL = process.env.NEXT_PUBLIC_JOIN_FORM_URL || 'https://docs.google.com/forms/d/1WI3WVzHp4443H7Z-Rh2okJPcL71EjLmcY3SKyRMs0A0/viewform'
