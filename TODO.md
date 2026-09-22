@@ -89,6 +89,7 @@ mobile-first indexing 直接扣分）。原本就有這問題，搜尋框改常�
 - 生成器給的 10 張卡全部重寫：淨毒五郎抓到翠柏香氣版（1sdf）換成純粹無香版（1sdd，同價 NT$369）；木酢達人、水魔素抓空（黃框），照官網手填——木酢是 1L 濃縮液 NT$239 起不是即用噴霧，水魔素 300ml NT$240 的成分只在系列頁有（水果單寧酸）；毛天使價格生成器寫「366/385/589 多組」，官網是 NT$366（定價 385）；汪喵星球補上全成分；梧天家補 SGS 12 項＋動物口服無急毒性；比較表改成「款名容量／官網價／除臭成分／能不能噴毛孩身上」；「實際使用感受／回購傾向」兩行、「官網未列獲獎」句拿掉。每格對過的網址在 `scratchpad/pet/facts.md`
 - 取捨章三段的數字原本是模型自估（酵素劑 NT$300～600、專業清洗 1500～3000、清淨機 3000～15000）全部換成十款的真實價格；三大重點、一次看懂、FAQ、總結全部重寫成有錨點的版本；參考資料節原本整節空白（n8n bug，見上），手補 11 條 PTT／部落格／Threads（Dcard 連結 curl 403 沒放）
 - excerpt、Yoast description 手寫；Yoast og:image 指到封面 media 784；卡片圖 `localize_images.py` 搬進媒體庫（media 788～797）
+- 2026-09-22 看了客戶 Drive（客戶/14 南輝-貝恩寵物）：2026-02-02 會議整理寫「商品導購一樣到南輝商城」，四語版的貝恩連結（前言＋卡片）都從 baan.com.tw 改到 nanhuei.com/products/baan-deodorizing-spray，價格改南輝的 NT$570（定價 600）。同一份會議記錄：2026 主推是地板清潔劑、除臭紙巾、除臭噴霧、擴香；客戶自己列的競品參考站是毛天使、臭味滾；產品賣點對比（柿子萃取中和 vs 香氛掩蓋、精油對貓的毒性）
 - [x] 封面重生（media 799，`best-pet-deodorizing-sprays-cover.jpg`）：第一張副標被塞進整句標題（n8n 沒切逗號），OpenRouter 儲值後用 `scratchpad/gen_cover785.py` 重生。**Yoast og:image 這次 REST meta 寫不進去**（`meta` 回空物件、yoast_head_json 還是舊圖），改用 WP admin JS：`wp.data.dispatch('yoast-seo/editor').setFacebookPreviewImage({url,id,width,height,alt:''})`＋`setTwitterPreviewImage` 再 `savePost()`，前台立刻換新
 - [x] 英日韓翻譯（post 800／801／802）。韓文版同一個品牌每段音譯都不一樣（毛天使 → 마오톈스／마오천사／마오톈시），還有「臭味滾(臭味滾)」和沒翻的價格括號；手修完順手把 `collapse_ko_names` 寫進 `translate_post.py`（同一括號漢字下所有變體收斂成最常見那個、括號漢字只留第一次），en／ko 標題的破折號改掉
 
