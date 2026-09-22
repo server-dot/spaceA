@@ -223,10 +223,27 @@ html.js .hero-line path {
     margin-bottom: 0;
   }
 
-  /* 品牌卡片的圖：StackTool 內文寫死 object-fit:contain，圖不是 2:1（例如 16:9 的拼圖、官網 og 圖）
-     時兩側會留白邊，看起來像跑版。改成 cover 讓圖填滿 16:8 的框，多出來的邊裁掉。 */
-  .prose .brand-card .card-hero img {
+  /* 品牌卡片的圖：官網商品照多半是 1:1，卡片框是 16:8。以前用 cover 填滿會把瓶身上下切掉
+     （2026-09-22 使用者要求整張放進去）。content-parsers 的 layerCardHeroImages 會在圖前面多塞一張
+     同源的 .hero-bg：放大模糊當底，上面那張 contain 完整顯示，兩側不會是死白。 */
+  /* 底圖比框大一圈再用 clip-path 切回框內：模糊的邊緣才不會透出底色；
+     不能用 overflow:hidden，掛在框外下緣的 .hero-tag 會被切掉 */
+  .prose .brand-card .card-hero img.hero-bg {
+    position: absolute;
+    inset: -40px;
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+    clip-path: inset(40px);
     object-fit: cover;
+    object-position: center;
+    filter: blur(28px) saturate(0.85);
+    opacity: 0.55;
+    border-radius: 0;
+    margin: 0;
+  }
+  .prose .brand-card .card-hero img:not(.hero-bg) {
+    position: relative;
+    object-fit: contain;
     object-position: center;
   }
 

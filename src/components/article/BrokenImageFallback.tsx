@@ -12,6 +12,11 @@ const FALLBACK_SRC = '/logo-sa-mark.png'
 function markBroken(img: HTMLImageElement) {
   if (img.dataset.broken) return
   img.dataset.broken = '1'
+  // 卡片圖底下那層模糊底圖壞了就直接藏起來，不要把 logo 也糊成一片
+  if (img.classList.contains('hero-bg')) {
+    img.style.display = 'none'
+    return
+  }
   img.src = FALLBACK_SRC
   img.srcset = ''
   img.alt = ''

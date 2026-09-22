@@ -113,6 +113,19 @@ function stripUpstreamAuthorBlock(html: string): string {
     .replace(/<div[^>]*\bclass="author-block"[^>]*>[\s\S]*?<\/div>\s*/gi, '')
 }
 
+/**
+ * 品牌卡片的產品圖大多是 1:1 的官網商品照，卡片框是 16:8：用 cover 會把瓶身上下切掉，
+ * 用 contain 兩側又是死白。改成兩層：底下同一張圖放大模糊當底色，上面整張 contain 完整顯示。
+ * 只在頁面用，llms-full.txt 那條不需要多一張圖。
+ */
+function layerCardHeroImages(html: string): string {
+  return html.replace(
+    /(<div class="card-hero">)\s*<img\s([^>]*?)src="([^"]+)"([^>]*)>/gi,
+    (_, open: string, before: string, src: string, after: string) =>
+      `${open}<img class="hero-bg" src="${src}" alt="" aria-hidden="true" loading="lazy"><img ${before}src="${src}"${after}>`
+  )
+}
+
 /** 給 llms-full.txt 這類非頁面輸出用：跟頁面同一套「拆掉 StackTool 自帶的目錄／標題樣式／編者介紹」 */
 export function cleanUpstreamHtml(html: string): string {
   return stripUpstreamAuthorBlock(stripUpstreamHeadingStyles(stripLegacyToc(html)))
@@ -336,7 +349,7 @@ export function parseArticleContent(
     faqLabel = '常見問題',
   } = options
 
-  const cleaned = cleanUpstreamHtml(html)
+  const cleaned = layerCardHeroImages(cleanUpstreamHtml(html))
   const { conclusion, rest: afterConclusion } = shouldExtractConclusion
     ? extractConclusion(cleaned)
     : { conclusion: null, rest: cleaned }
