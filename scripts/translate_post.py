@@ -783,6 +783,15 @@ def collapse_ko_names(html: str, source_html: str) -> str:
         if var and var != name:
             variants.setdefault(name, {})
             variants[name][var] = variants[name].get(var, 0) + 1
+    # 固定寫法表優先（scripts/ko-names.json）：表上有的名字不管模型這次怎麼寫都收斂成表上的形式
+    try:
+        fixed_names = {k: v for k, v in json.loads((Path(__file__).parent / 'ko-names.json').read_text()).items() if not k.startswith('_')}
+    except Exception:
+        fixed_names = {}
+    for name, canon in fixed_names.items():
+        if name in source_html:
+            variants.setdefault(name, {})
+            variants[name][canon] = variants[name].get(canon, 0) + 10 ** 6
     if not variants:
         return html
     seen: set[str] = set()
