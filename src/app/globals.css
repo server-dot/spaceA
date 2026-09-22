@@ -246,6 +246,16 @@ html.js .hero-line path {
     object-fit: contain;
     object-position: center;
   }
+  /* 手機上標題牌會橫跨整個框底，1:1 的圖底部會被牌子蓋住：框拉高一點、圖往上縮出牌子的高度 */
+  @media (max-width: 560px) {
+    .prose .brand-card .card-hero {
+      aspect-ratio: 4 / 3;
+    }
+    .prose .brand-card .card-hero img:not(.hero-bg) {
+      padding-bottom: 44px;
+      box-sizing: border-box;
+    }
+  }
 
   .prose .brand-card h2::before,
   .prose .brand-card h3::before,
