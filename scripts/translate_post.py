@@ -762,6 +762,53 @@ def collapse_ja_names(html: str, source_html: str) -> str:
     return re.sub(r'([\u4e00-\u9fff][^<>（()）]{1,20})\s*[（(]\1[)）]', r'\1', out)
 
 
+# 韓文：模型對同一個名字每段給不同的音譯（毛天使 → 마오톈스／마오천사／마오톈시），還會寫成「臭味滾(臭味滾)」。
+# 規則講了不聽，改成事後收斂：同一個括號漢字底下所有「變體(漢字)」、「漢字(漢字)」、光漢字，全部換成最常見的那個變體，
+# 括號漢字只留第一次出現。變體是「拉丁／韓文詞（最多兩個詞）」，且那串漢字要在中文原文出現過（是名字不是註解）。
+KO_NAME_RE = re.compile(r'((?:[A-Za-z][A-Za-z0-9]*|[가-힣]+)(?:\s(?:[A-Za-z][A-Za-z0-9]*|[가-힣]+))?)?\s*[（(]([\u4e00-\u9fff]{2,10})[)）]')
+KO_SKIP_BEFORE = {'먼저', '것은', '반면', '또는', '및', '그리고', '이나', '때', '원하면', '처리하려면', '뿌리려면', '선택하세요'}
+
+
+def collapse_ko_names(html: str, source_html: str) -> str:
+    text_only = re.sub(r'<[^>]+>', ' ', html)
+    variants: dict[str, dict[str, int]] = {}
+    for m in KO_NAME_RE.finditer(text_only):
+        var, name = (m.group(1) or '').strip(), m.group(2)
+        if name not in source_html or re.search(r'[\u4e00-\u9fff]', var):
+            continue
+        # 「먼저 베인(貝恩)」這種前面黏到普通詞的，只取最後一個詞
+        words = var.split()
+        if len(words) == 2 and words[0] in KO_SKIP_BEFORE:
+            var = words[1]
+        if var and var != name:
+            variants.setdefault(name, {})
+            variants[name][var] = variants[name].get(var, 0) + 1
+    if not variants:
+        return html
+    seen: set[str] = set()
+
+    def fix_text(m: re.Match) -> str:
+        text = m.group(1)
+        for name, forms in variants.items():
+            canon = max(forms.items(), key=lambda kv: (kv[1], -len(kv[0])))[0]
+            alt = '|'.join(re.escape(v) for v in sorted(forms, key=len, reverse=True))
+            text = re.sub(r'(?:' + alt + '|' + name + r')?\s*[（(]' + name + r'[)）](?:\s*[（(]' + name + r'[)）])?', '\x00' + name + '\x00', text)
+            text = re.sub(r'(?<![\u4e00-\u9fff\x00])' + name + r'(?![\u4e00-\u9fff\x00])', '\x00' + name + '\x00', text)
+            text = re.sub(r'(?<![가-힣A-Za-z])(?:' + alt + r')(?![가-힣A-Za-z])', '\x00' + name + '\x00', text)
+
+        def place(p: re.Match) -> str:
+            name = p.group(1)
+            canon = max(variants[name].items(), key=lambda kv: (kv[1], -len(kv[0])))[0]
+            if name in seen:
+                return canon
+            seen.add(name)
+            return f'{canon}({name})'
+        return '>' + re.sub('\x00([^\x00]+)\x00', place, text) + '<'
+
+    parts = re.split(r'(<style[\s\S]*?</style>)', html)
+    return ''.join(part if part.startswith('<style') else re.sub(r'>([^<]*)<', fix_text, part) for part in parts)
+
+
 def fix_plain(text: str) -> str:
     """標題、摘要這種純文字也過一次術語表"""
     return fix_terms('>' + text + '<')[1:-1]
@@ -934,6 +981,8 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
         en_content = normalize_labels(content, en_content)
         if LANG == 'ja':
             en_content = collapse_ja_names(en_content, content)
+        if LANG == 'ko':
+            en_content = collapse_ko_names(en_content, content)
         # 標題沒改、第一段（前言）沒改，標題與摘要也沿用
         if cached and reuse and cached.get('source_title') == title and part_hash(parts[0]) in reuse:
             meta = {'title': cached['title'], 'excerpt': cached['excerpt']}
@@ -964,6 +1013,8 @@ def translate_post(post_id: int, force: bool, dry_run: bool, status: str, retran
     fixed = normalize_labels(content, fix_terms(translated['content']))
     if LANG == 'ja':
         fixed = collapse_ja_names(fixed, content)
+    if LANG == 'ko':
+        fixed = collapse_ko_names(fixed, content)
     if fixed != translated['content']:
         translated['content'] = fixed
         cache_file.write_text(json.dumps(translated, ensure_ascii=False, indent=1))
