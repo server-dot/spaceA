@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const paths = [articleHref(lang, category, slug), categoryHref(lang, category), homeHref(lang)]
   paths.forEach((p) => revalidatePath(p))
 
-  // 清完快取順手通知 Bing 等引擎來抓（IndexNow）。要 await，Vercel 回應送出後函式就會被收掉
+  // 清完快取順手通知 Bing 等引擎來抓（IndexNow）。要 await，回應送出後函式就可能被收掉
   const indexnow = await submitToIndexNow(paths)
 
   return NextResponse.json({ revalidated: true, lang, paths, indexnow })

@@ -4,6 +4,7 @@ import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, langPrefix
 import { countWords, resolveSummary } from '@/lib/format'
 import { ReferenceItem, deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
+import socialCrops from '@/lib/social-crops.json'
 
 interface ArticleJsonLdProps {
   post: WPPost
@@ -36,11 +37,7 @@ export default function ArticleJsonLd({ post, references, hasLead }: ArticleJson
     datePublished: withTaipeiOffset(post.date),
     dateModified: withTaipeiOffset(post.modified),
     wordCount: countWords(post.content, lang),
-    image: image?.sourceUrl
-      ? imageWidth && imageHeight
-        ? { '@type': 'ImageObject', url: image.sourceUrl, width: imageWidth, height: imageHeight }
-        : [image.sourceUrl]
-      : undefined,
+    image: articleImages(image?.sourceUrl, imageWidth, imageHeight),
     // WordPress 的作者帳號是 admin，文章頁顯示的編者是阿康，兩邊要一致才有 E-E-A-T 意義
     author: {
       '@type': 'Person',
@@ -83,6 +80,27 @@ export default function ArticleJsonLd({ post, references, hasLead }: ArticleJson
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   )
+}
+
+/**
+ * Google 的縮圖框接近正方形，只給 16:9 的封面會上下留白（搜尋結果就是一條橫的）。
+ * 官方建議同一篇提供 16x9／4x3／1x1 三種比例讓它自己挑版位，
+ * 4:3 與 1:1 是 scripts/make_social_crops.py 從第一張卡片圖裁出來的，對照表存在 social-crops.json。
+ * 沒跑過那支腳本的文章查不到表，就只輸出封面，行為跟以前一樣。
+ */
+function articleImages(cover?: string, width?: number, height?: number) {
+  if (!cover) return undefined
+  const main =
+    width && height
+      ? { '@type': 'ImageObject', url: cover, width, height }
+      : { '@type': 'ImageObject', url: cover }
+  const extra = (socialCrops as Record<string, { '4x3'?: string; '1x1'?: string }>)[cover]
+  if (!extra) return main
+  return [
+    main,
+    ...(extra['4x3'] ? [{ '@type': 'ImageObject', url: extra['4x3'], width: 1200, height: 900 }] : []),
+    ...(extra['1x1'] ? [{ '@type': 'ImageObject', url: extra['1x1'], width: 1200, height: 1200 }] : []),
+  ]
 }
 
 /** 沒有時區的 ISO 字串補上 +08:00；已經帶 Z 或偏移量的原樣回傳 */

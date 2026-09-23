@@ -1,5 +1,27 @@
 # spaceA 開發進度
 
+## 2026-09-23 GSC 體檢後的三個修正（已改完，待部署）
+
+看 GSC（帳號是 **seo@stack.com.tw**，不是預設登入那個）：12 天 362 曝光、9 點擊、平均 18.2 名，
+已索引 61 頁／未索引 54（未索引幾乎全是 /en /ja /ko 排隊中，中文只有 `/food/best-frozen-meal-packs`
+與 `/marketing` 還沒收）。修的是三件事：
+
+- **標題不再加站名**：`stripWpSiteSuffix()` 先拿掉 Yoast 的後綴，Next 的 `template: '%s | spaceA'`
+  又補一次，Google 再把 `|` 顯示成 `-`，而且它本來就在標題上方印 spacea.com.tw。四個 root layout
+  （zh/en/ja/ko）的 template 改成 `'%s'`，首頁 default 仍是 spaceA
+- **搜尋結果縮圖不再是一條橫的**：封面 16:9 塞進接近正方的縮圖框會上下留白。Google 的做法是同一篇
+  給 16x9／4x3／1x1 讓它挑，所以 `scripts/make_social_crops.py` 把**第一張卡片的圖**（有客戶的篇
+  就是客戶的商品／空間照）裁成 4:3 與 1:1 傳進媒體庫，對照表 `src/lib/social-crops.json`（key 是封面網址，
+  所以英日韓自動共用），`ArticleJsonLd` 查到表才多輸出兩張，沒跑過的文章行為不變
+  - 封面不拿來裁：左邊大標、右下便利貼，裁方形會切出半個字（實測過，很醜）
+  - 已跑 12 篇。卡片圖是 1200×600 的會從 600 見方放大到 1200（縮圖只有 92px 看不出來）；
+    **527 紅杉宅料理與 817 明治的卡片圖只有 480×480**，官網 og 圖也是 480 且 CDN 帶 sha 簽章不能改尺寸，
+    要更好的圖得開瀏覽器去他們產品頁撈大圖
+  - 112／161／187 三篇沒有任何實景圖（只有編者頭像），維持只給封面
+- **接回舊網址**：`/travel/best-australia-tour-agencies` 改名成 `australia-day-tours-guide` 後
+  一直是 404，但 Google 還在放送它（12 天 88 曝光、平均 11.0 名、2 點擊，全站曝光第二高）。
+  `next.config.ts` 加 301，四語都接
+
 ## 2026-09-22 SEO／GEO 技術面加深（已 commit，待部署）
 
 使用者問「還能怎麼深化 SEO／GEO」，基礎（sitemap／hreflang／9 種 JSON-LD／llms.txt／Content-Signal）都齊了，補的是機器可讀的「可驗證」訊號：
@@ -7,7 +29,7 @@
 - Article JSON-LD 加 `speakable`：選擇器 `article h1` ＋ `.article-lead`。推薦文的 `.article-lead` 是「前言」後第一段（第一句就是包 strong 的可引用結論）；知識文結論被抽到「先看結論」框，class 掛在框裡那段，不做內文第一段備援（gear-checklist 第一段是表格註腳，會標錯）
 - author／publisher／Organization 加 `sameAs`（`EDITOR_SAME_AS`／`ORG_SAME_AS` in constants.ts）。**阿康的站外檔案網址還沒填**，空陣列不輸出；Organization 另補 `legalName` 積木媒體
 - `/llms-full.txt`：全站四語全文純文字版（h2/h3→#、卡片 dt/dd 攤成「欄位：值」、排名數字併進 h3、連結保留網址），套同一套 `cleanUpstreamHtml` 拆掉 StackTool 編者介紹；llms.txt 有連過去。約 1.4MB
-- IndexNow：`/api/revalidate` 清完快取順手 POST api.indexnow.org（`lib/indexnow.ts`），金鑰 `INDEXNOW_KEY`，驗證檔 `/indexnow-key.txt` 動態吐。**Vercel 環境變數要手動加同一把金鑰**（本機 .env.local 已有），沒設就靜靜跳過
+- IndexNow：`/api/revalidate` 清完快取順手 POST api.indexnow.org（`lib/indexnow.ts`），金鑰 `INDEXNOW_KEY`，驗證檔 `/indexnow-key.txt` 動態吐。**Zeabur 環境變數要手動加同一把金鑰**（本機 .env.local 已有），沒設就靜靜跳過
 - 舊 TODO 說的 soft 404 早在 85a65f0 修掉了，線上已回 404
 
 ## 行動版頁首（2026-09-15 修好）

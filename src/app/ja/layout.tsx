@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
+    template: '%s', // 不加站名後綴：Google 自己會在標題上方顯示 spacea.com.tw，後綴只是吃掉標題字數
   },
   description: t.siteDescription,
   openGraph: {

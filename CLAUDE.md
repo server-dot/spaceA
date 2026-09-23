@@ -9,7 +9,7 @@ Headless WordPress 架構：WordPress 純 CMS，前端完全解耦。
 - **前端**: Next.js 15 App Router, TypeScript, Tailwind CSS
 - **資料層**: Apollo Client (WPGraphQL)，ISR 快取策略
 - **SEO**: `generateMetadata()`、JSON-LD Server Components、sitemap.ts、robots.ts
-- **部署**: Vercel (frontend) + 獨立 WordPress 主機
+- **部署**: Zeabur（frontend，Docker）+ 獨立 WordPress 主機
 
 ## 設計原則
 易讀、簡潔、現代感 — 設計服務內容，不搶風頭。
