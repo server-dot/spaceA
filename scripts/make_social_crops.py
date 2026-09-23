@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 用 /usr/bin/python3 跑（homebrew 那支沒裝 Pillow）
 # -*- coding: utf-8 -*-
 """
 幫每篇推薦文補 4:3 與 1:1 兩個比例的圖，寫進 Article schema 的 image 陣列。
