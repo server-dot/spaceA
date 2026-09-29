@@ -57,7 +57,14 @@ def fetch_image(url):
     req = urllib.request.Request(safe, headers={'User-Agent': 'Mozilla/5.0',
                                                 'Referer': 'https://' + urllib.parse.urlparse(url).netloc + '/'})
     with urllib.request.urlopen(req, timeout=30) as r:
-        return Image.open(io.BytesIO(r.read())).convert('RGB')
+        im = Image.open(io.BytesIO(r.read()))
+    # 透明 PNG 直接 convert('RGB') 透明處會變黑（1088 She is 的卡片圖實例），先鋪白底
+    if im.mode in ('RGBA', 'LA', 'P'):
+        im = im.convert('RGBA')
+        bg = Image.new('RGB', im.size, (255, 255, 255))
+        bg.paste(im, mask=im.getchannel('A'))
+        return bg
+    return im.convert('RGB')
 
 
 def crop(im, ratio):
