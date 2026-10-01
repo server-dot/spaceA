@@ -3,6 +3,8 @@ import { stripHtml } from '@/lib/format'
 export interface FaqItem {
   question: string
   answer: string
+  /** 答案切成文字段與站內連結段，前台渲染用（answer 是純文字，給 JSON-LD 用） */
+  answerParts?: { text: string; href?: string }[]
 }
 
 export interface HowToStepItem {
@@ -186,9 +188,28 @@ function extractFaq(html: string): { faq: FaqItem[] | null; rest: string } {
   if (pairs.length === 0) return { faq: null, rest: html }
 
   return {
-    faq: pairs.map((m) => ({ question: stripTags(m[1]), answer: stripTags(m[2]) })),
+    faq: pairs.map((m) => ({ question: stripTags(m[1]), answer: stripTags(m[2]), answerParts: splitAnswerLinks(m[2]) })),
     rest: cut.rest,
   }
+}
+
+/** FAQ 答案裡只保留站內文章連結（spacea.com.tw 或相對路徑），其他連結當純文字；沒有站內連結就回 undefined */
+function splitAnswerLinks(html: string): FaqItem['answerParts'] {
+  // stripTags 會 trim，英韓文連結前後的空格要自己補回來
+  const keepEdges = (raw: string) => (/^\s/.test(raw) ? ' ' : '') + stripTags(raw) + (/\s$/.test(raw) ? ' ' : '')
+  const parts: { text: string; href?: string }[] = []
+  let last = 0
+  for (const m of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)) {
+    const href = m[1].replace(/^https?:\/\/(?:www\.)?spacea\.com\.tw/i, '')
+    if (!href.startsWith('/')) continue
+    parts.push({ text: keepEdges(html.slice(last, m.index)) }, { text: stripTags(m[2]), href })
+    last = (m.index ?? 0) + m[0].length
+  }
+  if (parts.length === 0) return undefined
+  parts.push({ text: keepEdges(html.slice(last)) })
+  parts[0].text = parts[0].text.trimStart()
+  parts[parts.length - 1].text = parts[parts.length - 1].text.trimEnd()
+  return parts.filter((p) => p.text)
 }
 
 function extractProvenance(html: string): { provenance: string[] | null; rest: string } {

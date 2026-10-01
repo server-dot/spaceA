@@ -421,7 +421,19 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
                           </span>
                           <span className="flex-1">{f.question}</span>
                         </summary>
-                        <p className="pb-6 pl-7 text-base leading-loose text-paper-ink/85">{f.answer}</p>
+                        <p className="pb-6 pl-7 text-base leading-loose text-paper-ink/85">
+                          {f.answerParts
+                            ? f.answerParts.map((p, j) =>
+                                p.href ? (
+                                  <Link key={j} href={p.href} className="text-brand-600 underline underline-offset-2 hover:text-brand-700">
+                                    {p.text}
+                                  </Link>
+                                ) : (
+                                  <span key={j}>{p.text}</span>
+                                )
+                              )
+                            : f.answer}
+                        </p>
                       </details>
                     ))}
                   </div>

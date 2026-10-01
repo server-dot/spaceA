@@ -944,6 +944,12 @@ def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
             # WP 回 term_exists 並附 term_id，直接沿用
             hit = next((r for r in wp('GET', taxonomy, params={'search': body['name'], 'per_page': 20})
                         if r['name'] == body['name'] and has_suffix(r['slug'])), None)
+            if not hit and body['name'] == src['name'] and LANG == 'ja':
+                # 日文翻出來跟中文原標籤同字（高濃度魚油、魚油濃度），WP 以名稱撞名拒建（2026-10-01 post 1144）；
+                # 魚油改用日文慣用的フィッシュオイル再建一次
+                body['name'] = body['name'].replace('魚油', 'フィッシュオイル')
+                if body['name'] != src['name']:
+                    hit = wp('POST', taxonomy, body)
             if not hit:
                 raise
             created = hit
