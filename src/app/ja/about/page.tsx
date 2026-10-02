@@ -11,7 +11,7 @@ import Reveal from '@/components/ui/Reveal'
 // 日文版關於我們。內容照 app/(zh)/about/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
   'spaceAは台湾発の繁体字中国語によるおすすめサイトで、現在は英語版も展開しています。なぜ作ったか、編集チームの体制、FAQ、サイトの進捗についてご案内します。'
-const LAST_UPDATED = '2026-09-04'
+const LAST_UPDATED = '2026-10-02'
 
 const BREADCRUMBS = [
   { label: 'ホーム', href: '/ja' },
@@ -29,17 +29,27 @@ const TIMELINE = [
   {
     date: '2026年5月',
     title: '構築開始',
-    body: 'サイト構成とコンテンツ方針を計画しました。ページを埋めるためではなく、読者が実際に検索し比較するトピックを起点としています。',
+    body: 'サイト構成を設計し、最初に書くテーマを決めました。',
   },
   {
     date: '2026年8月',
-    title: '最初の記事公開',
-    body: '初のおすすめ記事を公開し、収集・検証・レビューの一連プロセスを実運用で実施しながら調整しました。',
+    title: '最初の記事',
+    body: '「SEO会社の選び方」を公開。',
   },
   {
-    date: '2026年9月',
-    title: '一般公開と英語版開始',
-    body: 'まずコンテンツの基盤を築き、その後カテゴリを拡張します。数を合わせるために大量の記事を乱雑に追加することは行いません。',
+    date: '2026年9月11日',
+    title: 'サイト公開',
+    body: 'サイトを一般公開しました。',
+  },
+  {
+    date: '2026年9月15日',
+    title: '英語・日本語・韓国語版',
+    body: '中国語の記事を英語・日本語・韓国語に翻訳し、それぞれ独立したURLで公開。',
+  },
+  {
+    date: '2026年9月16日',
+    title: '10本目の記事',
+    body: '「台北の鼻整形の費用」を公開。カテゴリはマーケティング、旅行・宿泊、美容・スキンケア、グルメ、健康・医療。',
   },
 ]
 
@@ -97,7 +107,7 @@ export default function JaAboutPage() {
                 spaceAは台湾発のおすすめ情報サイトです。各業界を横断して厳選したおすすめ記事を作成し、消費者が判断を下す前に正直で有用な参考情報を提供します。
               </p>
               <p className="text-xs text-paper-muted mt-3">
-                最終更新日： <time dateTime={LAST_UPDATED}>2026年9月4日</time>
+                最終更新日： <time dateTime={LAST_UPDATED}>2026年10月2日</time>
               </p>
 
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
@@ -158,7 +168,7 @@ export default function JaAboutPage() {
                       <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
                       <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
                       <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
-                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-pretty">{item.body}</p>
                     </Reveal>
                   ))}
                 </ol>

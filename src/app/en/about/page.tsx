@@ -11,7 +11,7 @@ import Reveal from '@/components/ui/Reveal'
 // 英文版關於我們。內容照 app/(zh)/about/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
   'spaceA is a Traditional Chinese recommendation site from Taiwan, now with English editions. Why we built it, how the editorial team is organised, FAQ and site progress.'
-const LAST_UPDATED = '2026-09-04'
+const LAST_UPDATED = '2026-10-02'
 
 const BREADCRUMBS = [
   { label: 'Home', href: '/en' },
@@ -29,17 +29,27 @@ const TIMELINE = [
   {
     date: 'May 2026',
     title: 'Started building',
-    body: 'Planned the site structure and content direction, starting from topics readers actually search and compare rather than filling pages.',
+    body: 'Planned the site structure and picked the first topics.',
   },
   {
     date: 'August 2026',
-    title: 'First article published',
-    body: 'The first recommendation article went live, and we ran the full collect-verify-review process for real, adjusting as we went.',
+    title: 'First article',
+    body: '“How to choose an SEO agency” went live.',
   },
   {
-    date: 'September 2026',
-    title: 'Public launch and English editions',
-    body: 'Laying the content foundation first, then expanding to more categories. We will not stuff in large batches of articles just to hit a number.',
+    date: 'September 11, 2026',
+    title: 'Site launch',
+    body: 'The site opened to the public.',
+  },
+  {
+    date: 'September 15, 2026',
+    title: 'English, Japanese and Korean editions',
+    body: 'Chinese articles translated into English, Japanese and Korean, each with its own URL.',
+  },
+  {
+    date: 'September 16, 2026',
+    title: '10th article',
+    body: '“Rhinoplasty costs in Taipei” went live. Categories: marketing, travel and stays, beauty, food, health.',
   },
 ]
 
@@ -98,7 +108,7 @@ export default function EnAboutPage() {
                 consumers honest, useful reference information before they decide.
               </p>
               <p className="text-xs text-paper-muted mt-3">
-                Last updated: <time dateTime={LAST_UPDATED}>September 4, 2026</time>
+                Last updated: <time dateTime={LAST_UPDATED}>October 2, 2026</time>
               </p>
 
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
@@ -168,7 +178,7 @@ export default function EnAboutPage() {
                       <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
                       <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
                       <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
-                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-pretty">{item.body}</p>
                     </Reveal>
                   ))}
                 </ol>

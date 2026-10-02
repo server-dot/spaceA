@@ -11,7 +11,7 @@ import Reveal from '@/components/ui/Reveal'
 // 韓文版關於我們。內容照 app/(zh)/about/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
   'spaceA는 대만의 번체 중국어 추천 사이트로, 현재 영어판도 제공하고 있습니다. 왜 만들었는지, 편집팀 구성, 자주 묻는 질문 및 사이트 진행 상황을 안내합니다.'
-const LAST_UPDATED = '2026-09-04'
+const LAST_UPDATED = '2026-10-02'
 
 const BREADCRUMBS = [
   { label: '홈', href: '/ko' },
@@ -29,17 +29,27 @@ const TIMELINE = [
   {
     date: '2026년 5월',
     title: '구축 시작',
-    body: '페이지 채우기가 아니라 독자들이 실제로 검색하고 비교하는 주제에서 출발해 사이트 구조와 콘텐츠 방향을 기획했습니다.',
+    body: '사이트 구조를 설계하고 먼저 쓸 주제를 정했습니다.',
   },
   {
     date: '2026년 8월',
-    title: '첫 기사 게시',
-    body: '첫 추천 기사가 공개되었으며, 수집-검증-검토의 전체 프로세스를 실제로 운영하면서 필요한 부분을 조정했습니다.',
+    title: '첫 기사',
+    body: '「SEO 마케팅 회사 고르는 법」 게시.',
   },
   {
-    date: '2026년 9월',
-    title: '공개 출범 및 영어판 제공',
-    body: '우선 콘텐츠 기반을 다진 뒤 카테고리를 확장합니다. 단순히 숫자를 채우기 위해 대량의 기사를 무차별로 추가하지 않습니다.',
+    date: '2026년 9월 11일',
+    title: '사이트 공개',
+    body: '사이트를 일반에 공개했습니다.',
+  },
+  {
+    date: '2026년 9월 15일',
+    title: '영어·일본어·한국어판',
+    body: '중국어 기사를 영어·일본어·한국어로 번역해 각각 별도 URL로 게시.',
+  },
+  {
+    date: '2026년 9월 16일',
+    title: '10번째 기사',
+    body: '「타이베이 코성형 비용」 게시. 카테고리: 마케팅, 여행·숙박, 뷰티·스킨케어, 음식, 건강·의료.',
   },
 ]
 
@@ -97,7 +107,7 @@ export default function KoAboutPage() {
                 spaceA는 대만에서 운영되는 추천 사이트입니다. 다양한 분야에서 엄선한 추천 기사를 작성하여 소비자가 결정하기 전에 정직하고 유용한 참고 정보를 제공합니다.
               </p>
               <p className="text-xs text-paper-muted mt-3">
-                최종 수정일: <time dateTime={LAST_UPDATED}>2026년 9월 4일</time>
+                최종 수정일: <time dateTime={LAST_UPDATED}>2026년 10월 2일</time>
               </p>
 
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
@@ -158,7 +168,7 @@ export default function KoAboutPage() {
                       <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
                       <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
                       <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
-                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-pretty">{item.body}</p>
                     </Reveal>
                   ))}
                 </ol>

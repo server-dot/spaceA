@@ -10,7 +10,7 @@ import Reveal from '@/components/ui/Reveal'
 
 const DESCRIPTION =
   'spaceA 是繁體中文的推薦文內容平台，這裡介紹我們為什麼做這個網站、編輯部分工、常見問題與網站的進度。'
-const LAST_UPDATED = '2026-09-04'
+const LAST_UPDATED = '2026-10-02'
 
 const BREADCRUMBS = [
   { label: '首頁', href: '/' },
@@ -28,17 +28,27 @@ const TIMELINE = [
   {
     date: '2026年5月',
     title: '開始建站',
-    body: '規劃網站架構與內容方向，決定從讀者實際會查、會比較的主題切入，而不是先湊版面。',
+    body: '規劃網站架構，決定先寫哪些主題。',
   },
   {
     date: '2026年8月',
-    title: '發布第一篇文章',
-    body: '第一篇推薦文正式發布，開始實際跑一遍蒐集、核對、審稿的流程，邊寫邊修正做法。',
+    title: '第一篇文章',
+    body: '〈SEO 行銷公司怎麼選〉上線。',
   },
   {
-    date: '預計 2026年9月11日',
-    title: '正式對外上線',
-    body: '目前先把內容基礎打好，之後會逐步擴充到更多分類，不會為了衝數量一次塞進大量文章。',
+    date: '2026年9月11日',
+    title: '網站上線',
+    body: '網站對外開放。',
+  },
+  {
+    date: '2026年9月15日',
+    title: '推出英日韓版',
+    body: '中文文章翻成英文、日文、韓文，各自有獨立網址。',
+  },
+  {
+    date: '2026年9月16日',
+    title: '第 10 篇文章',
+    body: '〈台北隆鼻要多少錢〉上線，分類有行銷、旅遊住宿、美妝保養、美食、健康醫療。',
   },
 ]
 
@@ -97,7 +107,7 @@ export default function AboutPage() {
                 spaceA 是繁體中文的推薦文內容平台。我們為各行各業撰寫精選推薦文章，提供消費者最真實、最有價值的參考資訊。
               </p>
               <p className="text-xs text-paper-muted mt-3">
-                最後更新：<time dateTime={LAST_UPDATED}>2026年9月4日</time>
+                最後更新：<time dateTime={LAST_UPDATED}>2026年10月2日</time>
               </p>
 
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
@@ -157,7 +167,7 @@ export default function AboutPage() {
                       <span className="absolute -left-[43px] top-0.5 w-[18px] h-[18px] rounded-full bg-brand-600" />
                       <b className="block text-xs font-bold tracking-wider text-brand-600">{item.date}</b>
                       <b className="block text-lg font-bold text-paper-ink mt-1.5">{item.title}</b>
-                      <p className="text-base leading-loose text-paper-body mt-2 text-balance">{item.body}</p>
+                      <p className="text-base leading-loose text-paper-body mt-2 text-pretty">{item.body}</p>
                     </Reveal>
                   ))}
                 </ol>
