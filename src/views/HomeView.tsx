@@ -187,8 +187,26 @@ export default async function HomeView({ lang }: { lang: Lang }) {
             </section>
           )}
 
+          {blocks[0] && (
+            <section className="mt-16 rounded-[20px] overflow-hidden grid grid-cols-1 sm:grid-cols-2 bg-brand-600 text-white">
+              <div className="p-9 sm:p-12 flex flex-col justify-center">
+                <div className="text-xs tracking-wider opacity-70">{t.featuredTopic}</div>
+                <h3 className="font-serif text-[26px] sm:text-3xl font-bold leading-snug mt-3.5">
+                  {t.moreOf(blocks[0].name)}
+                </h3>
+                <p className="text-[15px] leading-loose opacity-85 mt-4 text-balance">{t.featuredBody(blocks[0].name)}</p>
+                <Link
+                  href={categoryHref(lang, blocks[0].slug)}
+                  className="inline-block w-fit mt-6 bg-white text-brand-600 font-bold text-sm px-6 py-3 rounded-full hover:bg-brand-50 transition-colors"
+                >
+                  {t.readTopic}
+                </Link>
+              </div>
+            </section>
+          )}
+
           {/* 寫手招募橫幅。專家・達人文章卡先拿掉（站上只有一位署名編輯，等有外部寫手再放回來） */}
-          <section className="mt-16">
+          <section className="mt-16 mb-16">
               <div className="rounded-[20px] bg-brand-50 border border-brand-100 px-8 sm:px-11 py-9 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-8 md:gap-12 items-center">
                 <div>
                   <div className="text-xs tracking-wider text-brand-600 font-bold">{t.join.kicker}</div>
@@ -216,24 +234,6 @@ export default async function HomeView({ lang }: { lang: Lang }) {
                 </ul>
               </div>
           </section>
-
-          {blocks[0] && (
-            <section className="mt-16 mb-16 rounded-[20px] overflow-hidden grid grid-cols-1 sm:grid-cols-2 bg-brand-600 text-white">
-              <div className="p-9 sm:p-12 flex flex-col justify-center">
-                <div className="text-xs tracking-wider opacity-70">{t.featuredTopic}</div>
-                <h3 className="font-serif text-[26px] sm:text-3xl font-bold leading-snug mt-3.5">
-                  {t.moreOf(blocks[0].name)}
-                </h3>
-                <p className="text-[15px] leading-loose opacity-85 mt-4 text-balance">{t.featuredBody(blocks[0].name)}</p>
-                <Link
-                  href={categoryHref(lang, blocks[0].slug)}
-                  className="inline-block w-fit mt-6 bg-white text-brand-600 font-bold text-sm px-6 py-3 rounded-full hover:bg-brand-50 transition-colors"
-                >
-                  {t.readTopic}
-                </Link>
-              </div>
-            </section>
-          )}
         </div>
       </div>
     </>
