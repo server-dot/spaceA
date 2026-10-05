@@ -48,7 +48,7 @@ export default async function RootShell({ lang, children }: { lang: Lang; childr
         {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document -- App Router 的 root layout 可以用，規則只認 pages/_document */}
         <Script id="js-flag" strategy="beforeInteractive">{`document.documentElement.classList.add('js')`}</Script>
         <WebsiteJsonLd lang={lang} />
-        <OrganizationJsonLd />
+        <OrganizationJsonLd lang={lang} />
         <Header lang={lang} />
         <main className="flex-1">{children}</main>
         <Footer lang={lang} categories={categories} />

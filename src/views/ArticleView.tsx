@@ -215,18 +215,23 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
     extractConclusion: isKnowledge,
     faqLabel: t.faq,
   })
+  // 各段結構化資料共用這個網址組 @id，互相指得到
+  const pageUrl = `${SITE_URL}${selfHref}`
+  const brandList = extractBrandList(post.content, post.slug)
 
   return (
     <>
       <ArticleJsonLd
         post={post}
+        url={pageUrl}
         references={parsed.references}
         hasLead={parsed.hasLead || (isKnowledge && !!parsed.conclusion)}
+        hasItemList={brandList.length > 0}
       />
-      <BreadcrumbJsonLd items={breadcrumbs} />
-      {parsed.faq && <FaqJsonLd items={parsed.faq} />}
+      <BreadcrumbJsonLd items={breadcrumbs} id={`${pageUrl}#breadcrumb`} />
+      {parsed.faq && <FaqJsonLd items={parsed.faq} id={pageUrl} />}
       {parsed.howTo && <HowToJsonLd name={parsed.howTo.sectionTitle} steps={parsed.howTo.steps} />}
-      <ItemListJsonLd name={post.title} url={`${SITE_URL}${selfHref}`} items={extractBrandList(post.content)} />
+      <ItemListJsonLd name={post.title} url={pageUrl} items={brandList} />
 
       <div className="bg-paper">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">

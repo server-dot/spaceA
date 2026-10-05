@@ -5,10 +5,12 @@ export default function WebsiteJsonLd({ lang }: { lang: Lang }) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
     name: SITE_NAME,
     description: ui(lang).siteDescription,
     url: SITE_URL,
     inLanguage: LANG_TAG[lang],
+    publisher: { '@id': `${SITE_URL}/#organization` },
     potentialAction: {
       '@type': 'SearchAction',
       target: {

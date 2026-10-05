@@ -1,6 +1,6 @@
 import { EDITOR_SAME_AS, ORG_SAME_AS, SITE_NAME, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
-import { LANG_TAG, articleHref, articleTypeLabel, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
+import { LANG_TAG, articleTypeLabel, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
 import { countWords, resolveSummary } from '@/lib/format'
 import { ReferenceItem, deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
@@ -12,12 +12,15 @@ interface ArticleJsonLdProps {
   references?: ReferenceItem[] | null
   /** 前言第一段有標到 `.article-lead` 才輸出 speakable，選擇器對不到元素會被 Rich Results Test 報錯 */
   hasLead?: boolean
+  /** 頁面網址；各段 schema 用它組 @id 互相指，要跟 ItemList／FAQ／麵包屑同一個 */
+  url: string
+  /** 這篇有品牌清單（ItemList）就把它當文章主體 */
+  hasItemList?: boolean
 }
 
-export default function ArticleJsonLd({ post, references, hasLead }: ArticleJsonLdProps) {
+export default function ArticleJsonLd({ post, references, hasLead, url, hasItemList }: ArticleJsonLdProps) {
   const categorySlug = post.categories.nodes[0]?.slug ?? 'uncategorized'
   const lang = langOfCategorySlug(categorySlug)
-  const url = `${SITE_URL}${articleHref(lang, categorySlug, post.slug)}`
   const articleType = resolveArticleType(post.articleTypes)
   const image = post.featuredImage?.node
   const imageWidth = image?.mediaDetails?.width
@@ -26,6 +29,7 @@ export default function ArticleJsonLd({ post, references, hasLead }: ArticleJson
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
+    '@id': `${url}#article`,
     headline: post.title,
     // 跟 <meta name="description"> 走同一套：直接吃 post.excerpt 會把 HTML 標籤與
     // WordPress 的截斷符號（[&hellip;]）原封不動送進結構化資料
@@ -45,7 +49,7 @@ export default function ArticleJsonLd({ post, references, hasLead }: ArticleJson
       jobTitle: ui(lang).editorRole,
       url: `${SITE_URL}${langPrefix(lang)}/about`,
       sameAs: EDITOR_SAME_AS.length > 0 ? EDITOR_SAME_AS : undefined,
-      worksFor: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+      worksFor: { '@id': `${SITE_URL}/#organization` },
     },
     publisher: {
       '@type': 'Organization',
@@ -63,14 +67,13 @@ export default function ArticleJsonLd({ post, references, hasLead }: ArticleJson
     speakable: hasLead
       ? { '@type': 'SpeakableSpecification', cssSelector: ['article h1', '.article-lead'] }
       : undefined,
-    isPartOf: {
-      '@type': 'WebSite',
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
+    // 推薦文的主體就是那份排序過的品牌清單，串起來 AI 才知道「這篇推薦的是這幾家」
+    mainEntity: hasItemList ? { '@id': `${url}#itemlist` } : undefined,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,
+      breadcrumb: { '@id': `${url}#breadcrumb` },
     },
   }
 

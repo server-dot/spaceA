@@ -7,12 +7,15 @@ interface BreadcrumbItem {
 
 interface BreadcrumbJsonLdProps {
   items: BreadcrumbItem[]
+  /** 給文章頁的 WebPage.breadcrumb 指過來用 */
+  id?: string
 }
 
-export default function BreadcrumbJsonLd({ items }: BreadcrumbJsonLdProps) {
+export default function BreadcrumbJsonLd({ items, id }: BreadcrumbJsonLdProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    ...(id ? { '@id': id } : {}),
     itemListElement: items.map((item, index) => ({
       '@type': 'ListItem',
       position: index + 1,

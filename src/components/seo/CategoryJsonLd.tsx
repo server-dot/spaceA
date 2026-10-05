@@ -1,4 +1,4 @@
-import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { SITE_URL } from '@/lib/constants'
 import { LANG_TAG, articleHref, categoryHref, ui, type Lang } from '@/lib/i18n'
 import { WPPostCard } from '@/types/wordpress'
 
@@ -24,8 +24,8 @@ export default function CategoryJsonLd({ lang, name, slug, description, posts }:
         name: t.categoryCollection(name),
         description: description || t.categoryCollectionDesc(name),
         inLanguage: LANG_TAG[lang],
-        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
-        publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+        publisher: { '@id': `${SITE_URL}/#organization` },
       },
       {
         '@type': 'ItemList',

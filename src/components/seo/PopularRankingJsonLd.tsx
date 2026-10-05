@@ -1,4 +1,4 @@
-import { SITE_NAME, SITE_URL } from '@/lib/constants'
+import { SITE_URL } from '@/lib/constants'
 import { RankedArticle } from '@/views/popular-data'
 import { LANG_TAG, langPrefix, ui, type Lang } from '@/lib/i18n'
 
@@ -23,7 +23,7 @@ export default function PopularRankingJsonLd({ lang, items, description, dateMod
         description,
         inLanguage: LANG_TAG[lang],
         dateModified,
-        isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+        isPartOf: { '@id': `${SITE_URL}/#website` },
       },
       {
         '@type': 'ItemList',

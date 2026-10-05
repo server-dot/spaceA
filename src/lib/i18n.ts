@@ -92,6 +92,9 @@ const zh = {
   siteTagline: '真實評價整理的推薦文與選購指南',
   siteDescription:
     'spaceA 彙整網路真實聲量的推薦文與選購指南，涵蓋旅遊住宿、美妝保養、行銷服務等主題，每篇都標明資料來源與更新日期，幫你比完再決定買什麼、找誰。',
+  orgDescription:
+    'spaceA 是推薦文內容平台，做法是彙整論壇、社群、電商評論與專業評測中的公開討論，交叉核對後由編輯部撰寫，並標註每則資訊的來源。',
+  orgContactType: '編輯部',
   langMenu: '語言',
   mainNav: '主選單',
   breadcrumbs: '麵包屑',
@@ -260,6 +263,9 @@ const en: UIStrings = {
   siteTagline: 'Recommendations & buying guides, compared before you decide',
   siteDescription:
     'spaceA turns real online word-of-mouth into recommendation articles and buying guides across travel, beauty, food and more. Every article lists its sources and last update, so you can compare before you buy.',
+  orgDescription:
+    'spaceA is a recommendation content platform. The editorial team gathers public discussion from forums, social media, e-commerce reviews and professional tests, cross-checks it, writes each article, and cites the source of every piece of information.',
+  orgContactType: 'Editorial',
   langMenu: 'Language',
   mainNav: 'Main menu',
   breadcrumbs: 'Breadcrumb',
@@ -427,6 +433,9 @@ const ja: UIStrings = {
   siteTagline: '比べてから決める、おすすめ記事と選び方ガイド',
   siteDescription:
     'spaceA はネット上の実際の口コミをまとめ、旅行・宿泊、美容、グルメなどのおすすめ記事と選び方ガイドをお届けします。すべての記事に出典と更新日を明記しているので、買う前に比べられます。',
+  orgDescription:
+    'spaceA はおすすめ記事のコンテンツプラットフォームです。掲示板、SNS、通販サイトのレビュー、専門家のテストなどで公開されている情報を集めて照らし合わせ、編集部が記事にまとめ、それぞれの情報に出典を記しています。',
+  orgContactType: '編集部',
   langMenu: '言語',
   mainNav: 'メインメニュー',
   breadcrumbs: 'パンくずリスト',
@@ -594,6 +603,9 @@ const ko: UIStrings = {
   siteTagline: '비교하고 결정하는 추천 글과 구매 가이드',
   siteDescription:
     'spaceA는 온라인의 실제 후기를 모아 여행·숙박, 뷰티, 맛집 등의 추천 글과 구매 가이드를 전합니다. 모든 글에 출처와 업데이트 날짜를 밝혀, 사기 전에 비교할 수 있습니다.',
+  orgDescription:
+    'spaceA는 추천 글 콘텐츠 플랫폼입니다. 커뮤니티, SNS, 쇼핑몰 리뷰, 전문 테스트에 공개된 의견을 모아 교차 확인한 뒤 편집부가 글을 쓰고, 모든 정보에 출처를 밝힙니다.',
+  orgContactType: '편집부',
   langMenu: '언어',
   mainNav: '주 메뉴',
   breadcrumbs: '탐색 경로',
