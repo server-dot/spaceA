@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GET_CATEGORY } from '@/lib/graphql/queries/category'
-import { fetchQuery } from '@/lib/graphql/client'
+import { fetchQueryOrNull } from '@/lib/graphql/client'
 import { POSTS_PER_PAGE, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { WPPostCard } from '@/types/wordpress'
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: '缺少分類 slug' }, { status: 400 })
   }
 
-  const data = await fetchQuery<CategoryPostsData>(GET_CATEGORY, {
+  const data = await fetchQueryOrNull<CategoryPostsData>(GET_CATEGORY, {
     slug,
     first: POSTS_PER_PAGE,
     after,

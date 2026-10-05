@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { GET_SEARCH_POSTS } from '@/lib/graphql/queries/search'
-import { fetchQuery } from '@/lib/graphql/client'
+import { fetchQueryOrNull } from '@/lib/graphql/client'
 import ArticleGrid from '@/components/article/ArticleGrid'
 import { WPPostCard } from '@/types/wordpress'
 import { EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
@@ -24,7 +24,7 @@ export default async function SearchView({ lang, searchParams }: SearchRouteProp
   const query = q?.trim() ?? ''
   const t = ui(lang)
 
-  const data = query ? await fetchQuery<SearchData>(GET_SEARCH_POSTS, { query, first: 48 }) : null
+  const data = query ? await fetchQueryOrNull<SearchData>(GET_SEARCH_POSTS, { query, first: 48 }) : null
 
   const posts = (data?.posts?.nodes ?? [])
     .filter((post) => {
