@@ -101,19 +101,19 @@ CHUNK_CHARS = 8000
 # 分類名稱：WP 的中文分類 → 英文站要顯示的名稱（找不到的交給模型翻）
 CATEGORY_NAMES = {
     'en': {
-        '3C數位': 'Tech & Gadgets', '健康醫療': 'Health & Medical', '寵物': 'Pets', '影音器材': 'Creator Gear',
+        '3C數位': 'Tech & Gadgets', '健康醫療': 'Health & Medical', '寵物': 'Pets', '母嬰用品': 'Baby & Parenting', '影音器材': 'Creator Gear',
         '教育學習': 'Education', '旅遊住宿': 'Travel & Stays', '汽車機車': 'Cars & Motorcycles',
         '法律服務': 'Legal Services', '生活居家': 'Home & Living', '美妝保養': 'Beauty & Skincare',
         '美食': 'Food', '行銷': 'Marketing', '運動健身': 'Fitness', '金融理財': 'Finance',
     },
     'ja': {
-        '3C數位': 'デジタル・家電', '健康醫療': '健康・医療', '寵物': 'ペット', '影音器材': '撮影機材',
+        '3C數位': 'デジタル・家電', '健康醫療': '健康・医療', '寵物': 'ペット', '母嬰用品': 'ベビー・マタニティ', '影音器材': '撮影機材',
         '教育學習': '教育・学習', '旅遊住宿': '旅行・宿泊', '汽車機車': '車・バイク',
         '法律服務': '法律サービス', '生活居家': '暮らし・インテリア', '美妝保養': 'コスメ・スキンケア',
         '美食': 'グルメ', '行銷': 'マーケティング', '運動健身': 'スポーツ・フィットネス', '金融理財': '金融・資産運用',
     },
     'ko': {
-        '3C數位': '디지털·가전', '健康醫療': '건강·의료', '寵物': '반려동물', '影音器材': '촬영 장비',
+        '3C數位': '디지털·가전', '健康醫療': '건강·의료', '寵物': '반려동물', '母嬰用品': '육아·출산용품', '影音器材': '촬영 장비',
         '教育學習': '교육·학습', '旅遊住宿': '여행·숙박', '汽車機車': '자동차·오토바이',
         '法律服務': '법률 서비스', '生活居家': '생활·인테리어', '美妝保養': '뷰티·스킨케어',
         '美食': '맛집·푸드', '行銷': '마케팅', '運動健身': '운동·피트니스', '金融理財': '금융·재테크',
@@ -443,7 +443,8 @@ LABELS: dict[str, dict[str, str]] = {
     '官方資訊': {'en': 'Official information', 'ja': '公式情報', 'ko': '공식 정보'},
     '網友正面評價': {'en': 'What users like', 'ja': '利用者の声（良い点）', 'ko': '사용자 긍정 후기'},
     '網友負面評價': {'en': 'What users complain about', 'ja': '利用者の声（悪い点）', 'ko': '사용자 부정 후기'},
-    '實際使用感受：': {'en': 'Hands-on impressions: ', 'ja': '使用感：', 'ko': '실제 사용 후기: '},
+    # 這是網友的使用心得，不是我們試用；Hands-on／실제 사용 讀起來像親自試過（2026-10-05 post 1207）
+    '實際使用感受：': {'en': 'What users say: ', 'ja': '利用者の使用感：', 'ko': '사용자 후기: '},
     '回購傾向：': {'en': 'Likelihood to repurchase: ', 'ja': 'リピート意向：', 'ko': '재구매 의향: '},
     '合作體驗：': {'en': 'Working experience: ', 'ja': '取引の実感：', 'ko': '협업 경험: '},
     '續約意願：': {'en': 'Likelihood to renew: ', 'ja': '契約更新の意向：', 'ko': '재계약 의향: '},
@@ -950,6 +951,11 @@ def ensure_target_terms(taxonomy: str, ids: list[int], kind: str) -> list[int]:
                 body['name'] = body['name'].replace('魚油', 'フィッシュオイル')
                 if body['name'] != src['name']:
                     hit = wp('POST', taxonomy, body)
+            if not hit and taxonomy == 'tags' and body['name'] == src['name']:
+                # 譯名跟中文原標籤同字（日文「成分比較」，2026-10-05 post 1207），沒有自然的替代寫法就不帶這個標籤，
+                # 不然整篇譯文建不起來
+                print(f'  ⚠ 標籤「{src["name"]}」譯名跟原文同字、WP 拒建，這篇譯文不帶這個標籤')
+                continue
             if not hit:
                 raise
             created = hit

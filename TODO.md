@@ -7,8 +7,9 @@
 - 卡片每格回官網對過：Chicco 生成器抓的 15% 款已下架、新款植萃護膚膏**不含氧化鋅**，改放原生脂四合一（10%，NT$464）；施巴品牌頁（50/200ml、甘菊）是舊版，官方購物網現售 100ml NT$380、包裝標泛醇＋小麥麩萃取；Grahams 官網 SSL 壞，價格取家樂福（萬家福）線上 NT$580，成分含薰衣草油；KÜSSEN 改單支 50ml NT$420；MKL 研究被抓成廚具品牌，卡片照 les nez 官網重填，容量官網未標示
 - Chicco 卡片網友評價／使用感受整區拿掉（原本講的是下架那款），參考資料一併刪
 - 封面重生（media 1210，9 款），Yoast description＋og:image 已改；卡片圖全部進媒體庫（1209、1211–1218，舒特膚手動上傳）
-- [ ] 英日韓翻譯（中文定案後）
+- [x] 英日韓翻譯（2026-10-05 定稿後翻，en 1225／ja 1227／ko 1226，分類 baby-en／baby-ja／baby-ko）。修正表在 scratchpad `fix_tr1207*.py`：品牌一律用官方拉丁名（Baan、Cetaphil、La Roche-Posay、Sebamed、Mustela、Grahams、KÜSSEN），英文把慕之恬廊編成 Méthode Jeanne Piaubert、貝恩譯成 Bei'en；日文整張施巴卡沒翻；韓文 KÜKÜSSEN／Grahams Grahams 疊字（ko-names 加了「葵森」「珂然」造成，已拿掉）；三語小麥麩都譯成胚芽；卡片圖 alt 全是舊譯名，已改成跟卡片標題一致
 - [ ] 小編點評九則還沒一則一則跟使用者對過
+- [x] 「實際使用感受」標籤固定譯法改成 What users say／利用者の使用感／사용자 후기（translate_post.py 對照表，原本 Hands-on impressions 像我們試用過）
 
 ## post 1185 原木餐桌推薦（客戶原沐製材所，2026-10-02 上線，只有中文）
 
