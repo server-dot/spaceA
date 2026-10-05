@@ -18,7 +18,7 @@ const BREADCRUMBS = [
 
 const TOC_ITEMS = [
   { label: 'データ収集の方法', href: '#how' },
-  { label: '行わないこと（要約）', href: '#limits' },
+  { label: '執筆方針', href: '#limits' },
   { label: '広告と提携の開示', href: '#disclosure' },
   { label: '訂正', href: '#corrections' },
 ]
@@ -90,20 +90,12 @@ export default function JaStandardsPage() {
               </section>
 
               <section id="limits" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">行わないこと</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">執筆方針</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
-                  <li className="py-4 text-balance">
-                    当社が実施していないテストを行ったと主張することはありません。各記事には、結論がテスト、ユーザーの意見、またはブランド情報のいずれに基づくものかを明示します。
-                  </li>
-                  <li className="py-4 text-balance">
-                    裏付けのない数値は掲載しません。検証可能な数値がない場合は数値を用いず記述するか、データが不十分であると明記します。
-                  </li>
-                  <li className="py-4 text-balance">
-                    ランキングのために無理に項目を増やすことはしません。推奨に値する選択肢が三つしかないなら、三つだけ掲載します。
-                  </li>
-                  <li className="py-4 text-balance">
-                    個別の医療・法律・投資アドバイスは行いません。健康に関する事項は担当の医療従事者にご相談ください。
-                  </li>
+                  <li className="py-4 text-balance">すべての結論について、実際のテスト、ユーザーの声、メーカー提供の情報のいずれに基づくかを明記します。</li>
+                  <li className="py-4 text-balance">価格や仕様などの数値は、出典を確認できるもののみ掲載します。確認できない場合は文章で説明するか、データが不足している旨を明記します。</li>
+                  <li className="py-4 text-balance">評価の結果、本当におすすめできる製品・サービスのみを紹介し、無理な掲載や数合わせのための追加は行いません。</li>
+                  <li className="py-4 text-balance">記事は公開情報を整理したものであり、医療・法律・投資に関する助言ではありません。個別のご相談は医師、弁護士、ファイナンシャルアドバイザーにお問い合わせください。</li>
                 </ul>
               </section>
 

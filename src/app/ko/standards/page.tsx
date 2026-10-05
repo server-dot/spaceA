@@ -18,7 +18,7 @@ const BREADCRUMBS = [
 
 const TOC_ITEMS = [
   { label: '데이터 수집 방법', href: '#how' },
-  { label: '하지 않는 일', href: '#limits' },
+  { label: '작성 원칙', href: '#limits' },
   { label: '광고 및 협업 고지', href: '#disclosure' },
   { label: '정정 안내', href: '#corrections' },
 ]
@@ -90,20 +90,12 @@ export default function KoStandardsPage() {
               </section>
 
               <section id="limits" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">하지 않는 일</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">작성 원칙</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
-                  <li className="py-4 text-balance">
-                    직접 진행하지 않은 테스트를 마치 한 것처럼 주장하지 않습니다. 각 기사는 결론이 테스트, 사용자 피드백, 또는 브랜드 자료 중 어디에 근거하는지 명시합니다.
-                  </li>
-                  <li className="py-4 text-balance">
-                    근거 없는 수치 사용 금지: 검증 가능한 수치가 없을 경우에는 숫자 없이 서술하거나 데이터가 불충분하다고 밝힙니다.
-                  </li>
-                  <li className="py-4 text-balance">
-                    순위를 맞추기 위해 목록을 늘리지 않습니다. 추천할 가치가 있는 옵션이 세 개뿐이면 세 개만 제시합니다.
-                  </li>
-                  <li className="py-4 text-balance">
-                    개인 맞춤형 의료·법률·투자 조언을 제공하지 않습니다. 건강 관련 내용은 담당 의료진의 조언을 따르십시오.
-                  </li>
+                  <li className="py-4 text-balance">모든 결론에는 실제 테스트, 사용자 피드백, 제조사 제공 자료 중 어디에 근거했는지 출처를 밝힙니다.</li>
+                  <li className="py-4 text-balance">가격, 사양 등의 수치는 출처를 확인할 수 있는 자료만 사용합니다. 확인할 수 없는 경우에는 글로 설명하거나 데이터가 부족하다고 명시합니다.</li>
+                  <li className="py-4 text-balance">평가를 거쳐 추천할 가치가 있다고 판단한 제품이나 서비스만 추천하며, 억지로 끼워 넣거나 개수를 채우기 위해 항목을 늘리지 않습니다.</li>
+                  <li className="py-4 text-balance">기사 내용은 공개 정보를 정리한 것으로, 의료·법률·투자 조언이 아닙니다. 개인적인 상황은 의사, 변호사 또는 재무 상담사와 상담하시기 바랍니다.</li>
                 </ul>
               </section>
 

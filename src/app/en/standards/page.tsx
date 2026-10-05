@@ -18,7 +18,7 @@ const BREADCRUMBS = [
 
 const TOC_ITEMS = [
   { label: 'How we gather data', href: '#how' },
-  { label: 'What we do not do', href: '#limits' },
+  { label: 'Our editorial principles', href: '#limits' },
   { label: 'Ads and partnerships', href: '#disclosure' },
   { label: 'Corrections', href: '#corrections' },
 ]
@@ -91,22 +91,12 @@ export default function EnStandardsPage() {
               </section>
 
               <section id="limits" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">What do we not do?</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">Our editorial principles</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
-                  <li className="py-4 text-balance">
-                    No claiming tests we did not run. Each article states whether a conclusion comes from testing, user feedback
-                    or the brand.
-                  </li>
-                  <li className="py-4 text-balance">
-                    No unsupported numbers. When there is no verifiable figure we describe without numbers, or say the data is
-                    insufficient.
-                  </li>
-                  <li className="py-4 text-balance">
-                    No padding lists for ranking. If only three options are worth recommending, we list three.
-                  </li>
-                  <li className="py-4 text-balance">
-                    No personalised medical, legal or investment advice. For health topics, defer to your clinician.
-                  </li>
+                  <li className="py-4 text-balance">Every conclusion states its source: hands-on testing, user feedback or information provided by the brand.</li>
+                  <li className="py-4 text-balance">Prices, specifications and other figures come only from verifiable sources. Where a figure cannot be verified, we describe the point in words or note that the data is insufficient.</li>
+                  <li className="py-4 text-balance">We recommend only products or services that our evaluation finds genuinely worth recommending, with no forced placements and no items added just to fill out a list.</li>
+                  <li className="py-4 text-balance">Articles compile publicly available information and do not constitute medical, legal or investment advice. For personal matters, please consult a doctor, lawyer or financial adviser.</li>
                 </ul>
               </section>
 

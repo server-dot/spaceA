@@ -17,7 +17,7 @@ const BREADCRUMBS = [
 
 const TOC_ITEMS = [
   { label: '我們怎麼取得資料', href: '#how' },
-  { label: '哪些事我們不做', href: '#limits' },
+  { label: '我們的撰稿原則', href: '#limits' },
   { label: '廣告與合作揭露', href: '#disclosure' },
   { label: '內容更正流程', href: '#corrections' },
 ]
@@ -90,12 +90,12 @@ export default function StandardsPage() {
               </section>
 
               <section id="limits" className="mt-14 pt-10 border-t border-paper-border">
-                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">哪些事我們不做？</h2>
+                <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">我們的撰稿原則</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
-                  <li className="py-4 text-balance">不宣稱做過沒做過的實測。文章會寫清楚結論來自實測、使用者回饋還是廠商提供。</li>
-                  <li className="py-4 text-balance">不寫沒有依據的數字。找不到可核對的數據時，用非數值的描述，或直接說明資料不足。</li>
-                  <li className="py-4 text-balance">不為了排名硬湊清單長度。值得推薦的只有三款就寫三款。</li>
-                  <li className="py-4 text-balance">不提供醫療、法律或投資的個人化建議。健康相關內容以看診專業人員的判斷為準。</li>
+                  <li className="py-4 text-balance">每項結論皆註明來源，包括實際測試、使用者回饋或廠商提供的資料。</li>
+                  <li className="py-4 text-balance">價格、規格等數據僅採用可查證出處的資料；無法查證時，改以文字說明或註明資料不足。</li>
+                  <li className="py-4 text-balance">僅推薦經評估確實值得推薦的產品或服務，不硬性置入，也不為湊數增加推薦項目。</li>
+                  <li className="py-4 text-balance">文章內容僅整理公開資訊，不構成醫療、法律或投資建議；如有個人需求，請諮詢醫師、律師或理財顧問。</li>
                 </ul>
               </section>
 
