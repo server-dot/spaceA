@@ -14,6 +14,8 @@ const JPG_CATEGORY_IMAGES = new Set([
   'beauty',
   'fitness',
   'finance',
+  'home-decor',
+  'baby',
 ])
 
 import { toRouteSlug } from '@/lib/i18n'
