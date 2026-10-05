@@ -65,11 +65,6 @@ const FAQ_ITEMS = [
       'We prioritise topics with many options but messy public information, where readers most need someone to organise things first. Topics are chosen by what readers actually search and compare, not by which brands want exposure.',
   },
   {
-    question: 'Can brands pay to change the content?',
-    answer:
-      'No. The only thing spaceA sells is clearly labelled ad space. We do not accept sponsored content or sell placements in recommendation lists, rankings or conclusions. The full rules are on the Our Standards page.',
-  },
-  {
     question: 'What if I find an error or a broken link?',
     answer: `Email ${EDITORIAL_EMAIL} or use the contact page. We verify, correct the article and update its last-updated date.`,
   },

@@ -45,13 +45,6 @@ export default function KoContactPage() {
             <p className="text-[17px] leading-loose text-paper-body mt-5 text-balance">
               오류를 발견하셨거나 주제를 제안하고 싶거나 광고 및 콘텐츠 라이선스에 대해 논의하고 싶으신가요? 여기가 연락처입니다. 정정이 우선 처리됩니다: 확인 후 기사를 수정하고 최종 업데이트 날짜를 갱신합니다.
             </p>
-            <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              spaceA가 판매하는 것은 광고로 표시된 광고 지면뿐입니다. 후원성 콘텐츠를 받지 않으며 추천 목록과 순위도 판매하지 않습니다. 자세한 내용은{' '}
-              <Link href="/ko/standards" className="text-brand-600 font-bold">
-                편집 기준
-              </Link>
-              을 참조하세요.
-            </p>
           </section>
 
           <section
@@ -115,7 +108,7 @@ export default function KoContactPage() {
 
           <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
             <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">메시지 처리 방법</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-7 mt-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
               <div className="border-t-2 border-brand-600 pt-3.5">
                 <b className="text-base font-bold text-paper-ink">정정 우선 처리</b>
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
@@ -126,12 +119,6 @@ export default function KoContactPage() {
                 <b className="text-base font-bold text-paper-ink">항상 회신합니다</b>
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
                   제휴 문의와 주제 제안에는 모두 회신합니다; 이미 예정된 주제인 경우 일정(타임라인)을 안내해 드립니다.
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">추천 목록, 순위 또는 결론 변경을 대가로 자리를 구매하겠다는 요청은 정중히 거절합니다.</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  추천 목록이나 노출 순서, 결론 변경을 구매하려는 문의는 정중히 거절합니다.
                 </p>
               </div>
             </div>

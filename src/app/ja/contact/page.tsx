@@ -46,13 +46,6 @@ export default function JaContactPage() {
               誤りを見つけた、トピックを提案したい、あるいは広告やコンテンツライセンスについて相談したい場合はこちらです。
               訂正を最優先とします：確認のうえ記事を修正し、最終更新日を更新します。
             </p>
-            <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              spaceAが販売しているのは「広告」と明示した広告枠のみです。スポンサーコンテンツは受け付けず、おすすめリストや順位も販売しません。詳細は{' '}
-              <Link href="/ja/standards" className="text-brand-600 font-bold">
-                私たちの基準
-              </Link>
-              をご覧ください。
-            </p>
           </section>
 
           <section
@@ -116,7 +109,7 @@ export default function JaContactPage() {
 
           <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
             <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">メッセージの取り扱い方法</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-7 mt-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
               <div className="border-t-2 border-brand-600 pt-3.5">
                 <b className="text-base font-bold text-paper-ink">訂正を最優先します</b>
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
@@ -129,12 +122,6 @@ export default function JaContactPage() {
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
                   パートナーシップに関する問い合わせやトピックの提案にはすべて返信します。すでに予定されているトピックの場合は
                   スケジュールをお知らせします。
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">有料掲載は行いません</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  推薦リストやランキングへの掲載、結論の変更を目的とした掲載の依頼は丁重にお断りします。
                 </p>
               </div>
             </div>

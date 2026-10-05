@@ -44,13 +44,6 @@ export default function ContactPage() {
             <p className="text-[17px] leading-loose text-paper-body mt-5 text-balance">
               內容有誤、想建議我們寫哪個主題，或要談廣告與內容授權，都可以從這裡告訴我們。內容更正會優先處理，我們核對後會更正文章並更新最後更新日期。
             </p>
-            <p className="text-sm leading-loose text-paper-secondary mt-3.5 text-balance">
-              spaceA 只賣標示為廣告的版面，不接業配、不賣推薦名單與排序。詳細作法寫在
-              <Link href="/standards" className="text-brand-600 font-bold">
-                推薦標準
-              </Link>
-              。
-            </p>
           </section>
 
           <section
@@ -110,7 +103,7 @@ export default function ContactPage() {
 
           <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
             <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">我們怎麼處理來信</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-7 mt-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
               <div className="border-t-2 border-brand-600 pt-3.5">
                 <b className="text-base font-bold text-paper-ink">內容更正優先</b>
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
@@ -121,12 +114,6 @@ export default function ContactPage() {
                 <b className="text-base font-bold text-paper-ink">一定回信</b>
                 <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
                   合作洽詢與選題建議都會回覆，若主題已在規劃中會說明時程。
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">不做付費推薦</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  希望購買推薦名單、排序或修改結論的來信，我們會直接婉拒。
                 </p>
               </div>
             </div>

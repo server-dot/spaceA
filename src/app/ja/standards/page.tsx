@@ -93,9 +93,6 @@ export default function JaStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">行わないこと</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
                   <li className="py-4 text-balance">
-                    スポンサーコンテンツや順位の販売は行いません。販売しているのは「広告」と明示した広告枠のみで、ブランドが推薦、ランキング、結論の変更に対して金銭を支払うことはできず、ドラフトの確認権もありません。
-                  </li>
-                  <li className="py-4 text-balance">
                     当社が実施していないテストを行ったと主張することはありません。各記事には、結論がテスト、ユーザーの意見、またはブランド情報のいずれに基づくものかを明示します。
                   </li>
                   <li className="py-4 text-balance">
@@ -115,13 +112,13 @@ export default function JaStandardsPage() {
                   広告や提携関係はどのように開示していますか？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceAの収益は広告枠からです。販売しているのは「広告」と明示した枠であり、記事そのものは販売しません：
+                  spaceAが販売しているのは「広告」と明示した広告枠のみで、それ以外は販売していません：
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
                     '記事内のリンクはブランド公式サイトや販売ページに直接つながります。アフィリエイトリンクではなく、クリックや購入によってspaceAが報酬を得ることはありません。',
-                    '広告枠は掲載を受け付けています。広告は「広告」と表示し、記事とは分けて掲載します。レビューを装った広告はありません。広告を出稿しても、おすすめリストに入ったり順位が上がったりすることはありません。',
-                    'スポンサーコンテンツや順位の販売は行いません。おすすめリスト、ランキング、結論は販売せず、ブランドがドラフトをレビューまたは編集することはできません。ブランドから製品を貸与してテストした場合は、記事の冒頭にその旨を明記します。',
+                    '広告枠は掲載を受け付けています。広告は「広告」と表示し、記事とは分けて掲載します。レビューを装った広告はありません。',
+                    'ブランドがドラフトをレビューまたは編集することはできません。ブランドから製品を貸与してテストした場合は、記事の冒頭にその旨を明記します。',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />

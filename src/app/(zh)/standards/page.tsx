@@ -92,7 +92,6 @@ export default function StandardsPage() {
               <section id="limits" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">哪些事我們不做？</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
-                  <li className="py-4 text-balance">不接業配、不賣排名。我們只賣標示為廣告的版面，廠商無法付費換取推薦、排序或修改結論，也不提供稿件審閱。</li>
                   <li className="py-4 text-balance">不宣稱做過沒做過的實測。文章會寫清楚結論來自實測、使用者回饋還是廠商提供。</li>
                   <li className="py-4 text-balance">不寫沒有依據的數字。找不到可核對的數據時，用非數值的描述，或直接說明資料不足。</li>
                   <li className="py-4 text-balance">不為了排名硬湊清單長度。值得推薦的只有三款就寫三款。</li>
@@ -105,13 +104,13 @@ export default function StandardsPage() {
                   廣告與合作怎麼揭露？
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA 的收入來自廣告版面。我們賣的是標示為「廣告」的版位，不賣文章內容：
+                  spaceA 唯一對外販售的是標示為「廣告」的版位，其他都不販售：
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
                     '文章裡的連結都直接前往品牌官網或通路頁面，不是聯盟連結，你點擊或購買 spaceA 不會分潤。',
-                    '廣告版面對外開放刊登，會標示「廣告」並與文章分開呈現，不會有看起來像評測的廣告。買廣告的廠商不會因此進入推薦名單或往前排。',
-                    '不接業配、不賣排名。推薦名單、排序與結論不對外開放付費，廠商也不能審閱或修改稿件。若曾借測廠商提供的產品，會在文章開頭標示。',
+                    '廣告版面對外開放刊登，會標示「廣告」並與文章分開呈現，不會有看起來像評測的廣告。',
+                    '廠商不能審閱或修改稿件。若曾借測廠商提供的產品，會在文章開頭標示。',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />

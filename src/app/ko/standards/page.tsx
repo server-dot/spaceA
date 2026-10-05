@@ -93,9 +93,6 @@ export default function KoStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">하지 않는 일</h2>
                 <ul className="grid mt-6 divide-y divide-[#eeeae2] text-base leading-loose text-paper-body max-w-2xl">
                   <li className="py-4 text-balance">
-                    스폰서 콘텐츠와 순위 판매를 하지 않습니다. 판매하는 것은 광고로 표시된 광고 지면뿐이며, 브랜드는 추천, 순위 또는 결론을 대가로 구입할 수 없고 초안을 검토할 권한도 없습니다.
-                  </li>
-                  <li className="py-4 text-balance">
                     직접 진행하지 않은 테스트를 마치 한 것처럼 주장하지 않습니다. 각 기사는 결론이 테스트, 사용자 피드백, 또는 브랜드 자료 중 어디에 근거하는지 명시합니다.
                   </li>
                   <li className="py-4 text-balance">
@@ -115,13 +112,13 @@ export default function KoStandardsPage() {
                   광고와 협업 관계는 어떻게 공개하나요?
                 </h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  spaceA의 수익은 광고 지면에서 나옵니다. 판매하는 것은 광고로 표시된 지면이며, 기사 자체는 판매하지 않습니다:
+                  spaceA가 판매하는 것은 광고로 표시된 광고 지면뿐이며, 그 밖에는 판매하지 않습니다:
                 </p>
                 <ul className="grid gap-[18px] mt-6 list-none max-w-2xl">
                   {[
                     '기사 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결됩니다. 제휴 링크가 아니며, 클릭이나 구매로 spaceA가 수익을 얻지 않습니다.',
-                    '광고 지면은 게재 신청을 받습니다. 광고는 광고로 표시하고 기사와 분리해 게재하며, 리뷰로 위장된 광고는 없습니다. 광고를 집행해도 추천 목록에 들어가거나 순위가 올라가지 않습니다.',
-                    '스폰서 콘텐츠와 순위 판매를 하지 않습니다. 추천 목록, 순위, 결론은 판매 대상이 아니며, 브랜드는 초안을 검토하거나 수정할 수 없습니다. 브랜드로부터 제품을 대여받아 테스트한 경우에는 기사 상단에 그 사실을 명시합니다.',
+                    '광고 지면은 게재 신청을 받습니다. 광고는 광고로 표시하고 기사와 분리해 게재하며, 리뷰로 위장된 광고는 없습니다.',
+                    '브랜드는 초안을 검토하거나 수정할 수 없습니다. 브랜드로부터 제품을 대여받아 테스트한 경우에는 기사 상단에 그 사실을 명시합니다.',
                   ].map((text) => (
                     <li key={text} className="grid grid-cols-[8px_1fr] gap-4 items-start">
                       <span className="w-2 h-2 rounded-full bg-brand-400 mt-3" />

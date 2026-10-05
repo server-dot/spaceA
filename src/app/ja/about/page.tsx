@@ -65,11 +65,6 @@ const FAQ_ITEMS = [
       '選定は、選択肢が多く公開情報が散在しているために読者が情報整理を最も必要とするトピックを優先します。トピックはブランドの露出要望ではなく、読者が実際に検索・比較している内容を基準に決めます。',
   },
   {
-    question: 'ブランドが料金を払って内容を変更できますか？',
-    answer:
-      'いいえ。spaceAが販売しているのは「広告」と明示した広告枠のみです。スポンサーコンテンツは受け入れず、推奨リストやランキング、結論内の掲載枠も販売しません。詳細な規定は運用基準のページをご覧ください。',
-  },
-  {
     question: '誤りやリンク切れを見つけた場合は？',
     answer: `Email ${EDITORIAL_EMAIL} or use the contact page. We verify, correct the article and update its last-updated date.`,
   },

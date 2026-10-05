@@ -65,11 +65,6 @@ const FAQ_ITEMS = [
       '선택지가 많지만 공개 정보가 혼란스러운 주제를 우선합니다. 독자들이 무엇을 먼저 정리해주길 필요로 하는지에 따라 주제를 선정하며, 브랜드의 홍보 요구가 아니라 실제 독자의 검색·비교 행태를 기준으로 결정합니다.',
   },
   {
-    question: '브랜드가 대가를 지불해 콘텐츠를 변경할 수 있나요?',
-    answer:
-      '아니요. spaceA가 판매하는 것은 광고로 표시된 광고 지면뿐입니다. 후원성 콘텐츠를 받지 않으며 추천 목록, 순위, 결론에 대한 유료 배치도 판매하지 않습니다. 자세한 규정은 편집 기준 페이지를 참조하세요.',
-  },
-  {
     question: '오류나 깨진 링크를 발견하면 어떻게 하나요?',
     answer: `Email ${EDITORIAL_EMAIL} or use the contact page. We verify, correct the article and update its last-updated date.`,
   },
