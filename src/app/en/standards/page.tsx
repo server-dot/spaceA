@@ -125,7 +125,7 @@ export default function EnStandardsPage() {
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">Found an error?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
                   Please tell us. We check the source, correct the article if it is wrong and update the last-updated date. If a
-                  change affects the original recommendation, we add a correction note at the end rather than editing silently.
+                  change affects the original recommendation, we add a correction note at the end.
                 </p>
                 <div className="flex gap-3 flex-wrap mt-6">
                   <Link

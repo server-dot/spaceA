@@ -123,7 +123,7 @@ export default function JaStandardsPage() {
               <section id="corrections" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">誤りを見つけましたか？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  ぜひお知らせください。出典を確認し、誤りがあれば記事を訂正し最終更新日を更新します。元の推奨に影響を与える変更がある場合は、内容をこっそり編集するのではなく、末尾に訂正注記を追加します。
+                  ぜひお知らせください。出典を確認し、誤りがあれば記事を訂正し最終更新日を更新します。元の推奨に影響を与える変更がある場合は、末尾に訂正注記を追加します。
                 </p>
                 <div className="flex gap-3 flex-wrap mt-6">
                   <Link

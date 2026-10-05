@@ -123,7 +123,7 @@ export default function KoStandardsPage() {
               <section id="corrections" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">오류를 찾으셨나요?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  알려주시면 출처를 확인하고 오류일 경우 기사를 수정하며 최종 갱신일을 업데이트합니다. 변경이 원래 추천에 영향을 미칠 경우에는 조용히 수정하지 않고 문서 하단에 정정 내용을 명시합니다.
+                  알려주시면 출처를 확인하고 오류일 경우 기사를 수정하며 최종 갱신일을 업데이트합니다. 변경이 원래 추천에 영향을 미칠 경우에는 문서 하단에 정정 내용을 명시합니다.
                 </p>
                 <div className="flex gap-3 flex-wrap mt-6">
                   <Link

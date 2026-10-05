@@ -61,7 +61,7 @@ const FAQ_ITEMS = [
   {
     question: '怎麼決定要寫哪些主題？',
     answer:
-      '優先寫「選擇很多、但公開資訊很亂」的題目——這種主題讀者最需要有人先做過整理再看懂。挑選依據是讀者實際會搜尋、會拿來比較的問題，不是廠商想曝光的順序。',
+      '優先寫選擇很多、公開資訊又很亂的題目，這類主題讀者最需要有人先整理過。挑題依據是讀者實際會搜尋、會拿來比較的問題。',
   },
   {
     question: '發現內容有誤或連結失效，該怎麼辦？',
@@ -108,14 +108,14 @@ export default function AboutPage() {
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">為什麼做這個網站？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  網路上找資訊的問題通常不是「沒有答案」，而是答案太多、立場太雜：業配文把每一家都寫成第一名，論壇留言真假難辨，比較清單常常是為了湊字數而不是為了幫你做決定。spaceA
-                  想解決的是這個——把分散在各平台的公開討論、規格與價格收集起來，交叉核對後，用讀得下去的方式寫清楚「這件事該怎麼判斷」。
+                  網路上找資訊，難的是答案太多、立場太雜：業配文把每一家都寫成第一名，論壇留言真假難辨，比較清單常常只是湊字數。spaceA
+                  把分散在各平台的公開討論、規格與價格收集起來，交叉核對後，用好讀的方式寫清楚這類選擇該怎麼判斷。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  舉個常見的例子：搜尋同一類商品或服務，常常會看到十篇文章有九篇的「優點」寫得幾乎一樣，只是把品牌名稱換掉——這通常代表它們用的是同一份通稿，而不是各自查證過的結論。這種內容看起來資訊量很大，實際上對決定要選哪一個完全沒有幫助，甚至會讓人誤以為每一家都差不多好。
+                  搜尋同一類商品或服務，常會看到十篇文章有九篇的「優點」幾乎一樣，只換了品牌名稱，多半是同一份通稿改寫。這種內容看起來資訊量很大，卻幫不了你做決定，還會讓人以為每一家都差不多。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  我們不是在教你「應該」怎麼選，而是把判斷依據攤開，讓你自己決定要不要照做。做不到有把握的結論時，我們會直說資料不足，不會硬湊一個看起來完整的答案。完整流程寫在
+                  我們把判斷依據攤開，選哪一個由你決定。資料不足以下結論時，文章會直接註明。完整流程寫在
                   <Link href="/standards" className="font-bold text-brand-600">
                     推薦標準
                   </Link>

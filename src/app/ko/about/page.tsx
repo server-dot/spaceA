@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
   {
     question: '어떤 주제를 다룰지 어떻게 결정하나요?',
     answer:
-      '선택지가 많지만 공개 정보가 혼란스러운 주제를 우선합니다. 독자들이 무엇을 먼저 정리해주길 필요로 하는지에 따라 주제를 선정하며, 브랜드의 홍보 요구가 아니라 실제 독자의 검색·비교 행태를 기준으로 결정합니다.',
+      '선택지가 많고 공개 정보가 정리되어 있지 않은 주제를 우선합니다. 이런 주제일수록 독자에게는 먼저 정리된 정보가 필요합니다. 주제는 독자가 실제로 검색하고 비교하는 내용을 기준으로 선정합니다.',
   },
   {
     question: '오류나 깨진 링크를 발견하면 어떻게 하나요?',
@@ -108,19 +108,17 @@ export default function KoAboutPage() {
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">왜 이 사이트를 만들었나요?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  온라인에서 정보를 찾을 때의 문제는 정답이 전혀 없는 것이 아니라, 너무 많은 관점에서 쏟아지는 과다한 답변입니다. 후원 게시물이 모든 브랜드를 1위로 치켜세우고, 포럼의 댓글은 검증하기 어려우며, 비교 목록은 선택을 돕기보다 길이를 채우기 위해 과장되는 경우가 많습니다. spaceA는 이를 바로잡기 위해 존재합니다. 다양한 플랫폼에 흩어진 공개 토론, 사양, 가격 정보를 모아 교차 검증하고, 실제로 읽기 쉬운 방식으로 판단 기준을 정리합니다.
+                  온라인에서 정보를 찾을 때 어려운 점은 여러 입장에서 나온 답이 너무 많다는 것입니다. 협찬 게시물은 모든 브랜드를 1위로 소개하고, 포럼 댓글은 진위를 가리기 어려우며, 비교 목록도 개수만 채운 경우가 많습니다. spaceA는 여러 플랫폼에 흩어진 공개 토론, 사양, 가격 정보를 모아 교차 확인하고, 어떻게 판단하면 되는지 읽기 쉽게 정리합니다.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  흔한 예로, 어떤 제품군을 검색해도 열 건 중 아홉 건은 브랜드 이름만 바뀐 거의 동일한 “장점”을 나열합니다. 이는 각 사이트가 자체 확인을 하지 않고 같은 보도자료를 공유했을 가능성이 큽니다. 많은 정보처럼 보이지만 선택에는 도움이 되지 않으며, 오히려 모든 옵션을 비슷하게 보이게 만들 수 있습니다.
+                  어떤 제품군을 검색해도 열 건 중 아홉 건은 브랜드 이름만 바꾼 거의 같은 “장점”을 나열하며, 대부분 같은 보도자료를 고쳐 쓴 것입니다. 정보가 많아 보이지만 결정에는 도움이 되지 않고, 모든 선택지가 비슷해 보이게 만듭니다.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  We are not telling you what you should pick. We lay out the criteria and let you decide whether to follow them.
-                  When we cannot reach a confident conclusion, we say the data is insufficient instead of forcing a tidy answer. The
-                  full process is on the{' '}
+                  판단 근거를 모두 공개하며, 무엇을 고를지는 독자가 결정합니다. 결론을 내리기에 데이터가 부족하면 기사에 그 사실을 명시합니다. 전체 과정은{' '}
                   <Link href="/ko/standards" className="font-bold text-brand-600">
                     편집 기준
                   </Link>{' '}
-                  page.
+                  페이지에서 확인할 수 있습니다.
                 </p>
               </Reveal>
 

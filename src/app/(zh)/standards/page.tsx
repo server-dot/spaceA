@@ -123,7 +123,7 @@ export default function StandardsPage() {
               <section id="corrections" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">發現內容有誤怎麼辦？</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  歡迎直接告訴我們。收到指正後我們會核對來源，確認有誤即更正並更新「最後更新」日期；若更動影響原本的推薦結論，會在文末加註修正說明，不會默默改掉。
+                  歡迎直接告訴我們。收到指正後我們會核對來源，確認有誤即更正並更新「最後更新」日期；若更動影響原本的推薦結論，會在文末加註修正說明。
                 </p>
                 <div className="flex gap-3 flex-wrap mt-6">
                   <Link

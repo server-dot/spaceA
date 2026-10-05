@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
   {
     question: 'どのトピックを扱うかはどう決めますか？',
     answer:
-      '選定は、選択肢が多く公開情報が散在しているために読者が情報整理を最も必要とするトピックを優先します。トピックはブランドの露出要望ではなく、読者が実際に検索・比較している内容を基準に決めます。',
+      '選択肢が多く、公開情報が整理されていないトピックを優先します。こうしたテーマほど、読者は先に誰かが整理した情報を必要としています。トピックは、読者が実際に検索し比較している内容をもとに選んでいます。',
   },
   {
     question: '誤りやリンク切れを見つけた場合は？',
@@ -108,19 +108,17 @@ export default function JaAboutPage() {
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">なぜこのサイトを作ったのか</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  オンラインで情報を探す際の問題は、答えがないことではなく、あまりに多くの角度から多すぎる答えが出てくることです。スポンサー記事がどのブランドも一位にしてしまったり、掲示板の書き込みは検証が難しかったり、比較リストが判断の助けになるよりも量を埋めるために作られていることがよくあります。spaceAはその状況を是正するために存在します。プラットフォームに散在する公開情報や仕様、価格を収集し、突き合わせて検証し、読みやすい形で判断基準を書き下ろします。
+                  オンラインで情報を探すときに難しいのは、さまざまな立場からの答えが多すぎることです。スポンサー記事はどのブランドも一位として紹介し、掲示板の書き込みは真偽の判断が難しく、比較リストも数合わせになっていることがよくあります。spaceAは、各プラットフォームに散らばる公開情報、仕様、価格を集めて突き合わせ、どう判断すればよいかを読みやすくまとめています。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  よくある例として、ある製品カテゴリを検索すると、10本中9本の文章がブランド名だけを差し替えたほぼ同一の「利点」を列挙しています。これは独自の確認をしていないために同一のプレスリリースを共有していることが多いのです。情報量は多く見えますが、選択の助けにはならず、むしろ全ての選択肢が同じように良く見えてしまうことがあります。
+                  ある製品カテゴリを検索すると、10本中9本の記事がブランド名だけを差し替えたほぼ同じ「利点」を並べており、多くは同じプレスリリースを書き直したものです。情報量は多く見えますが判断の助けにはならず、どの選択肢も同じように見えてしまいます。
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  We are not telling you what you should pick. We lay out the criteria and let you decide whether to follow them.
-                  When we cannot reach a confident conclusion, we say the data is insufficient instead of forcing a tidy answer. The
-                  full process is on the{' '}
+                  判断の根拠をすべて示し、どれを選ぶかは読者の方に決めていただきます。結論を出すのに十分なデータがない場合は、記事内でその旨を明記します。詳しい流れは
                   <Link href="/ja/standards" className="font-bold text-brand-600">
                     運用基準
-                  </Link>{' '}
-                  page.
+                  </Link>
+                  ページをご覧ください。
                 </p>
               </Reveal>
 

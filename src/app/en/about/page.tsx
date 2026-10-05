@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do you decide which topics to cover?',
     answer:
-      'We prioritise topics with many options but messy public information, where readers most need someone to organise things first. Topics are chosen by what readers actually search and compare, not by which brands want exposure.',
+      'We prioritise topics with many options and messy public information, where readers most need someone to organise things first. Topics are chosen by what readers actually search for and compare.',
   },
   {
     question: 'What if I find an error or a broken link?',
@@ -109,22 +109,19 @@ export default function EnAboutPage() {
               <Reveal as="section" id="why" className="mt-14 pt-10 border-t border-paper-border">
                 <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">Why build this site?</h2>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  The problem with finding information online is rarely that there is no answer. It is that there are too many
-                  answers from too many angles: sponsored posts crown every brand number one, forum comments are hard to verify,
-                  and comparison lists are often padded for length rather than built to help you decide. spaceA exists to fix
-                  that: we gather the public discussion, specs and prices scattered across platforms, cross-check them, and write
-                  down how to judge the decision in a way you can actually read.
+                  The hard part of finding information online is the sheer number of answers from too many angles: sponsored posts
+                  crown every brand number one, forum comments are hard to verify, and comparison lists are often padded for length.
+                  spaceA gathers the public discussion, specs and prices scattered across platforms, cross-checks them, and explains
+                  clearly how to judge the choice.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  A common example: search for any product category and nine out of ten articles list nearly identical &quot;pros&quot;
-                  with only the brand name swapped. That usually means they share one press release rather than doing their own
-                  checking. It looks like a lot of information, but it does nothing to help you choose, and it can even make every
-                  option look equally good.
+                  Search for any product category and nine out of ten articles list nearly identical &quot;pros&quot; with only the brand
+                  name swapped, usually rewritten from the same press release. It looks like a lot of information, but it does not
+                  help you decide, and it makes every option look about the same.
                 </p>
                 <p className="text-base leading-loose text-paper-body mt-4 max-w-2xl text-balance">
-                  We are not telling you what you should pick. We lay out the criteria and let you decide whether to follow them.
-                  When we cannot reach a confident conclusion, we say the data is insufficient instead of forcing a tidy answer. The
-                  full process is on the{' '}
+                  We lay out the criteria, and the choice is yours. When the data is not enough to reach a conclusion, the article
+                  says so. The full process is on the{' '}
                   <Link href="/en/standards" className="font-bold text-brand-600">
                     Our Standards
                   </Link>{' '}
