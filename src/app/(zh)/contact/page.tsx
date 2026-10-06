@@ -5,7 +5,6 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
-import Reveal from '@/components/ui/Reveal'
 
 const DESCRIPTION = '內容更正、選題建議、廣告與內容授權洽詢的聯絡方式。內容更正會優先處理。'
 
@@ -100,24 +99,6 @@ export default function ContactPage() {
 
             <ContactForm />
           </section>
-
-          <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
-            <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">我們怎麼處理來信</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">內容更正優先</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  核對來源後更正，並更新文章的最後更新日期；若影響原本結論會加註修正說明。
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">一定回信</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  合作洽詢與選題建議都會回覆，若主題已在規劃中會說明時程。
-                </p>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </>
