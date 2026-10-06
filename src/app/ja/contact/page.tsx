@@ -5,7 +5,6 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
-import Reveal from '@/components/ui/Reveal'
 
 // 日文版聯絡我們。內容照 app/(zh)/contact/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
@@ -106,26 +105,6 @@ export default function JaContactPage() {
 
             <ContactForm lang="ja" />
           </section>
-
-          <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
-            <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">メッセージの取り扱い方法</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">訂正を最優先します</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  出典を確認し、記事を修正して最終更新日を更新します。元の結論が変更される場合は
-                  訂正注記を追記します。
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">必ず返信します</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  パートナーシップに関する問い合わせやトピックの提案にはすべて返信します。すでに予定されているトピックの場合は
-                  スケジュールをお知らせします。
-                </p>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </>

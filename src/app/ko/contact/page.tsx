@@ -5,7 +5,6 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
-import Reveal from '@/components/ui/Reveal'
 
 // 韓文版聯絡我們。內容照 app/(zh)/contact/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
@@ -105,24 +104,6 @@ export default function KoContactPage() {
 
             <ContactForm lang="ko" />
           </section>
-
-          <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
-            <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">메시지 처리 방법</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">정정 우선 처리</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  출처를 확인하고 기사를 수정하며 최종 업데이트 날짜를 갱신합니다; 원래 결론이 변경될 경우 정정 사항을 명시합니다.
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">항상 회신합니다</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  제휴 문의와 주제 제안에는 모두 회신합니다; 이미 예정된 주제인 경우 일정(타임라인)을 안내해 드립니다.
-                </p>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </>

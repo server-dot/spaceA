@@ -5,7 +5,6 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs'
 import ContactForm from '@/views/ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
-import Reveal from '@/components/ui/Reveal'
 
 // 英文版聯絡我們。內容照 app/(zh)/contact/page.tsx 翻，兩邊改文案要一起改
 const DESCRIPTION =
@@ -106,26 +105,6 @@ export default function EnContactPage() {
 
             <ContactForm lang="en" />
           </section>
-
-          <Reveal as="section" className="mt-14 pt-10 border-t border-paper-border">
-            <h2 className="font-serif text-2xl font-bold leading-snug text-paper-ink">How we handle messages</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 mt-7">
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">Corrections first</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  We check the source, correct the article and update its last-updated date; if the original conclusion changes
-                  we add a correction note.
-                </p>
-              </div>
-              <div className="border-t-2 border-brand-600 pt-3.5">
-                <b className="text-base font-bold text-paper-ink">We always reply</b>
-                <p className="text-[15px] leading-loose text-paper-secondary mt-1.5">
-                  Partnership enquiries and topic suggestions all get a reply; if a topic is already planned we will share the
-                  timeline.
-                </p>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </div>
     </>
