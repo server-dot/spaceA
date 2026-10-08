@@ -52,6 +52,7 @@ function entity(item: BrandListItem) {
     const offers = {
       '@type': 'AggregateOffer',
       lowPrice: item.offer.price,
+      highPrice: item.offer.price,
       priceCurrency: item.offer.currency,
       offerCount: 1,
       ...(item.url ? { url: item.url } : {}),
