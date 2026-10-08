@@ -11,6 +11,8 @@ interface ItemListJsonLdProps {
  * 推薦文的品牌清單：ItemList + 每家一個 ListItem，順序就是文章裡的排序。
  * 每家帶完整卡片資料（小編點評、規格、網友評價），給 AI 搜尋直接引用。
  * 不輸出評分：我們沒有打分數，編一個違反 Google 規範也違反揭露原則。
+ * 商品價格用 AggregateOffer：我們不是賣家，用 Offer 會被 Google 當成「商家資訊」，
+ * 要求退貨政策、運費、庫存這些我們給不出的欄位；AggregateOffer 是「整理別人的售價」，只走產品摘要。
  */
 export default function ItemListJsonLd({ name, url, items }: ItemListJsonLdProps) {
   if (items.length === 0) return null
@@ -48,9 +50,10 @@ function entity(item: BrandListItem) {
   if (item.type === 'Product') {
     if (!item.offer) return base
     const offers = {
-      '@type': 'Offer',
-      price: item.offer.price,
+      '@type': 'AggregateOffer',
+      lowPrice: item.offer.price,
       priceCurrency: item.offer.currency,
+      offerCount: 1,
       ...(item.url ? { url: item.url } : {}),
     }
     return { ...base, offers }
