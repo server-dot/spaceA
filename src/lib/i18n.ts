@@ -102,7 +102,7 @@ const zh = {
   updated: '更新',
   readingTime: (min: number) => `閱讀約 ${min} 分鐘`,
   disclosure:
-    '本文彙整網路公開討論、電商與訂房平台評論及品牌官方資訊，並由編輯部核對後撰寫。文中連結皆為品牌官網或通路頁面，本站不從點擊或購買中分潤。價格與供貨請以通路頁面為準。',
+    '本文彙整網路公開討論、電商與評價平台評論及品牌官方資訊，並由編輯部核對後撰寫。文中連結皆為品牌官網或通路頁面，本站不從點擊或購買中分潤。價格與供貨請以通路頁面為準。',
   conclusionFirst: '先看結論',
   editorIntro: '編者介紹',
   toc: '本篇目錄',
@@ -273,7 +273,7 @@ const en: UIStrings = {
   updated: 'Updated',
   readingTime: (min: number) => `${min} min read`,
   disclosure:
-    'This article compiles public online discussion, marketplace and booking-site reviews, and official brand information, verified by our editors. Links go straight to brand or retailer pages; spaceA earns nothing from clicks or purchases. Prices and availability are subject to the retailer.',
+    'This article compiles public online discussion, marketplace and review-site reviews, and official brand information, verified by our editors. Links go straight to brand or retailer pages; spaceA earns nothing from clicks or purchases. Prices and availability are subject to the retailer.',
   conclusionFirst: 'Key Takeaways',
   editorIntro: 'About the Editor',
   toc: 'In This Article',
@@ -443,7 +443,7 @@ const ja: UIStrings = {
   updated: '更新',
   readingTime: (min: number) => `約 ${min} 分で読めます`,
   disclosure:
-    'この記事はネット上の公開された議論、EC・予約サイトのレビュー、ブランド公式情報をまとめ、編集部が確認したうえで執筆しています。記事内のリンクはブランド公式サイトや販売ページに直接つながるもので、クリックや購入による報酬は受け取っていません。価格と在庫は各販売ページをご確認ください。',
+    'この記事はネット上の公開された議論、EC・口コミサイトのレビュー、ブランド公式情報をまとめ、編集部が確認したうえで執筆しています。記事内のリンクはブランド公式サイトや販売ページに直接つながるもので、クリックや購入による報酬は受け取っていません。価格と在庫は各販売ページをご確認ください。',
   conclusionFirst: '結論から',
   editorIntro: '編集者について',
   toc: '目次',
@@ -613,7 +613,7 @@ const ko: UIStrings = {
   updated: '수정',
   readingTime: (min: number) => `약 ${min}분 분량`,
   disclosure:
-    '이 글은 온라인에 공개된 게시물, 쇼핑몰과 예약 사이트 후기, 브랜드 공식 정보를 정리하고 편집부가 확인한 뒤 작성했습니다. 글 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결되며, 클릭이나 구매로 수익을 얻지 않습니다. 가격과 재고는 판매 페이지를 기준으로 확인해 주세요.',
+    '이 글은 온라인에 공개된 게시물, 쇼핑몰과 리뷰 사이트 후기, 브랜드 공식 정보를 정리하고 편집부가 확인한 뒤 작성했습니다. 글 속 링크는 브랜드 공식 사이트나 판매 페이지로 바로 연결되며, 클릭이나 구매로 수익을 얻지 않습니다. 가격과 재고는 판매 페이지를 기준으로 확인해 주세요.',
   conclusionFirst: '핵심 결론',
   editorIntro: '편집자 소개',
   toc: '목차',

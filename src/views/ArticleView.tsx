@@ -202,9 +202,6 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
       (c.count ?? 0) > 0
   )
 
-  // WordPress 自動截的 excerpt 會把開頭的目錄區塊當摘要，改優先吃 Yoast 描述（見 resolveSummary）
-  const summary = resolveSummary(post.excerpt, post.seo?.metaDesc)
-
   const updated = post.modified && post.modified !== post.date
   // 結論/常見問題/TOC 兩種類型都套用；HowTo 判斷標準跟「這篇怎麼寫出來的」只給知識分享——
   // 推薦文的 <ol> 通常是排名清單不是操作步驟，硬套 HowTo 會誤用結構化資料
@@ -251,12 +248,6 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
               <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-paper-ink mt-3">
                 {post.title}
               </h1>
-
-              {summary && (
-                <p className="text-[17px] leading-loose text-paper-secondary mt-5">
-                  {summary}
-                </p>
-              )}
 
               <div className="flex flex-wrap items-center gap-3 text-[13px] text-paper-secondary mt-5">
                 <span className="flex items-center gap-2">
