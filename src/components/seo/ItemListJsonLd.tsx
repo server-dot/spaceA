@@ -48,7 +48,9 @@ function entity(item: BrandListItem) {
   }
 
   if (item.type === 'Product') {
-    if (!item.offer) return base
+    // 抓不到價格（需洽詢、只寫區間文字）就不能標 Product：Google 產品摘要規定 offers／review／aggregateRating
+    // 至少要有一個，我們不評分也沒有評論，只剩 offers；退成 Thing，資料照帶、不進產品摘要檢查
+    if (!item.offer) return { ...base, '@type': 'Thing' }
     const offers = {
       '@type': 'AggregateOffer',
       lowPrice: item.offer.price,
