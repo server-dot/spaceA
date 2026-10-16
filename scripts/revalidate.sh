@@ -9,6 +9,10 @@ set -a; . ./.env.local; set +a
 : "${REVALIDATE_SECRET:?.env.local 缺 REVALIDATE_SECRET}"
 # .env.local 的 NEXT_PUBLIC_SITE_URL 是本機 dev，這支一律打正式站，要打別站用 REVALIDATE_SITE_URL 蓋掉
 SITE="${REVALIDATE_SITE_URL:-https://spacea.com.tw}"
-curl -s -w " HTTP %{http_code}\n" -X POST "${SITE%/}/api/revalidate" \
+RES=$(curl -s -X POST "${SITE%/}/api/revalidate" \
   -H "x-revalidate-secret: $REVALIDATE_SECRET" -H "Content-Type: application/json" \
-  -d "{\"slug\":\"$1\",\"category\":\"$2\"}"
+  -d "{\"slug\":\"$1\",\"category\":\"$2\"}")
+echo "$RES"
+# 清完順手檢查這篇的結構化資料，不要等 GSC 寄信才知道
+PAGE=$(printf '%s' "$RES" | python3 -c 'import sys,json; print(json.load(sys.stdin)["paths"][0])' 2>/dev/null) || exit 0
+python3 -I scripts/check-schema.py "${SITE%/}$PAGE"

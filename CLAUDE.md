@@ -24,6 +24,7 @@ npm run build        # 生產建置
 npm run start        # 生產伺服器
 npm run lint         # ESLint 檢查
 npm run type-check   # TypeScript 型別檢查
+npm run check-schema # 照 Google 規則掃正式站全部 JSON-LD（動 schema 推完必跑；revalidate.sh 會自動檢查單篇）
 ```
 
 ## 環境變數
