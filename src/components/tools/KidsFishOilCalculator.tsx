@@ -227,7 +227,8 @@ export default function KidsFishOilCalculator({ lang = 'zh' }: { lang?: Lang }) 
   }
 
   const target = dailyTarget(age)
-  const range = target.low === target.high ? `${target.low}` : `${target.low}～${target.high}`
+  const dash = lang === 'en' || lang === 'ko' ? '–' : '～'
+  const range = target.low === target.high ? `${target.low}` : `${target.low}${dash}${target.high}`
   const order: Record<Status, number> = { ok: 0, short: 1, nodata: 2 }
   const fits: Match[] = []
   const out: { p: FishOilProduct; why: Why }[] = []
