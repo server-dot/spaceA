@@ -65,15 +65,14 @@ function match(p: FishOilProduct, age: number): Match {
 
 const BADGE: Record<Status, { text: string; cls: string }> = {
   ok: { text: '達建議量', cls: 'bg-emerald-50 text-emerald-700' },
-  short: { text: '照官網用量未達建議量', cls: 'bg-amber-50 text-amber-700' },
+  short: { text: '吃到上限也不夠', cls: 'bg-amber-50 text-amber-700' },
   nodata: { text: '官網未標示 DHA', cls: 'bg-gray-100 text-gray-600' },
 }
 
-function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
+function Step({ title, children }: { title: string; children: ReactNode }) {
   return (
     <fieldset className="m-0 border-0 p-0">
-      <legend className="mb-2 flex items-center gap-2 text-[15px] font-bold text-gray-900">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0284c7] text-xs text-white">{n}</span>
+      <legend className="mb-2 text-[15px] font-bold text-gray-900">
         {title}
       </legend>
       <div className="flex flex-wrap gap-2">{children}</div>
@@ -113,27 +112,26 @@ export default function KidsFishOilCalculator() {
     else fits.push(match(p, age))
   }
   fits.sort((a, b) => order[a.status] - order[b.status] || a.monthly - b.monthly)
-  const okCount = fits.filter((m) => m.status === 'ok').length
 
   return (
     <section className="not-prose my-8 rounded-2xl border border-[#bae6fd] bg-[#f8fcff] p-5 sm:p-6" aria-labelledby="kfo-form-title">
       <h2 id="kfo-form-title" className="m-0 text-xl font-bold text-[#0369a1]">
-        回答三題，找出孩子能吃的兒童魚油
+        孩子能吃哪幾款？
       </h2>
-      <p className="mt-2 mb-5 text-sm text-gray-600">依 10 款的官網建議量、定價與成分標示計算，2026-10-22 核對。</p>
+      <div className="mb-5" />
 
       <div className="space-y-5">
-        <Step n={1} title="孩子幾歲？">
+        <Step title="孩子幾歲？">
           {AGES.map((a) => (
             <Chip key={a} on={a === age} onClick={() => setAge(a)}>{a} 歲</Chip>
           ))}
         </Step>
-        <Step n={2} title="孩子怎麼吃膠囊？">
+        <Step title="孩子怎麼吃膠囊？">
           {WAYS.map((w) => (
             <Chip key={w.key} on={w.key === way} onClick={() => setWay(w.key)}>{w.label}</Chip>
           ))}
         </Step>
-        <Step n={3} title="有沒有飲食限制？（可複選，沒有就跳過）">
+        <Step title="有沒有不能吃的？">
           {LIMITS.map((l) => (
             <Chip key={l.key} role="checkbox" on={limits.includes(l.key)} onClick={() => toggle(l.key)}>{l.label}</Chip>
           ))}
@@ -142,10 +140,10 @@ export default function KidsFishOilCalculator() {
 
       <div className="mt-6 rounded-xl bg-white p-4 ring-1 ring-[#e6e2da]">
         <p className="m-0 text-[15px] leading-relaxed text-gray-800">
-          {age} 歲每天建議攝取 EPA＋DHA{' '}
-          <strong>{target.low === target.high ? target.low : `${target.low}～${target.high}`} 毫克</strong>
-          （<a href={FAO_WHO_URL} target="_blank" rel="noopener" className="text-[#0369a1] underline">FAO／WHO 2010 建議量</a>，{target.label}）。
-          符合你的條件有 <strong>{fits.length} 款</strong>，照官網用量就達到建議量的有 <strong>{okCount} 款</strong>。
+          {age} 歲一天要{' '}
+          <strong>{target.low === target.high ? target.low : `${target.low}～${target.high}`} 毫克</strong> EPA＋DHA
+          （<a href={FAO_WHO_URL} target="_blank" rel="noopener" className="text-[#0369a1] underline">FAO／WHO 建議</a>），這 10 款裡有{' '}
+          <strong>{fits.length} 款</strong>適合。
         </p>
 
         {fits.length > 0 ? (
@@ -194,8 +192,7 @@ export default function KidsFishOilCalculator() {
       </div>
 
       <p className="mt-3 mb-0 text-[13px] leading-relaxed text-gray-500">
-        每天顆數照官網建議量，建議量是範圍的取剛好達標的顆數；一個月以 30 天、定價計算。官網沒標 EPA 的只算 DHA，官網沒寫膠囊來源的不會被排除。
-        2 歲以下或正在吃抗凝血藥物的孩子，吃之前先問醫師。
+        顆數照官網建議量，月花費以定價、30 天計算。正在吃抗凝血藥物的孩子先問醫師。
       </p>
     </section>
   )
