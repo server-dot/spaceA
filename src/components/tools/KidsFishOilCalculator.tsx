@@ -131,7 +131,7 @@ export default function KidsFishOilCalculator() {
             <Chip key={w.key} on={w.key === way} onClick={() => setWay(w.key)}>{w.label}</Chip>
           ))}
         </Step>
-        <Step title="有沒有不能吃的？">
+        <Step title="有沒有飲食限制？">
           {LIMITS.map((l) => (
             <Chip key={l.key} role="checkbox" on={limits.includes(l.key)} onClick={() => toggle(l.key)}>{l.label}</Chip>
           ))}
