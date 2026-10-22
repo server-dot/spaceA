@@ -2,13 +2,15 @@ import type { ComponentType } from 'react'
 import BrokenImageFallback from './BrokenImageFallback'
 import SvgTextFit from './SvgTextFit'
 import KidsFishOilCalculator from '@/components/tools/KidsFishOilCalculator'
+import type { Lang } from '@/lib/i18n'
 
 interface ArticleBodyProps {
   content: string
+  lang?: Lang
 }
 
 /** WP 內文放 <div data-spacea-tool="名稱"></div>，前台在那個位置換成對應的互動元件 */
-const TOOLS: Record<string, ComponentType> = {
+const TOOLS: Record<string, ComponentType<{ lang?: Lang }>> = {
   'kids-fish-oil': KidsFishOilCalculator,
 }
 
@@ -44,7 +46,7 @@ function splitAtTools(html: string) {
 const PROSE =
   'prose prose-gray max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl'
 
-export default function ArticleBody({ content }: ArticleBodyProps) {
+export default function ArticleBody({ content, lang = 'zh' }: ArticleBodyProps) {
   const parts = splitAtTools(content ?? '')
   return (
     <>
@@ -53,7 +55,7 @@ export default function ArticleBody({ content }: ArticleBodyProps) {
       {parts.map((p, i) => {
         if (p.tool) {
           const Tool = TOOLS[p.tool]
-          return <Tool key={i} />
+          return <Tool key={i} lang={lang} />
         }
         return <div key={i} className={PROSE} dangerouslySetInnerHTML={{ __html: p.html }} />
       })}

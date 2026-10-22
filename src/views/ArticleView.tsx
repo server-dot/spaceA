@@ -390,7 +390,7 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
               )}
 
               <div className="mt-9">
-                <ArticleBody content={parsed.bodyHtml} />
+                <ArticleBody content={parsed.bodyHtml} lang={lang} />
               </div>
 
               {parsed.faq && (
@@ -440,7 +440,7 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
               {/* 總結與參考資料排在常見問題之後（見 parseArticleContent 的 bodyTailHtml） */}
               {parsed.bodyTailHtml && (
                 <div className="mt-11">
-                  <ArticleBody content={parsed.bodyTailHtml} />
+                  <ArticleBody content={parsed.bodyTailHtml} lang={lang} />
                 </div>
               )}
 
