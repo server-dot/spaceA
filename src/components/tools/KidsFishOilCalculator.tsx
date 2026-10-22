@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { KIDS_FISH_OIL, FAO_WHO_URL, dailyTarget, type FishOilProduct } from '@/data/kids-fish-oil'
 
 /**
@@ -96,11 +97,23 @@ function Chip({ on, onClick, children, role = 'radio' }: { on: boolean; onClick:
   )
 }
 
+// GA4 事件：kfo_answer = 改了哪一題、選什麼；kfo_product_click = 點了結果裡哪一款、排第幾
+function track(name: string, params: Record<string, string | number>) {
+  try {
+    sendGAEvent('event', name, params)
+  } catch {
+    // 沒載入 GA（本機、擋廣告）就略過
+  }
+}
+
 export default function KidsFishOilCalculator() {
   const [age, setAge] = useState(6)
   const [way, setWay] = useState<Way>('chew')
   const [limits, setLimits] = useState<Limit[]>([])
-  const toggle = (k: Limit) => setLimits((xs) => (xs.includes(k) ? xs.filter((x) => x !== k) : [...xs, k]))
+  const toggle = (k: Limit) => {
+    track('kfo_answer', { question: 'limit', value: k })
+    setLimits((xs) => (xs.includes(k) ? xs.filter((x) => x !== k) : [...xs, k]))
+  }
 
   const target = dailyTarget(age)
   const order: Record<Status, number> = { ok: 0, short: 1, nodata: 2 }
@@ -123,12 +136,12 @@ export default function KidsFishOilCalculator() {
       <div className="space-y-5">
         <Step title="孩子幾歲？">
           {AGES.map((a) => (
-            <Chip key={a} on={a === age} onClick={() => setAge(a)}>{a} 歲</Chip>
+            <Chip key={a} on={a === age} onClick={() => { track('kfo_answer', { question: 'age', value: a }); setAge(a) }}>{a} 歲</Chip>
           ))}
         </Step>
         <Step title="孩子怎麼吃膠囊？">
           {WAYS.map((w) => (
-            <Chip key={w.key} on={w.key === way} onClick={() => setWay(w.key)}>{w.label}</Chip>
+            <Chip key={w.key} on={w.key === way} onClick={() => { track('kfo_answer', { question: 'way', value: w.key }); setWay(w.key) }}>{w.label}</Chip>
           ))}
         </Step>
         <Step title="有沒有飲食限制？">
@@ -162,7 +175,7 @@ export default function KidsFishOilCalculator() {
                 {fits.map((m, i) => (
                   <tr key={m.p.brand} className={i % 2 ? 'bg-white' : 'bg-[#F7F9FC]'}>
                     <td className="border-t border-[#e6e2da] px-3 py-2.5">
-                      <a href={m.p.url} target="_blank" rel="noopener" className="font-semibold text-[#0369a1] hover:underline">{m.p.brand}</a>
+                      <a href={m.p.url} target="_blank" rel="noopener" onClick={() => track('kfo_product_click', { brand: m.p.brand, position: i + 1, age, way })} className="font-semibold text-[#0369a1] hover:underline">{m.p.brand}</a>
                       <span className="block text-[13px] text-gray-500">{m.p.name}</span>
                       <span className={`mt-1 inline-block rounded px-1.5 py-0.5 text-xs font-medium ${BADGE[m.status].cls}`}>{BADGE[m.status].text}</span>
                     </td>
