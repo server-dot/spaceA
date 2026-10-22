@@ -150,10 +150,11 @@ export async function generateArticleMetadata(lang: Lang, { params }: ArticleRou
       type: 'article',
       publishedTime: post.date,
       modifiedTime: post.modified,
-      images: post.seo?.opengraphImage?.sourceUrl
-        ? [{ url: post.seo.opengraphImage.sourceUrl }]
-        : post.featuredImage?.node?.sourceUrl
-          ? [{ url: post.featuredImage.node.sourceUrl }]
+      // 精選圖片優先：Yoast 的 og:image 是另外存的，換封面後常停在舊圖，REST 也寫不進去
+      images: post.featuredImage?.node?.sourceUrl
+        ? [{ url: post.featuredImage.node.sourceUrl }]
+        : post.seo?.opengraphImage?.sourceUrl
+          ? [{ url: post.seo.opengraphImage.sourceUrl }]
           : [{ url: '/og-default.jpg', width: 1024, height: 318 }],
     },
   }
