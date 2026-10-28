@@ -25,7 +25,8 @@ export default function ArticleCard({ lang = 'zh', post }: ArticleCardProps) {
       <Link href={href} className="block relative aspect-[16/9] bg-gray-100 overflow-hidden">
         {post.featuredImage?.node ? (
           <Image
-            src={post.featuredImage.node.sourceUrl}
+            src={post.featuredImage.node.cardUrl || post.featuredImage.node.sourceUrl}
+            unoptimized
             alt={post.featuredImage.node.altText || post.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

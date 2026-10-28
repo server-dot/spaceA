@@ -1,5 +1,6 @@
 export interface WPImage {
   sourceUrl: string
+  cardUrl?: string | null
   altText: string
   mediaDetails?: {
     width: number

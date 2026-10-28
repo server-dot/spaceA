@@ -314,6 +314,7 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
                 <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mt-7">
                   <Image
                     src={post.featuredImage.node.sourceUrl}
+                    unoptimized
                     alt={post.featuredImage.node.altText || post.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 900px"
@@ -481,7 +482,8 @@ export default async function ArticleView({ lang, params }: ArticleRouteProps & 
                           {p.featuredImage?.node?.sourceUrl && (
                             <div className="relative w-full aspect-[16/9]">
                               <Image
-                                src={p.featuredImage.node.sourceUrl}
+                                src={p.featuredImage.node.cardUrl || p.featuredImage.node.sourceUrl}
+                                unoptimized
                                 alt={p.featuredImage.node.altText || p.title}
                                 fill
                                 sizes="(max-width: 640px) 100vw, 300px"

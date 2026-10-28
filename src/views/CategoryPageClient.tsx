@@ -209,6 +209,7 @@ export default function CategoryPageClient({
                 {feature.featuredImage?.node && (
                   <Image
                     src={feature.featuredImage.node.sourceUrl}
+                    unoptimized
                     alt={feature.featuredImage.node.altText || feature.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -254,7 +255,8 @@ export default function CategoryPageClient({
                         <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-paper-surface transition-shadow duration-300 group-hover:shadow-[0_14px_32px_rgba(30,25,15,0.12)]">
                           {post.featuredImage?.node && (
                             <Image
-                              src={post.featuredImage.node.sourceUrl}
+                              src={post.featuredImage.node.cardUrl || post.featuredImage.node.sourceUrl}
+                              unoptimized
                               alt={post.featuredImage.node.altText || post.title}
                               fill
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

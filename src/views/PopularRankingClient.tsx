@@ -146,6 +146,7 @@ export default function PopularRankingClient({ lang, articles, categories }: Pro
                     {p.image ? (
                       <Image
                         src={p.image.url}
+                        unoptimized
                         alt={p.image.alt}
                         fill
                         sizes="(max-width: 640px) 100px, 132px"

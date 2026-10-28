@@ -127,6 +127,7 @@ export default function HomeClient({ lang, blocks, topics }: HomeClientProps) {
                     {feature.featuredImage?.node && (
                       <Image
                         src={feature.featuredImage.node.sourceUrl}
+                        unoptimized
                         alt={feature.featuredImage.node.altText || feature.title}
                         fill
                         sizes="(max-width: 1024px) 100vw, 50vw"
@@ -167,7 +168,8 @@ export default function HomeClient({ lang, blocks, topics }: HomeClientProps) {
                         >
                           {post.featuredImage?.node && (
                             <Image
-                              src={post.featuredImage.node.sourceUrl}
+                              src={post.featuredImage.node.cardUrl || post.featuredImage.node.sourceUrl}
+                              unoptimized
                               alt={post.featuredImage.node.altText || post.title}
                               fill
                               sizes="104px"
