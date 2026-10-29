@@ -18,7 +18,7 @@ type Form = 'free' | 'ester' | 'unknown'
 const FORMS: Form[] = ['free', 'ester', 'unknown']
 
 const ZH = {
-  title: '你那瓶到底吃到多少葉黃素？',
+  title: '葉黃素含量計算器',
   qMg: '瓶身寫每顆（每份）幾毫克？',
   qForm: '標示的型態',
   forms: { free: '游離型', ester: '酯化型', unknown: '沒寫' } as Record<Form, string>,
