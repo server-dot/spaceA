@@ -1,7 +1,7 @@
 import { EDITOR_SAME_AS, ORG_SAME_AS, SITE_NAME, SITE_URL } from '@/lib/constants'
 import { resolveArticleType } from '@/lib/article-type'
 import { LANG_TAG, articleTypeLabel, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
-import { countWords, resolveSummary } from '@/lib/format'
+import { countWords, resolveSummary, toTaipeiIso } from '@/lib/format'
 import { ReferenceItem, deriveMetaDescription } from '@/lib/content-parsers'
 import { WPPost } from '@/types/wordpress'
 import socialCrops from '@/lib/social-crops.json'
@@ -38,8 +38,8 @@ export default function ArticleJsonLd({ post, references, hasLead, url, hasItemL
     url,
     inLanguage: LANG_TAG[lang],
     // WPGraphQL 的 date／modified 是站台時區（Asia/Taipei）但不帶時區，Rich Results Test 會警告
-    datePublished: withTaipeiOffset(post.date),
-    dateModified: withTaipeiOffset(post.modified),
+    datePublished: toTaipeiIso(post.date),
+    dateModified: toTaipeiIso(post.modified),
     wordCount: countWords(post.content, lang),
     image: articleImages(image?.sourceUrl, imageWidth, imageHeight),
     // WordPress 的作者帳號是 admin，文章頁顯示的編者是阿康，兩邊要一致才有 E-E-A-T 意義
@@ -106,7 +106,3 @@ function articleImages(cover?: string, width?: number, height?: number) {
   ]
 }
 
-/** 沒有時區的 ISO 字串補上 +08:00；已經帶 Z 或偏移量的原樣回傳 */
-function withTaipeiOffset(iso: string) {
-  return /(?:Z|[+-]\d{2}:\d{2})$/.test(iso) ? iso : `${iso}+08:00`
-}

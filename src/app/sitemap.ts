@@ -1,3 +1,4 @@
+import { wpDateToUtc } from '@/lib/format'
 import type { MetadataRoute } from 'next'
 import { fetchQuery } from '@/lib/graphql/client'
 import { GET_SITEMAP_DATA } from '@/lib/graphql/queries/sitemap'
@@ -68,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const langs = LANGS.filter((l) => postLangs.get(toRouteSlug(post.slug))?.has(l))
     return {
       url: `${SITE_URL}${articleHref(lang, categorySlug, post.slug)}`,
-      lastModified: new Date(post.modified),
+      lastModified: new Date(wpDateToUtc(post.modified)),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
       alternates: alternatesFor(langs, (l) => `${SITE_URL}${articleHref(l, categorySlug, post.slug)}`),

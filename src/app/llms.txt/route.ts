@@ -1,7 +1,7 @@
 import { fetchQuery } from '@/lib/graphql/client'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { GET_LLMS_ARTICLES } from '@/lib/graphql/queries/llms'
-import { resolveSummary, stripHtml } from '@/lib/format'
+import { resolveSummary, stripHtml, toTaipeiIso } from '@/lib/format'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { LANGS, articleHref, categoryHref, langOfCategorySlug, langPrefix, ui } from '@/lib/i18n'
 
@@ -32,7 +32,7 @@ function articleLine(lang: (typeof LANGS)[number], post: LlmsArticle) {
   if (!cat) return ''
   const summary = resolveSummary(post.excerpt, post.seo?.metaDesc) || stripHtml(post.excerpt ?? '')
   const brief = summary.replace(/\s+/g, ' ').slice(0, 120)
-  const date = (post.modified || '').slice(0, 10)
+  const date = post.modified ? toTaipeiIso(post.modified).slice(0, 10) : ''
   return `- [${stripHtml(post.title)}](${SITE_URL}${articleHref(lang, cat.slug, post.slug)})${brief ? `: ${brief}` : ''}${date ? `（${date}）` : ''}`
 }
 

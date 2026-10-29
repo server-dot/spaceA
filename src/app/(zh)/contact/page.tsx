@@ -6,7 +6,7 @@ import ContactForm from '@/views/ContactForm'
 import { SITE_NAME, COMPANY_ADDRESS, COMPANY_PHONE, EDITORIAL_EMAIL, TECH_EMAIL } from '@/lib/constants'
 import Link from 'next/link'
 
-const DESCRIPTION = '內容更正、選題建議、廣告與內容授權洽詢的聯絡方式。內容更正會優先處理。'
+const DESCRIPTION = '聯絡 spaceA 編輯部：回報文章資料錯誤、提供選題建議，或洽詢廣告版位與內容授權。資料更正會優先處理。'
 
 const BREADCRUMBS = [
   { label: '首頁', href: '/' },

@@ -40,7 +40,7 @@ import {
   HOWTO_SECTION_ID,
   FAQ_SECTION_ID,
 } from '@/lib/content-parsers'
-import { countWords, formatDate, isSpaceSeparated, resolveSummary, isAutoExcerpt, stripWpSiteSuffix } from '@/lib/format'
+import { countWords, formatDate, isSpaceSeparated, resolveSummary, isAutoExcerpt, stripWpSiteSuffix, toTaipeiIso } from '@/lib/format'
 
 export interface ArticleRouteProps {
   params: Promise<{ category: string; slug: string }>
@@ -148,8 +148,8 @@ export async function generateArticleMetadata(lang: Lang, { params }: ArticleRou
       title: stripWpSiteSuffix(post.seo?.opengraphTitle) || post.title,
       description: ogDescription,
       type: 'article',
-      publishedTime: post.date,
-      modifiedTime: post.modified,
+      publishedTime: toTaipeiIso(post.date),
+      modifiedTime: toTaipeiIso(post.modified),
       // 精選圖片優先：Yoast 的 og:image 是另外存的，換封面後常停在舊圖，REST 也寫不進去
       images: post.featuredImage?.node?.sourceUrl
         ? [{ url: post.featuredImage.node.sourceUrl }]

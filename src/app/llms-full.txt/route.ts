@@ -1,6 +1,6 @@
 import { fetchQuery } from '@/lib/graphql/client'
 import { GET_LLMS_FULL_ARTICLES } from '@/lib/graphql/queries/llms-full'
-import { resolveSummary, stripHtml } from '@/lib/format'
+import { resolveSummary, stripHtml, toTaipeiIso } from '@/lib/format'
 import { cleanUpstreamHtml } from '@/lib/content-parsers'
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
 import { LANGS, articleHref, langOfCategorySlug, ui } from '@/lib/i18n'
@@ -78,8 +78,8 @@ function articleBlock(lang: (typeof LANGS)[number], post: LlmsFullArticle) {
     '',
     `- URL: ${url}`,
     `- Category: ${cat.name}`,
-    `- Published: ${(post.date || '').slice(0, 10)}`,
-    `- Updated: ${(post.modified || '').slice(0, 10)}`,
+    `- Published: ${post.date ? toTaipeiIso(post.date).slice(0, 10) : ''}`,
+    `- Updated: ${post.modified ? toTaipeiIso(post.modified).slice(0, 10) : ''}`,
     `- Author: ${ui(lang).editorName}, ${SITE_NAME}`,
   ]
   if (summary) lines.push(`- Summary: ${summary.replace(/\s+/g, ' ')}`)

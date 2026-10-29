@@ -1,10 +1,25 @@
 import { LANG_TAG, type Lang } from '@/lib/i18n'
 
+/**
+ * WP 時區設定是 UTC，WPGraphQL 的 date／modified 不帶時區、其實是 UTC。
+ * 以前當成台灣時間補 +08:00，結構化資料和顯示日期都少算 8 小時（2026-10-29 健檢查到）。
+ */
+export function wpDateToUtc(iso: string) {
+  return /(?:Z|[+-]\d{2}:\d{2})$/.test(iso) ? iso : `${iso}Z`
+}
+
+/** 換成台灣時間、帶 +08:00 的 ISO 字串（JSON-LD、llms 日期用） */
+export function toTaipeiIso(iso: string) {
+  const t = new Date(new Date(wpDateToUtc(iso)).getTime() + 8 * 3600 * 1000)
+  return `${t.toISOString().slice(0, 19)}+08:00`
+}
+
 export function formatDate(dateString: string, lang: Lang = 'zh') {
-  return new Date(dateString).toLocaleDateString(LANG_TAG[lang], {
+  return new Date(wpDateToUtc(dateString)).toLocaleDateString(LANG_TAG[lang], {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'Asia/Taipei',
   })
 }
 

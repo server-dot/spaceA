@@ -7,7 +7,7 @@ import { GET_LATEST_POSTS } from '@/lib/graphql/queries/popular'
 import { GET_NAVIGATION } from '@/lib/graphql/queries/navigation'
 import { fetchQuery } from '@/lib/graphql/client'
 import { SITE_NAME, EXCLUDED_CATEGORY_SLUGS } from '@/lib/constants'
-import { formatDate, resolveSummary } from '@/lib/format'
+import { formatDate, resolveSummary, toTaipeiIso } from '@/lib/format'
 import { WPPostCard, WPCategory } from '@/types/wordpress'
 import { LANG_TAG, OG_LOCALE, articleHref, homeHref, langOfCategorySlug, langPrefix, ui, type Lang, staticAlternates } from '@/lib/i18n'
 
@@ -80,9 +80,9 @@ export default async function PopularView({ lang }: { lang: Lang }) {
     .map((cat) => ({ ...cat, count: cat.count ?? 0 }))
     .sort((a, b) => b.count - a.count)
 
-  // WP 的 date 不帶時區，補 +08:00（Rich Results Test 會對沒時區的 datetime 提警告）
+  // WP 的 date 不帶時區、其實是 UTC，換成台灣時間帶 +08:00（Rich Results Test 會對沒時區的 datetime 提警告）
   const rawDate = articles[0]?.dateISO
-  const dateModified = rawDate ? (/(?:Z|[+-]\d{2}:\d{2})$/.test(rawDate) ? rawDate : `${rawDate}+08:00`) : new Date().toISOString()
+  const dateModified = rawDate ? toTaipeiIso(rawDate) : new Date().toISOString()
 
   return (
     <>
