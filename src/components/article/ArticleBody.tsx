@@ -3,6 +3,7 @@ import BrokenImageFallback from './BrokenImageFallback'
 import SvgTextFit from './SvgTextFit'
 import KidsFishOilCalculator from '@/components/tools/KidsFishOilCalculator'
 import LuteinConverter from '@/components/tools/LuteinConverter'
+import DiningChairFit from '@/components/tools/DiningChairFit'
 import type { Lang } from '@/lib/i18n'
 
 interface ArticleBodyProps {
@@ -14,6 +15,7 @@ interface ArticleBodyProps {
 const TOOLS: Record<string, ComponentType<{ lang?: Lang }>> = {
   'kids-fish-oil': KidsFishOilCalculator,
   lutein: LuteinConverter,
+  'dining-chair': DiningChairFit,
 }
 
 const TOOL_MARKER = /<div data-spacea-tool="([a-z0-9-]+)"><\/div>/g
