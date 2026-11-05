@@ -1,15 +1,24 @@
 // 餐椅座高篩選工具的資料：每一格都是 2026-11-02 回各家官網對過的數字（post 1591 校稿時的清單）。
 // 改價格或尺寸就改這裡；官網沒寫座高的 seats 留空陣列，工具會照實顯示「官網未標示」。
 
+/** 座面選項的四語寫法 */
+export const SEAT_LABELS = {
+  wood: { zh: '木座', en: 'wood seat', ja: '木座', ko: '원목 좌판' },
+  soft: { zh: '布座／皮座', en: 'fabric/leather seat', ja: 'ファブリック・レザー座', ko: '패브릭·가죽 좌판' },
+} as const
+export type SeatLabel = keyof typeof SEAT_LABELS
+
 export interface ChairSeat {
   /** 座高（公分） */
   h: number
-  /** 同一款有多種座高時的選項名（有情門木座／布座…）；只有一種就省略 */
-  label?: string
+  /** 同一款有多種座高時的選項名（有情門木座／布座…）；只有一種就省略。key 對 SEAT_LABELS */
+  label?: SeatLabel
 }
 
 export interface DiningChair {
   brand: string
+  /** 英日韓頁的品牌寫法（跟 1591 譯文卡片 h3 同一套） */
+  names: { en: string; ja: string; ko: string }
   name: string
   url: string
   /** 卡片上的定價文字（不寫特價）；官網沒公開就寫需詢價 */
@@ -36,44 +45,44 @@ export const BODY_GAP_SPREAD = 1.5
 
 export const DINING_CHAIRS: DiningChair[] = [
   {
-    brand: '原沐製材所', name: '拾光餐椅', url: 'https://www.woodfactorytc.com/product/%e6%8b%be%e5%85%89%e9%a4%90%e6%a4%85/',
+    brand: '原沐製材所', names: { en: 'Yuanmu Wood Factory', ja: '原沐製材所', ko: 'Yuanmu Wood Factory' }, name: '拾光餐椅', url: 'https://www.woodfactorytc.com/product/%e6%8b%be%e5%85%89%e9%a4%90%e6%a4%85/',
     priceText: 'NT$6,800', price: 6800, seats: [{ h: 45.5 }], tolerance: null,
   },
   {
-    brand: '有情門', name: '卡樂瑞單椅', url: 'https://www.twucm.com/products/color-chair',
+    brand: '有情門', names: { en: 'UCM', ja: '有情門', ko: 'UCM' }, name: '卡樂瑞單椅', url: 'https://www.twucm.com/products/color-chair',
     priceText: '木座 NT$4,680／布座 NT$5,280／皮座 NT$9,280', price: 4680,
     seats: [
-      { h: 45, label: '木座' }, { h: 42.5, label: '木座' }, { h: 40, label: '木座' },
-      { h: 48, label: '布座／皮座' }, { h: 45.5, label: '布座／皮座' }, { h: 43, label: '布座／皮座' },
+      { h: 45, label: 'wood' }, { h: 42.5, label: 'wood' }, { h: 40, label: 'wood' },
+      { h: 48, label: 'soft' }, { h: 45.5, label: 'soft' }, { h: 43, label: 'soft' },
     ],
     tolerance: null,
   },
   {
-    brand: '優渥實木', name: '小王子實木餐椅', url: 'https://www.uwood.com.tw/product.php?id=439',
+    brand: '優渥實木', names: { en: 'Uwood', ja: '優渥実木', ko: 'Uwood' }, name: '小王子實木餐椅', url: 'https://www.uwood.com.tw/product.php?id=439',
     priceText: '需詢價', price: null, seats: [{ h: 45 }], tolerance: null,
   },
   {
-    brand: 'ALOT Living', name: '飛驒の匠工坊 050 餐椅', url: 'https://alot.com.tw/collections/chair/products/takumi-chair-050',
+    brand: 'ALOT Living', names: { en: 'ALOT Living', ja: 'ALOT Living', ko: 'ALOT Living' }, name: '飛驒の匠工坊 050 餐椅', url: 'https://alot.com.tw/collections/chair/products/takumi-chair-050',
     priceText: 'NT$32,300 起', price: 32300, seats: [{ h: 42 }], tolerance: null,
   },
   {
-    brand: '原木狂人', name: '籮筐椅', url: 'https://www.woodenmania.com/productname-120-product181',
+    brand: '原木狂人', names: { en: 'Wooden Mania', ja: '原木狂人', ko: 'Wooden Mania' }, name: '籮筐椅', url: 'https://www.woodenmania.com/productname-120-product181',
     priceText: '需詢價', price: null, seats: [{ h: 44 }], tolerance: null,
   },
   {
-    brand: 'Mountain Living', name: 'Civil 單椅', url: 'https://www.mountainliving.com.tw/dining-chair/civ260t/',
+    brand: 'Mountain Living', names: { en: 'Mountain Living', ja: 'Mountain Living', ko: 'Mountain Living' }, name: 'Civil 單椅', url: 'https://www.mountainliving.com.tw/dining-chair/civ260t/',
     priceText: 'NT$11,500 起', price: 11500, seats: [], tolerance: 2,
   },
   {
-    brand: '無印良品', name: '木製圓椅／橡木', url: 'https://shop.muji.tw/SalePage/Index/8912410',
+    brand: '無印良品', names: { en: 'MUJI', ja: '無印良品', ko: 'MUJI' }, name: '木製圓椅／橡木', url: 'https://shop.muji.tw/SalePage/Index/8912410',
     priceText: 'NT$4,990', price: 4990, seats: [{ h: 42 }], tolerance: null,
   },
   {
-    brand: '橙家居', name: '健康實木餐椅 A 款', url: 'https://www.chen-jiao.com.tw/products/jk-m2121',
+    brand: '橙家居', names: { en: 'Chen-Jiao', ja: '橙家居', ko: 'Chen-Jiao' }, name: '健康實木餐椅 A 款', url: 'https://www.chen-jiao.com.tw/products/jk-m2121',
     priceText: 'NT$5,300', price: 5300, seats: [{ h: 46 }], tolerance: 3,
   },
   {
-    brand: 'UMU 有木', name: 'SHIGIYAMA 橡木布餐椅', url: 'https://www.umu.com.tw/products/wood-dining-chair-shigiyama-eke',
+    brand: 'UMU 有木', names: { en: 'UMU', ja: 'UMU', ko: 'UMU' }, name: 'SHIGIYAMA 橡木布餐椅', url: 'https://www.umu.com.tw/products/wood-dining-chair-shigiyama-eke',
     priceText: 'NT$11,900', price: 11900, seats: [{ h: 44 }], tolerance: null,
   },
 ]
