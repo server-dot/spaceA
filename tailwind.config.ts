@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-noto-sans-tc)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-noto-serif-tc)', 'serif'],
+        sans: ['"Latin Quotes"', 'var(--font-noto-sans-tc)', 'system-ui', 'sans-serif'],
+        serif: ['"Latin Quotes"', 'var(--font-noto-serif-tc)', 'serif'],
       },
       colors: {
         brand: {

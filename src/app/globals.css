@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Noto Sans TC 的彎引號是全形字，英日韓頁的 Cona’s 會變成「Cona’ s」；只把這四個引號交給系統西文字型 */
+@font-face {
+  font-family: 'Latin Quotes';
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
+  unicode-range: U+2018-2019, U+201C-201D;
+}
+
 @layer base {
   :root {
     --font-noto-sans-tc: 'Noto Sans TC', sans-serif;
