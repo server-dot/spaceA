@@ -4,6 +4,7 @@ import SvgTextFit from './SvgTextFit'
 import KidsFishOilCalculator from '@/components/tools/KidsFishOilCalculator'
 import LuteinConverter from '@/components/tools/LuteinConverter'
 import DiningChairFit from '@/components/tools/DiningChairFit'
+import Pm25MaskPicker from '@/components/tools/Pm25MaskPicker'
 import type { Lang } from '@/lib/i18n'
 
 interface ArticleBodyProps {
@@ -16,6 +17,7 @@ const TOOLS: Record<string, ComponentType<{ lang?: Lang }>> = {
   'kids-fish-oil': KidsFishOilCalculator,
   lutein: LuteinConverter,
   'dining-chair': DiningChairFit,
+  'pm25-mask': Pm25MaskPicker,
 }
 
 const TOOL_MARKER = /<div data-spacea-tool="([a-z0-9-]+)"><\/div>/g
