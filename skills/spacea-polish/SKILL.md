@@ -17,7 +17,7 @@ WordPress 後台 → 打開那篇文章 → 右上角「⋮」→「程式碼編
 
 收到 HTML 後，讀完整篇，對照這兩份規則：
 
-- `references/checklist.md`：推薦文專用的五區檢查（比較表、文案、參考資料、卡片、SEO）
+- 推薦文規則唯一來源：`docs/推薦文交件檢查清單.md`（`references/checklist.md` 只剩指標）
 - `references/anti-ai-style.md`：去 AI 味黑名單，第一節用字、第三節標題與節奏最常中
 
 用**語意判讀**，不是字面比對：規則寫「這不是…而是…」，文章寫「不是 A，是 B」「不只是…也是…」一樣算中。

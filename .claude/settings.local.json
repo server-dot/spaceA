@@ -39,7 +39,10 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(grep -h \"^TAVILY_API_KEY\" /Users/kc/stacktools/.env)",
+      "Bash(grep -h \"^TAVILY_API_KEY\" /Users/kc/stacktools/.env.local)",
+      "Bash(railway up *)"
     ]
   }
 }
