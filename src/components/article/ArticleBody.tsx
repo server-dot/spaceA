@@ -5,6 +5,7 @@ import KidsFishOilCalculator from '@/components/tools/KidsFishOilCalculator'
 import LuteinConverter from '@/components/tools/LuteinConverter'
 import DiningChairFit from '@/components/tools/DiningChairFit'
 import Pm25MaskPicker from '@/components/tools/Pm25MaskPicker'
+import PetFloorCleanerPicker from '@/components/tools/PetFloorCleanerPicker'
 import type { Lang } from '@/lib/i18n'
 
 interface ArticleBodyProps {
@@ -18,6 +19,7 @@ const TOOLS: Record<string, ComponentType<{ lang?: Lang }>> = {
   lutein: LuteinConverter,
   'dining-chair': DiningChairFit,
   'pm25-mask': Pm25MaskPicker,
+  'pet-floor-cleaner': PetFloorCleanerPicker,
 }
 
 const TOOL_MARKER = /<div data-spacea-tool="([a-z0-9-]+)"><\/div>/g
