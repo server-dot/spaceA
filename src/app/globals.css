@@ -239,6 +239,7 @@ html.js .hero-line path {
     position: absolute;
     inset: -40px;
     width: calc(100% + 80px);
+    max-width: none; /* 蓋掉 prose 圖片的 max-width:100%，不然底圖比框窄 80px，右側露出底色 */
     height: calc(100% + 80px);
     clip-path: inset(40px);
     object-fit: cover;
