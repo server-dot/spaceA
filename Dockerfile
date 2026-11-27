@@ -16,7 +16,9 @@ ARG NEXT_PUBLIC_GA_ID
 ENV NEXT_PUBLIC_WORDPRESS_URL=$NEXT_PUBLIC_WORDPRESS_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
-RUN npm run build
+# next/font 在 build 時向 Google Fonts 抓字型，Google 偶爾回沒有副檔名的網址，Next 解析失敗整個 build 掛掉
+# （2026-11-25 連兩次，本機正常）。失敗就等一下重跑，最多三次。
+RUN npm run build || (sleep 20 && npm run build) || (sleep 45 && npm run build)
 
 FROM base AS runner
 WORKDIR /app
